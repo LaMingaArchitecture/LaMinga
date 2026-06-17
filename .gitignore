@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+.astro/
+
+# Netlify
+.netlify/
+
+# Environment (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# Storyblok CLI logs/cache (may contain tokens)
+.storyblok/
+
+# Conductor workspace collaboration dir
+.context/
+
+# OS / editor
+.DS_Store
+*.log
