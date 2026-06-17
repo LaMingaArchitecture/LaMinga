@@ -11,7 +11,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "astro check"
   },
   "dependencies": {
     "@astrojs/netlify": "7.0.13",
@@ -20,6 +25,16 @@
     "astro": "6.4.8"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "@eslint/js": "10.0.1",
+    "eslint": "10.5.0",
+    "eslint-plugin-astro": "1.7.0",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "globals": "17.6.0",
+    "prettier": "3.8.4",
+    "prettier-plugin-astro": "0.14.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.61.1",
     "vite": "7.3.5"
   }
 }
