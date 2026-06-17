@@ -92,43 +92,43 @@ export const projectsMock: Array<{ slug: string; content: ProjectBlok }> = [
 
 export const homeMock: HomePageBlok = {
   _uid: 'mock-home',
-  component: 'homePage',
+  component: 'home_page',
   titre: 'LaMinga — Atelier d’architecture',
   intro: richtext('Nous concevons des lieux qui racontent une histoire.'),
 };
 
 export const projectListMock: ProjectListBlok = {
   _uid: 'mock-projectlist',
-  component: 'projectList',
+  component: 'project_list',
   titre: 'Projets',
   intro: richtext('Une sélection de nos réalisations, classées par typologie.'),
 };
 
 export const atelierMock: AtelierPageBlok = {
   _uid: 'mock-atelier',
-  component: 'atelierPage',
+  component: 'atelier_page',
   intro: richtext('LaMinga est un atelier d’architecture.'),
   competences: richtext('Conception, maîtrise d’œuvre, scénographie.'),
   clients: richtext('Collectivités, particuliers, institutions.'),
   equipe: [
-    { _uid: 'tm-1', component: 'teamMember', nom: 'A. Architecte', role: 'Cofondatrice' },
-    { _uid: 'tm-2', component: 'teamMember', nom: 'B. Architecte', role: 'Cofondateur' },
+    { _uid: 'tm-1', component: 'team_member', nom: 'A. Architecte', role: 'Cofondatrice' },
+    { _uid: 'tm-2', component: 'team_member', nom: 'B. Architecte', role: 'Cofondateur' },
   ],
 };
 
 export const settingsMock: GlobalSettings = {
   _uid: 'mock-settings',
-  component: 'globalSettings',
+  component: 'global_settings',
   reseaux_sociaux: [
     {
       _uid: 'sl-1',
-      component: 'socialLink',
+      component: 'social_link',
       plateforme: 'Instagram',
       url: 'https://instagram.com/laminga',
     },
     {
       _uid: 'sl-2',
-      component: 'socialLink',
+      component: 'social_link',
       plateforme: 'LinkedIn',
       url: 'https://linkedin.com/company/laminga',
     },

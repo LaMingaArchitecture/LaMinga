@@ -50,8 +50,14 @@ export default defineConfig({
       accessToken: isDraft ? STORYBLOK_PREVIEW_TOKEN : STORYBLOK_PUBLIC_TOKEN,
       bridge: isDraft,
       apiOptions: { region: 'eu' },
+      // Storyblok technical names (snake_case) -> Astro component paths.
       components: {
         page: 'storyblok/Page',
+        project: 'storyblok/Project',
+        project_list: 'storyblok/ProjectList',
+        atelier_page: 'storyblok/AtelierPage',
+        team_member: 'storyblok/TeamMember',
+        home_page: 'storyblok/HomePage',
       },
     }),
     sitemap(),

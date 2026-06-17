@@ -1,12 +1,11 @@
 ---
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HomePage from '../storyblok/HomePage.astro';
-import { getHomePage, getProjectSummaries } from '../lib/content';
+import { getHomePage } from '../lib/content';
 
 const home = await getHomePage();
-const projects = await getProjectSummaries();
 ---
 
 <BaseLayout title="LaMinga — Atelier d'architecture">
-  <HomePage blok={home} projects={projects} />
+  <StoryblokComponent blok={home} />
 </BaseLayout>

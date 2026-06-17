@@ -18,7 +18,7 @@ export interface StoryblokAsset {
 export type DisplayMode = 'carousel' | 'scroll';
 
 export interface TeamMemberBlok extends SbBlokData {
-  component: 'teamMember';
+  component: 'team_member';
   nom: string;
   photo?: StoryblokAsset;
   role?: string;
@@ -26,7 +26,7 @@ export interface TeamMemberBlok extends SbBlokData {
 }
 
 export interface SocialLinkBlok extends SbBlokData {
-  component: 'socialLink';
+  component: 'social_link';
   plateforme: string;
   url: string;
 }
@@ -48,13 +48,13 @@ export interface ProjectBlok extends SbBlokData {
 }
 
 export interface ProjectListBlok extends SbBlokData {
-  component: 'projectList';
+  component: 'project_list';
   titre: string;
   intro?: RichText;
 }
 
 export interface AtelierPageBlok extends SbBlokData {
-  component: 'atelierPage';
+  component: 'atelier_page';
   intro?: RichText;
   competences?: RichText;
   clients?: RichText;
@@ -62,7 +62,7 @@ export interface AtelierPageBlok extends SbBlokData {
 }
 
 export interface HomePageBlok extends SbBlokData {
-  component: 'homePage';
+  component: 'home_page';
   titre?: string;
   intro?: RichText;
   /** Featured project references (uuids or resolved stories); empty = show all. */
@@ -70,7 +70,7 @@ export interface HomePageBlok extends SbBlokData {
 }
 
 export interface GlobalSettings extends SbBlokData {
-  component: 'globalSettings';
+  component: 'global_settings';
   reseaux_sociaux?: SocialLinkBlok[];
   footer_adresse?: string;
   footer_mentions?: RichText;

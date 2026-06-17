@@ -1,11 +1,11 @@
 ---
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AtelierPage from '../storyblok/AtelierPage.astro';
 import { getAtelierPage } from '../lib/content';
 
 const blok = await getAtelierPage();
 ---
 
 <BaseLayout title="Atelier — LaMinga">
-  <AtelierPage blok={blok} />
+  <StoryblokComponent blok={blok} />
 </BaseLayout>

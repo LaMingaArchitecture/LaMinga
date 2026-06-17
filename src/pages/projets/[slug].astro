@@ -1,8 +1,9 @@
 ---
 import type { GetStaticPaths } from 'astro';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Project from '../../storyblok/Project.astro';
-import { getProject, getProjectSummaries, type ProjectDetail } from '../../lib/content';
+import { getProject, getProjectSummaries } from '../../lib/content';
+import type { ProjectBlok } from '../../types/storyblok';
 
 export const getStaticPaths = (async () => {
   const projects = await getProjectSummaries();
@@ -10,19 +11,15 @@ export const getStaticPaths = (async () => {
   for (const project of projects) {
     const detail = await getProject(project.slug);
     if (detail) {
-      paths.push({ params: { slug: project.slug }, props: { detail } });
+      paths.push({ params: { slug: project.slug }, props: { blok: detail.blok } });
     }
   }
   return paths;
 }) satisfies GetStaticPaths;
 
-interface Props {
-  detail: ProjectDetail;
-}
-
-const { detail } = Astro.props as Props;
+const { blok } = Astro.props as { blok: ProjectBlok };
 ---
 
-<BaseLayout title={`${detail.blok.titre} — LaMinga`}>
-  <Project blok={detail.blok} similar={detail.similar} />
+<BaseLayout title={`${blok.titre} — LaMinga`}>
+  <StoryblokComponent blok={blok} />
 </BaseLayout>
