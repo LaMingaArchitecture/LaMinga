@@ -58,8 +58,18 @@ export default defineConfig({
   ],
   env: {
     schema: {
-      STORYBLOK_PUBLIC_TOKEN: envField.string({ context: 'server', access: 'secret' }),
-      STORYBLOK_PREVIEW_TOKEN: envField.string({ context: 'server', access: 'secret' }),
+      // Optional: each Netlify context sets only the token it uses
+      // (prod = Public, preview = Preview). Selected at config time via loadEnv.
+      STORYBLOK_PUBLIC_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+      }),
+      STORYBLOK_PREVIEW_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+      }),
       PUBLIC_SITE_URL: envField.string({ context: 'client', access: 'public' }),
       STORYBLOK_VERSION: envField.enum({
         context: 'server',

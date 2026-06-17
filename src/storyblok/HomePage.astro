@@ -2,14 +2,17 @@
 import { storyblokEditable } from '@storyblok/astro';
 import RichText from './RichText.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import { getProjectSummaries } from '../lib/content';
 import type { HomePageBlok, ProjectSummary } from '../types/storyblok';
 
 interface Props {
   blok: HomePageBlok;
-  projects: ProjectSummary[];
+  /** Optional: pages pass the grid; via StoryblokComponent (preview) it self-fetches. */
+  projects?: ProjectSummary[];
 }
 
-const { blok, projects } = Astro.props;
+const { blok } = Astro.props;
+const projects = Astro.props.projects ?? (await getProjectSummaries());
 ---
 
 <div class="home" {...storyblokEditable(blok)}>

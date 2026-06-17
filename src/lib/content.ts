@@ -45,7 +45,7 @@ function toSummary(content: ProjectBlok, slug: string): ProjectSummary {
   };
 }
 
-function resolveSimilar(blok: ProjectBlok): ProjectSummary | null {
+export function resolveSimilar(blok: ProjectBlok): ProjectSummary | null {
   const rel = blok.projet_similaire;
   if (rel && typeof rel === 'object' && 'content' in rel) {
     return toSummary(rel.content as ProjectBlok, rel.slug);

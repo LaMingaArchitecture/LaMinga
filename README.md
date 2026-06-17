@@ -39,5 +39,21 @@ Format : `type(scope): description` — ex. `feat(projet): ajoute la galerie car
 Les hooks Husky sont actifs (`pre-commit` = lint-staged, `commit-msg` = commitlint).
 **Ne jamais utiliser `--no-verify`.**
 
-> Documentation complète (déploiement, webhook, variables d'environnement) ajoutée à
-> l'étape de documentation.
+## Variables d'environnement
+
+Voir `.env.example`. Les tokens Storyblok ne sont jamais commités : `.env` en local,
+variables de contexte dans l'UI Netlify en ligne.
+
+| Variable                  | Rôle                                               |
+| ------------------------- | -------------------------------------------------- |
+| `STORYBLOK_PUBLIC_TOKEN`  | Token de delivery (prod SSG, contenu `published`)  |
+| `STORYBLOK_PREVIEW_TOKEN` | Token de preview (preview SSR, contenu `draft`)    |
+| `PUBLIC_SITE_URL`         | URL canonique du site (sitemap, balises canonical) |
+| `STORYBLOK_VERSION`       | `published` (prod) \| `draft` (preview)            |
+
+## Déploiement
+
+Prod statique (SSG) sur `main` ; environnement de preview SSR (route `/preview/`) pour
+l'éditeur visuel. La publication d'un contenu déclenche un rebuild de la prod via un webhook
+Storyblok → build hook Netlify. Procédure complète (build hook, webhook, éditeur visuel,
+protection par mot de passe, recette) : **[`docs/deployment.md`](docs/deployment.md)**.

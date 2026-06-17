@@ -11,6 +11,19 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Production context (branch `main`): static SSG, Public token, published content.
+# STORYBLOK_PUBLIC_TOKEN is set as a secret in the Netlify UI (never committed).
+[context.production.environment]
+  STORYBLOK_VERSION = "published"
+  PUBLIC_SITE_URL = "https://www.laminga.fr"
+
+# Preview context (branch deploy `preview`): on-demand SSR, Preview token, draft.
+# STORYBLOK_PREVIEW_TOKEN is set as a secret in the Netlify UI (never committed).
+# Update PUBLIC_SITE_URL to the real preview deploy URL once the site exists.
+[context.preview.environment]
+  STORYBLOK_VERSION = "draft"
+  PUBLIC_SITE_URL = "https://preview--laminga.netlify.app"
+
 # Standard security headers — identical across all contexts.
 [[headers]]
   for = "/*"
