@@ -1,0 +1,21 @@
+# Netlify configuration for LaMinga.
+# Per-context environment (token / STORYBLOK_VERSION) is added at the
+# deployment step. Framing headers (X-Frame-Options / frame-ancestors) vary by
+# context and are emitted into public/_headers by scripts/generate-headers.mjs,
+# because [[headers]] blocks here cannot branch per deploy context.
+
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Standard security headers — identical across all contexts.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

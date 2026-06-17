@@ -6,6 +6,9 @@ node_modules/
 dist/
 .astro/
 
+# Generated per-context Netlify headers (scripts/generate-headers.mjs)
+public/_headers
+
 # Netlify
 .netlify/
 

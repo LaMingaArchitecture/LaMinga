@@ -15,10 +15,36 @@ const { STORYBLOK_PUBLIC_TOKEN, STORYBLOK_PREVIEW_TOKEN, STORYBLOK_VERSION, PUBL
 //   draft     -> preview SSR, Preview token, bridge ON (Visual Editor)
 const isDraft = STORYBLOK_VERSION === 'draft';
 
+// CSP policy (emitted as a <meta> tag by Astro's native CSP).
+// Production = strict, hash-based script/style + tight resource directives.
+// Preview = no strict meta-CSP: the Storyblok bridge injects scripts/styles
+// dynamically that have no build-time hash, so a hash CSP would break the
+// Visual Editor. The preview env is password-protected and framing is allowed
+// only there via an HTTP header (frame-ancestors lives in public/_headers,
+// since frame-ancestors is ignored inside a <meta> CSP).
+const securityConfig = isDraft
+  ? {}
+  : {
+      security: {
+        csp: {
+          directives: [
+            "default-src 'self'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "object-src 'none'",
+            "img-src 'self' data: https://a.storyblok.com https://a2.storyblok.com",
+            "font-src 'self' data:",
+            "connect-src 'self' https://api.storyblok.com",
+          ],
+        },
+      },
+    };
+
 export default defineConfig({
   site: PUBLIC_SITE_URL,
   output: 'static',
   adapter: netlify(),
+  ...securityConfig,
   integrations: [
     storyblok({
       accessToken: isDraft ? STORYBLOK_PREVIEW_TOKEN : STORYBLOK_PUBLIC_TOKEN,

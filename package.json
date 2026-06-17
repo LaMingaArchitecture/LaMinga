@@ -9,8 +9,10 @@
   "packageManager": "pnpm@10.10.0",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/generate-headers.mjs",
     "build": "astro build",
     "preview": "astro preview",
+    "audit": "pnpm audit",
     "astro": "astro",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
