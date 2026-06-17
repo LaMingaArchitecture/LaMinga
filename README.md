@@ -4,6 +4,15 @@ Site vitrine de l'atelier d'architecture LaMinga. **Astro 6 + Storyblok** (headl
 déployé sur **Netlify**. Production statique (SSG), environnement de preview SSR pour
 l'éditeur visuel Storyblok.
 
+## Stack & rendu
+
+- Astro 6 (TypeScript strict), `@storyblok/astro` 9 (région EU), adaptateur `@astrojs/netlify`,
+  `@astrojs/sitemap` ; Node 22, pnpm (versions verrouillées par `pnpm-lock.yaml`).
+- **Prod = SSG** (token Public, contenu `published`). **Preview = SSR** sur la route
+  `/preview/` (token Preview, contenu `draft`) pour l'éditeur visuel. La publication déclenche
+  un rebuild de la prod via webhook → build hook.
+- Langue **FR uniquement** (pas d'i18n). Modèle de contenu : `storyblok/content-model.md`.
+
 ## Prérequis
 
 - Node 22 (voir `.nvmrc`)
@@ -57,3 +66,12 @@ Prod statique (SSG) sur `main` ; environnement de preview SSR (route `/preview/`
 l'éditeur visuel. La publication d'un contenu déclenche un rebuild de la prod via un webhook
 Storyblok → build hook Netlify. Procédure complète (build hook, webhook, éditeur visuel,
 protection par mot de passe, recette) : **[`docs/deployment.md`](docs/deployment.md)**.
+
+## Documentation
+
+- [`CLAUDE.md`](CLAUDE.md) — contexte technique (commandes, stack, rendu, conventions)
+- [`src/storyblok/CLAUDE.md`](src/storyblok/CLAUDE.md) — règles d'écriture des blocs Storyblok
+- [`storyblok/content-model.md`](storyblok/content-model.md) — schéma du modèle de contenu
+- [`docs/deployment.md`](docs/deployment.md) — déploiement Netlify + webhook
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — workflow Git et conventions
+- [`docs/back-office.md`](docs/back-office.md) — guide éditeur (créer une fiche projet)
