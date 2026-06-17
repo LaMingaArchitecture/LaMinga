@@ -1,0 +1,24 @@
+---
+import { sbImage } from '../lib/image';
+import type { DisplayMode, StoryblokAsset } from '../types/storyblok';
+
+interface Props {
+  images: StoryblokAsset[];
+  mode?: DisplayMode;
+}
+
+const { images, mode = 'scroll' } = Astro.props;
+const visuals = images.filter((img) => Boolean(img.filename));
+---
+
+{
+  visuals.length > 0 && (
+    <div class={`gallery gallery--${mode}`} data-mode={mode}>
+      {visuals.map((img) => (
+        <figure class="gallery__item">
+          <img src={sbImage(img.filename, '1600x0')} alt={img.alt ?? ''} loading="lazy" />
+        </figure>
+      ))}
+    </div>
+  )
+}

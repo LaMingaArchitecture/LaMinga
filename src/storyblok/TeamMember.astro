@@ -1,0 +1,23 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import { sbImage } from '../lib/image';
+import type { TeamMemberBlok } from '../types/storyblok';
+
+const { blok } = Astro.props as { blok: TeamMemberBlok };
+---
+
+<figure class="team-member" {...storyblokEditable(blok)}>
+  {
+    blok.photo?.filename && (
+      <img
+        src={sbImage(blok.photo.filename, '500x500')}
+        alt={blok.photo.alt ?? blok.nom}
+        loading="lazy"
+      />
+    )
+  }
+  <figcaption>
+    <span class="team-member__name">{blok.nom}</span>
+    {blok.role && <span class="team-member__role">{blok.role}</span>}
+  </figcaption>
+</figure>

@@ -1,0 +1,28 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Project from '../../storyblok/Project.astro';
+import { getProject, getProjectSummaries, type ProjectDetail } from '../../lib/content';
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjectSummaries();
+  const paths = [];
+  for (const project of projects) {
+    const detail = await getProject(project.slug);
+    if (detail) {
+      paths.push({ params: { slug: project.slug }, props: { detail } });
+    }
+  }
+  return paths;
+}) satisfies GetStaticPaths;
+
+interface Props {
+  detail: ProjectDetail;
+}
+
+const { detail } = Astro.props as Props;
+---
+
+<BaseLayout title={`${detail.blok.titre} — LaMinga`}>
+  <Project blok={detail.blok} similar={detail.similar} />
+</BaseLayout>

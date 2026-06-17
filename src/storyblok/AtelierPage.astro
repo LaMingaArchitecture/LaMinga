@@ -1,0 +1,52 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import RichText from './RichText.astro';
+import type { AtelierPageBlok } from '../types/storyblok';
+
+interface Props {
+  blok: AtelierPageBlok;
+}
+
+const { blok } = Astro.props;
+---
+
+<article class="atelier" {...storyblokEditable(blok)}>
+  {
+    blok.intro && (
+      <section class="atelier__intro">
+        <RichText doc={blok.intro} />
+      </section>
+    )
+  }
+  {
+    blok.competences && (
+      <section class="atelier__competences">
+        <h2>Compétences</h2>
+        <RichText doc={blok.competences} />
+      </section>
+    )
+  }
+  {
+    blok.clients && (
+      <section class="atelier__clients">
+        <h2>Clients</h2>
+        <RichText doc={blok.clients} />
+      </section>
+    )
+  }
+  {
+    blok.equipe && blok.equipe.length > 0 && (
+      <section class="atelier__equipe">
+        <h2>Équipe</h2>
+        <ul class="team-grid">
+          {blok.equipe.map((member) => (
+            <li>
+              <StoryblokComponent blok={member} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</article>

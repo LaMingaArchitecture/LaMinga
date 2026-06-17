@@ -1,0 +1,29 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import RichText from './RichText.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import type { HomePageBlok, ProjectSummary } from '../types/storyblok';
+
+interface Props {
+  blok: HomePageBlok;
+  projects: ProjectSummary[];
+}
+
+const { blok, projects } = Astro.props;
+---
+
+<div class="home" {...storyblokEditable(blok)}>
+  <section class="home__intro">
+    {blok.titre && <h1>{blok.titre}</h1>}
+    {blok.intro && <RichText doc={blok.intro} />}
+  </section>
+  <ul class="project-grid">
+    {
+      projects.map((project) => (
+        <li>
+          <ProjectCard project={project} />
+        </li>
+      ))
+    }
+  </ul>
+</div>

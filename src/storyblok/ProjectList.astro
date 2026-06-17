@@ -1,0 +1,22 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import RichText from './RichText.astro';
+import TypologieFilter from '../components/TypologieFilter.astro';
+import type { ProjectListBlok, ProjectSummary, TypologieEntry } from '../types/storyblok';
+
+interface Props {
+  blok: ProjectListBlok;
+  projects: ProjectSummary[];
+  typologies: TypologieEntry[];
+}
+
+const { blok, projects, typologies } = Astro.props;
+---
+
+<div class="project-list" {...storyblokEditable(blok)}>
+  <header class="project-list__header">
+    <h1>{blok.titre}</h1>
+    {blok.intro && <RichText doc={blok.intro} />}
+  </header>
+  <TypologieFilter projects={projects} typologies={typologies} />
+</div>

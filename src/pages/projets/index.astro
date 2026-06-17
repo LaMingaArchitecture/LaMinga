@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectList from '../../storyblok/ProjectList.astro';
+import { getProjectListPage, getProjectSummaries, getTypologies } from '../../lib/content';
+
+const blok = await getProjectListPage();
+const projects = await getProjectSummaries();
+const typologies = await getTypologies();
+---
+
+<BaseLayout title="Projets — LaMinga">
+  <ProjectList blok={blok} projects={projects} typologies={typologies} />
+</BaseLayout>
