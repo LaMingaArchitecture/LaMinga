@@ -14,9 +14,6 @@ export interface StoryblokAsset {
   copyright?: string;
 }
 
-/** Display mode for a project's visuals. */
-export type DisplayMode = 'carousel' | 'scroll';
-
 export interface TeamMemberBlok extends SbBlokData {
   component: 'team_member';
   nom: string;
@@ -42,7 +39,6 @@ export interface ProjectBlok extends SbBlokData {
   equipe?: string;
   credits?: string;
   visuels?: StoryblokAsset[];
-  affichage?: DisplayMode;
   /** Relation to another Project — resolved story, or a uuid string when unresolved. */
   projet_similaire?: ISbStoryData | string;
 }
@@ -65,8 +61,6 @@ export interface HomePageBlok extends SbBlokData {
   component: 'home_page';
   titre?: string;
   intro?: RichText;
-  /** Featured project references (uuids or resolved stories); empty = show all. */
-  projets?: Array<ISbStoryData | string>;
 }
 
 export interface GlobalSettings extends SbBlokData {

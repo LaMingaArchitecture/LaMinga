@@ -52,7 +52,6 @@ export default defineConfig({
       apiOptions: { region: 'eu' },
       // Storyblok technical names (snake_case) -> Astro component paths.
       components: {
-        page: 'storyblok/Page',
         project: 'storyblok/Project',
         project_list: 'storyblok/ProjectList',
         atelier_page: 'storyblok/AtelierPage',

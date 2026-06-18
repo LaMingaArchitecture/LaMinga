@@ -1,6 +1,5 @@
 import type { ISbStoryData } from '@storyblok/astro';
 import { getStoryblokApi, storyblokVersion } from './storyblok';
-import * as mock from '../data/mock';
 import type {
   AtelierPageBlok,
   GlobalSettings,
@@ -11,8 +10,8 @@ import type {
   TypologieEntry,
 } from '../types/storyblok';
 
-// Live-first with mock fallback: any fetch failure (empty space, missing token,
-// network) falls back to mock content so the build never breaks.
+// Live content only. Fetch errors are intentionally NOT caught: a broken prod
+// build must fail loudly rather than ship stale/empty content silently.
 
 const SLUG = {
   home: 'home',
@@ -23,114 +22,76 @@ const SLUG = {
 
 const DATASOURCE_TYPOLOGIE = 'typologie';
 
-async function fetchContent<T>(
+async function fetchStoryContent<T>(
   slug: string,
   params: Record<string, unknown> = {},
-): Promise<T | null> {
-  try {
-    const api = getStoryblokApi();
-    const { data } = await api.get(`cdn/stories/${slug}`, { version: storyblokVersion, ...params });
-    return (data?.story?.content ?? null) as T | null;
-  } catch {
-    return null;
-  }
+): Promise<T> {
+  const api = getStoryblokApi();
+  const { data } = await api.get(`cdn/stories/${slug}`, { version: storyblokVersion, ...params });
+  return data.story.content as T;
 }
 
-function toSummary(content: ProjectBlok, slug: string): ProjectSummary {
-  return {
-    slug,
-    titre: content.titre,
-    typologie: content.typologie,
-    cover: content.visuels?.[0],
-  };
+export function getHomePage(): Promise<HomePageBlok> {
+  return fetchStoryContent<HomePageBlok>(SLUG.home);
 }
 
+export function getProjectListPage(): Promise<ProjectListBlok> {
+  return fetchStoryContent<ProjectListBlok>(SLUG.projectList);
+}
+
+export function getAtelierPage(): Promise<AtelierPageBlok> {
+  return fetchStoryContent<AtelierPageBlok>(SLUG.atelier);
+}
+
+// Plain fetch (no memo): the SSR preview must reflect live draft edits per request.
+export function getSettings(): Promise<GlobalSettings> {
+  return fetchStoryContent<GlobalSettings>(SLUG.settings);
+}
+
+export async function getTypologies(): Promise<TypologieEntry[]> {
+  const api = getStoryblokApi();
+  const { data } = await api.get('cdn/datasource_entries', {
+    datasource: DATASOURCE_TYPOLOGIE,
+    version: storyblokVersion,
+    per_page: 100,
+  });
+  const entries: Array<{ name: string; value: string }> = data.datasource_entries ?? [];
+  return entries.map((entry) => ({ name: entry.name, value: entry.value }));
+}
+
+function toSummary(blok: ProjectBlok, slug: string): ProjectSummary {
+  return { slug, titre: blok.titre, typologie: blok.typologie, cover: blok.visuels?.[0] };
+}
+
+/** Resolved similar project (relation comes resolved via resolve_relations), else null. */
 export function resolveSimilar(blok: ProjectBlok): ProjectSummary | null {
   const rel = blok.projet_similaire;
   if (rel && typeof rel === 'object' && 'content' in rel) {
     return toSummary(rel.content as ProjectBlok, rel.slug);
   }
-  if (typeof rel === 'string') {
-    const m = mock.projectsMock.find((p) => p.content._uid === rel);
-    if (m) return toSummary(m.content, m.slug);
-  }
   return null;
 }
 
-export async function getHomePage(): Promise<HomePageBlok> {
-  return (await fetchContent<HomePageBlok>(SLUG.home)) ?? mock.homeMock;
-}
-
-export async function getProjectListPage(): Promise<ProjectListBlok> {
-  return (await fetchContent<ProjectListBlok>(SLUG.projectList)) ?? mock.projectListMock;
-}
-
-export async function getAtelierPage(): Promise<AtelierPageBlok> {
-  return (await fetchContent<AtelierPageBlok>(SLUG.atelier)) ?? mock.atelierMock;
-}
-
-export async function getSettings(): Promise<GlobalSettings> {
-  return (await fetchContent<GlobalSettings>(SLUG.settings)) ?? mock.settingsMock;
-}
-
-export async function getTypologies(): Promise<TypologieEntry[]> {
-  try {
-    const api = getStoryblokApi();
-    const { data } = await api.get('cdn/datasource_entries', {
-      datasource: DATASOURCE_TYPOLOGIE,
-      version: storyblokVersion,
-    });
-    const entries: Array<{ name: string; value: string }> = data?.datasource_entries ?? [];
-    if (entries.length === 0) return mock.typologiesMock;
-    return entries.map((e) => ({ name: e.name, value: e.value }));
-  } catch {
-    return mock.typologiesMock;
-  }
+// Single list fetch with the similar-project relation resolved, shared by the
+// grid and the static-path generation (no per-project N+1).
+async function getProjectStories(): Promise<ISbStoryData[]> {
+  const api = getStoryblokApi();
+  const { data } = await api.get('cdn/stories', {
+    version: storyblokVersion,
+    starts_with: 'projets/',
+    per_page: 100,
+    resolve_relations: ['project.projet_similaire'],
+  });
+  const stories: ISbStoryData[] = data.stories ?? [];
+  return stories.filter((story) => (story.content as ProjectBlok)?.component === 'project');
 }
 
 export async function getProjectSummaries(): Promise<ProjectSummary[]> {
-  try {
-    const api = getStoryblokApi();
-    const { data } = await api.get('cdn/stories', {
-      version: storyblokVersion,
-      starts_with: 'projets/',
-      per_page: 100,
-    });
-    const stories: ISbStoryData[] = data?.stories ?? [];
-    const projects = stories
-      .filter((s) => (s.content as ProjectBlok)?.component === 'project')
-      .map((s) => toSummary(s.content as ProjectBlok, s.slug));
-    return projects.length > 0
-      ? projects
-      : mock.projectsMock.map((p) => toSummary(p.content, p.slug));
-  } catch {
-    return mock.projectsMock.map((p) => toSummary(p.content, p.slug));
-  }
+  const stories = await getProjectStories();
+  return stories.map((story) => toSummary(story.content as ProjectBlok, story.slug));
 }
 
-export interface ProjectDetail {
-  blok: ProjectBlok;
-  similar: ProjectSummary | null;
-}
-
-export async function getProject(slug: string): Promise<ProjectDetail | null> {
-  try {
-    const api = getStoryblokApi();
-    const { data } = await api.get(`cdn/stories/projets/${slug}`, {
-      version: storyblokVersion,
-      resolve_relations: ['project.projet_similaire'],
-    });
-    const story: ISbStoryData | undefined = data?.story;
-    if (!story) return fromMock(slug);
-    const blok = story.content as ProjectBlok;
-    return { blok, similar: resolveSimilar(blok) };
-  } catch {
-    return fromMock(slug);
-  }
-}
-
-function fromMock(slug: string): ProjectDetail | null {
-  const m = mock.projectsMock.find((p) => p.slug === slug);
-  if (!m) return null;
-  return { blok: m.content, similar: resolveSimilar(m.content) };
+export async function getAllProjects(): Promise<Array<{ slug: string; blok: ProjectBlok }>> {
+  const stories = await getProjectStories();
+  return stories.map((story) => ({ slug: story.slug, blok: story.content as ProjectBlok }));
 }

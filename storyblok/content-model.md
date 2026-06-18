@@ -31,7 +31,6 @@ Langue : **FR uniquement, pas d'i18n.**
 | `equipe`           | textarea       |                                                                   |
 | `credits`          | textarea       |                                                                   |
 | `visuels`          | multiasset     | filetypes: images (galerie)                                       |
-| `affichage`        | option (self)  | valeurs `carousel`, `scroll` (défaut `scroll`)                    |
 | `projet_similaire` | option         | source = stories internes, restreint au type `project` (relation) |
 
 ### `project_list` (content type — page Projets)
@@ -105,4 +104,5 @@ Composant d'amorçage Astro ; peut être conservé ou retiré.
 | `config`         | `global_settings` | réglages globaux (réseaux sociaux, footer)         |
 
 Publier ces stories pour qu'elles apparaissent en production (SSG, version `published`).
-Tant que l'espace est vide, le site se construit sur les données mock de `src/data/mock.ts`.
+Le site lit uniquement le contenu live : une erreur de fetch fait échouer le build (pas de
+contenu de secours), afin de ne jamais publier de contenu erroné silencieusement.

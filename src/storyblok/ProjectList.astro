@@ -3,18 +3,11 @@ import { storyblokEditable } from '@storyblok/astro';
 import RichText from './RichText.astro';
 import TypologieFilter from '../components/TypologieFilter.astro';
 import { getProjectSummaries, getTypologies } from '../lib/content';
-import type { ProjectListBlok, ProjectSummary, TypologieEntry } from '../types/storyblok';
+import type { ProjectListBlok } from '../types/storyblok';
 
-interface Props {
-  blok: ProjectListBlok;
-  /** Optional: pages pass these; via StoryblokComponent (preview) they self-fetch. */
-  projects?: ProjectSummary[];
-  typologies?: TypologieEntry[];
-}
-
-const { blok } = Astro.props;
-const projects = Astro.props.projects ?? (await getProjectSummaries());
-const typologies = Astro.props.typologies ?? (await getTypologies());
+const { blok } = Astro.props as { blok: ProjectListBlok };
+const projects = await getProjectSummaries();
+const typologies = await getTypologies();
 ---
 
 <div class="project-list" {...storyblokEditable(blok)}>

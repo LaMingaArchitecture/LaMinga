@@ -2,16 +2,10 @@
 import { storyblokEditable } from '@storyblok/astro';
 import ImageGallery from './ImageGallery.astro';
 import { resolveSimilar } from '../lib/content';
-import type { ProjectBlok, ProjectSummary } from '../types/storyblok';
+import type { ProjectBlok } from '../types/storyblok';
 
-interface Props {
-  blok: ProjectBlok;
-  /** Optional: pages pass the resolved similar project; via StoryblokComponent it self-derives. */
-  similar?: ProjectSummary | null;
-}
-
-const { blok } = Astro.props;
-const similar = Astro.props.similar ?? resolveSimilar(blok);
+const { blok } = Astro.props as { blok: ProjectBlok };
+const similar = resolveSimilar(blok);
 const data: Array<[string, string | undefined]> = [
   ['Année', blok.annee],
   ['Localisation', blok.localisation],
@@ -41,7 +35,7 @@ const rows = data.filter(([, value]) => Boolean(value));
     )
   }
 
-  {blok.visuels && <ImageGallery images={blok.visuels} mode={blok.affichage} />}
+  {blok.visuels && <ImageGallery images={blok.visuels} />}
 
   {
     similar && (

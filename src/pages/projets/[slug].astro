@@ -2,19 +2,12 @@
 import type { GetStaticPaths } from 'astro';
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getProject, getProjectSummaries } from '../../lib/content';
+import { getAllProjects } from '../../lib/content';
 import type { ProjectBlok } from '../../types/storyblok';
 
 export const getStaticPaths = (async () => {
-  const projects = await getProjectSummaries();
-  const paths = [];
-  for (const project of projects) {
-    const detail = await getProject(project.slug);
-    if (detail) {
-      paths.push({ params: { slug: project.slug }, props: { blok: detail.blok } });
-    }
-  }
-  return paths;
+  const projects = await getAllProjects();
+  return projects.map(({ slug, blok }) => ({ params: { slug }, props: { blok } }));
 }) satisfies GetStaticPaths;
 
 const { blok } = Astro.props as { blok: ProjectBlok };
