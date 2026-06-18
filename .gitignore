@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+.astro/
+
+# Generated per-context Netlify headers (scripts/generate-headers.mjs)
+public/_headers
+
+# Netlify
+.netlify/
+
+# Environment (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# Storyblok CLI logs/cache (may contain tokens)
+.storyblok/
+
+# Conductor workspace collaboration dir
+.context/
+
+# OS / editor
+.DS_Store
+*.log

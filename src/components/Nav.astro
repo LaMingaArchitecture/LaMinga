@@ -1,0 +1,33 @@
+---
+import type { GlobalSettings } from '../types/storyblok';
+
+interface Props {
+  settings: GlobalSettings;
+}
+
+const { settings } = Astro.props;
+const social = settings.reseaux_sociaux ?? [];
+---
+
+<header class="site-header">
+  <nav class="nav" aria-label="Navigation principale">
+    <a href="/" class="nav__logo">LaMinga</a>
+    <ul class="nav__links">
+      <li><a href="/projets">Projets</a></li>
+      <li><a href="/atelier">Atelier</a></li>
+    </ul>
+    {
+      social.length > 0 && (
+        <ul class="nav__social" aria-label="Réseaux sociaux">
+          {social.map((link) => (
+            <li>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                {link.plateforme}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </nav>
+</header>

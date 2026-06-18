@@ -1,0 +1,42 @@
+---
+export const prerender = false;
+
+import type { SbBlokData } from '@storyblok/astro';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import { STORYBLOK_VERSION } from 'astro:env/server';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getStoryblokApi } from '../../lib/storyblok';
+
+// On-demand SSR route that renders DRAFT content live for the Storyblok Visual
+// Editor. The guard keeps production effectively static: in the published
+// environment this route returns 404 instead of serving drafts. The Visual
+// Editor's preview URL points at /preview/ on the preview (SSR) deploy.
+if (STORYBLOK_VERSION !== 'draft') {
+  return new Response('Not found', { status: 404 });
+}
+
+const slug = Astro.params.slug ?? 'home';
+
+async function fetchDraftContent(): Promise<SbBlokData | null> {
+  try {
+    const api = getStoryblokApi();
+    const { data } = await api.get(`cdn/stories/${slug}`, {
+      version: 'draft',
+      resolve_relations: ['project.projet_similaire'],
+    });
+    return (data?.story?.content ?? null) as SbBlokData | null;
+  } catch {
+    return null;
+  }
+}
+
+const content = await fetchDraftContent();
+
+if (!content) {
+  return new Response(`Aperçu introuvable : ${slug}`, { status: 404 });
+}
+---
+
+<BaseLayout title="Aperçu — LaMinga">
+  <StoryblokComponent blok={content} />
+</BaseLayout>

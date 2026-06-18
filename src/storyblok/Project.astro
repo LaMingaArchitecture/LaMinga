@@ -1,0 +1,48 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import ImageGallery from './ImageGallery.astro';
+import { resolveSimilar } from '../lib/content';
+import type { ProjectBlok } from '../types/storyblok';
+
+const { blok } = Astro.props as { blok: ProjectBlok };
+const similar = resolveSimilar(blok);
+const data: Array<[string, string | undefined]> = [
+  ['Année', blok.annee],
+  ['Localisation', blok.localisation],
+  ["Maître d'ouvrage", blok.maitre_ouvrage],
+  ['Équipe', blok.equipe],
+  ['Crédits', blok.credits],
+];
+const rows = data.filter(([, value]) => Boolean(value));
+---
+
+<article class="project" {...storyblokEditable(blok)}>
+  <header class="project__header">
+    <h1>{blok.titre}</h1>
+    <p class="project__typologie">{blok.typologie}</p>
+  </header>
+
+  {
+    rows.length > 0 && (
+      <dl class="project__data">
+        {rows.map(([label, value]) => (
+          <div class="project__data-row">
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+
+  {blok.visuels && <ImageGallery images={blok.visuels} />}
+
+  {
+    similar && (
+      <aside class="project__similar">
+        <h2>Projet similaire</h2>
+        <a href={`/projets/${similar.slug}`}>{similar.titre}</a>
+      </aside>
+    )
+  }
+</article>

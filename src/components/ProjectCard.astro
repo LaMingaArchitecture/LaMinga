@@ -1,0 +1,26 @@
+---
+import { sbImage } from '../lib/image';
+import type { ProjectSummary } from '../types/storyblok';
+
+interface Props {
+  project: ProjectSummary;
+}
+
+const { project } = Astro.props;
+const cover = project.cover?.filename ? sbImage(project.cover.filename, '800x600') : '';
+---
+
+<a class="project-card" href={`/projets/${project.slug}`}>
+  {
+    cover && (
+      <img
+        class="project-card__cover"
+        src={cover}
+        alt={project.cover?.alt ?? project.titre}
+        loading="lazy"
+      />
+    )
+  }
+  <h3 class="project-card__title">{project.titre}</h3>
+  <p class="project-card__typologie">{project.typologie}</p>
+</a>
