@@ -1,0 +1,43 @@
+---
+// Placeholder rendered when a page's Storyblok story is missing/unpublished, so the
+// site still builds and deploys without content. Replaced automatically once the
+// matching story is published (see src/lib/content.ts).
+interface Props {
+  title?: string;
+  message?: string;
+}
+
+const {
+  title = 'Contenu indisponible',
+  message = "Cette page n'a pas encore de contenu publié dans Storyblok.",
+} = Astro.props;
+---
+
+<section class="content-notice">
+  <h1 class="content-notice__title">{title}</h1>
+  <p class="content-notice__message">{message}</p>
+</section>
+
+<!-- Self-contained styles: intentional. This placeholder must render visibly even
+     with no global stylesheet, so it owns its own styling rather than relying on the
+     external class layer used by the other components. -->
+<style>
+  .content-notice {
+    max-width: 40rem;
+    margin: 4rem auto;
+    padding: 1.5rem 1.75rem;
+    border: 1px solid #dcdcdc;
+    border-radius: 0.5rem;
+    background: #f6f6f6;
+    text-align: center;
+  }
+  .content-notice__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .content-notice__message {
+    margin: 0;
+    color: #555;
+  }
+</style>

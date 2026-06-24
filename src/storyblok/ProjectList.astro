@@ -6,6 +6,8 @@ import { getProjectSummaries, getTypologies } from '../lib/content';
 import type { ProjectListBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: ProjectListBlok };
+// `[]` when no project is published — the grid/filter render empty by design (a
+// missing *page* shows ContentNotice; an agency with zero projects is a valid state).
 const projects = await getProjectSummaries();
 const typologies = await getTypologies();
 ---

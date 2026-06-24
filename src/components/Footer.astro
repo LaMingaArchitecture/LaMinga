@@ -3,22 +3,22 @@ import { renderRichText } from '@storyblok/astro';
 import type { GlobalSettings } from '../types/storyblok';
 
 interface Props {
-  settings: GlobalSettings;
+  settings: GlobalSettings | null;
 }
 
 const { settings } = Astro.props;
-const mentions = settings.footer_mentions ? renderRichText(settings.footer_mentions) : '';
-const social = settings.reseaux_sociaux ?? [];
+const mentions = settings?.footer_mentions ? renderRichText(settings.footer_mentions) : '';
+const social = settings?.reseaux_sociaux ?? [];
 ---
 
 <footer class="site-footer">
   {
-    settings.footer_adresse && (
+    settings?.footer_adresse && (
       <address class="site-footer__address">{settings.footer_adresse}</address>
     )
   }
   {
-    settings.email && (
+    settings?.email && (
       <a class="site-footer__email" href={`mailto:${settings.email}`}>
         {settings.email}
       </a>

@@ -7,9 +7,15 @@ import { getSettings } from '../lib/content';
 interface Props {
   title?: string;
   description?: string;
+  /** Set on placeholder pages so missing-content pages aren't indexed as live. */
+  noindex?: boolean;
 }
 
-const { title = 'LaMinga', description = "Atelier d'architecture LaMinga." } = Astro.props;
+const {
+  title = 'LaMinga',
+  description = "Atelier d'architecture LaMinga.",
+  noindex = false,
+} = Astro.props;
 const settings = await getSettings();
 const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
 ---
@@ -21,6 +27,7 @@ const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
   </head>
   <body>

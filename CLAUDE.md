@@ -35,7 +35,8 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 - `src/storyblok/` — un composant par bloc (prop `blok`, `storyblokEditable` sur la racine) ;
   voir `src/storyblok/CLAUDE.md`. Schéma : `storyblok/content-model.md`
 - `src/components/` — UI non-Storyblok (Nav, Footer, ProjectCard, TypologieFilter)
-- `src/lib/` — `content.ts` (accès contenu live ; les erreurs remontent), `storyblok.ts`, `image.ts`
+- `src/lib/` — `content.ts` (accès contenu live ; contenu manquant 404/vide → `null`/`[]` +
+  placeholder, les erreurs réseau/401/5xx remontent), `storyblok.ts`, `image.ts`
 - `src/layouts/`, `src/types/`
 - Pages : `index`, `projets/index`, `projets/[slug]`, `atelier`, `preview/[...slug]`
 - `scripts/generate-headers.mjs` → `public/_headers` (cadrage par contexte, généré au build)

@@ -1,11 +1,12 @@
 ---
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ContentNotice from '../components/ContentNotice.astro';
 import { getHomePage } from '../lib/content';
 
 const home = await getHomePage();
 ---
 
-<BaseLayout title="LaMinga — Atelier d'architecture">
-  <StoryblokComponent blok={home} />
+<BaseLayout title="LaMinga — Atelier d'architecture" noindex={!home}>
+  {home ? <StoryblokComponent blok={home} /> : <ContentNotice />}
 </BaseLayout>

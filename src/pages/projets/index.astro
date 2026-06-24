@@ -1,11 +1,12 @@
 ---
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentNotice from '../../components/ContentNotice.astro';
 import { getProjectListPage } from '../../lib/content';
 
 const blok = await getProjectListPage();
 ---
 
-<BaseLayout title="Projets — LaMinga">
-  <StoryblokComponent blok={blok} />
+<BaseLayout title="Projets — LaMinga" noindex={!blok}>
+  {blok ? <StoryblokComponent blok={blok} /> : <ContentNotice />}
 </BaseLayout>

@@ -6,6 +6,8 @@ import { getProjectSummaries } from '../lib/content';
 import type { HomePageBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: HomePageBlok };
+// `[]` when no project is published — the grid renders empty by design (a missing
+// *page* shows ContentNotice; an agency with zero projects is a valid state).
 const projects = await getProjectSummaries();
 ---
 

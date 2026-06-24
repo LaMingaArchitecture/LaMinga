@@ -18,8 +18,9 @@ le schéma `storyblok/content-model.md`.
   HTML brut concaténé.
 - **Images** : service Storyblok via `sbImage()` (`src/lib/image.ts`) — `/m/{w}x{h}/` +
   `filters:format(webp)`. Toujours un `alt` (fallback raisonnable).
-- **Données / relations** : récupérées dans `src/lib/content.ts` (live uniquement ; les erreurs
-  de fetch remontent — pas de contenu de secours silencieux).
+- **Données / relations** : récupérées dans `src/lib/content.ts` (live uniquement). Contenu
+  manquant (404 / liste vide / datasource absente) → `null`/`[]` + placeholder `ContentNotice`
+  (le build dégrade sans échouer) ; les erreurs réseau/401/5xx remontent et font échouer le build.
   - `version` : `draft` (preview) vs `published` (prod) — déjà géré par `storyblokVersion`.
   - "Projet similaire" : relation `projet_similaire`, résolue via
     `resolve_relations: ['project.projet_similaire']`.
