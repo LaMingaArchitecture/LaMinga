@@ -1,0 +1,38 @@
+---
+import { storyblokEditable, type SbBlokData } from '@storyblok/astro';
+import { storyblokVersion } from '../lib/storyblok';
+
+// Fallback for a blok whose `component` isn't registered in astro.config.mjs
+// (wired via `customFallbackComponent`). A single unmodeled or work-in-progress
+// blok must never crash the whole build. In production (published) it renders
+// nothing; in the draft preview it shows a discreet notice so editors can spot a
+// block that still needs configuring.
+interface Props {
+  blok: SbBlokData;
+}
+
+const { blok } = Astro.props;
+const isDraft = storyblokVersion === 'draft';
+---
+
+{
+  isDraft && (
+    <div class="sb-fallback" role="note" {...storyblokEditable(blok)}>
+      Bloc non pris en charge : <code>{blok.component}</code>
+    </div>
+  )
+}
+
+<style>
+  .sb-fallback {
+    max-width: 40rem;
+    margin: 1rem auto;
+    padding: 0.75rem 1rem;
+    border: 1px dashed #c8c8c8;
+    border-radius: 0.5rem;
+    background: #f6f6f6;
+    color: #555;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+</style>

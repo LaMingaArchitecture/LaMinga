@@ -50,6 +50,11 @@ export default defineConfig({
       accessToken: isDraft ? STORYBLOK_PREVIEW_TOKEN : STORYBLOK_PUBLIC_TOKEN,
       bridge: isDraft,
       apiOptions: { region: 'eu' },
+      // Resilience: an unmodeled or work-in-progress blok renders a fallback
+      // instead of crashing the whole build (quiet in prod, discreet notice in
+      // draft). See src/storyblok/FallbackBlok.astro.
+      enableFallbackComponent: true,
+      customFallbackComponent: 'storyblok/FallbackBlok',
       // Storyblok technical names (snake_case) -> Astro component paths.
       components: {
         project: 'storyblok/Project',

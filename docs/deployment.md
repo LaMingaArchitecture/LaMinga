@@ -39,7 +39,10 @@ jamais commités.
 1. **Netlify → Add new project → Import from Git** : sélectionner **le même dépôt** que la prod.
 2. **Build & deploy → Continuous deployment → Branches** : régler la branche de production sur **`main`**.
 3. Renseigner les variables d'environnement du site B (cf. §1).
-4. Le gate d'accès (edge function `preview-auth`, déclaré dans `netlify.toml` et
+4. **Désactiver les Deploy Previews** du site B (Build & deploy → Branches and deploy contexts →
+   Deploy Previews → _Don't build_) : le site preview n'a besoin de builder que `main` ; la revue de
+   code se fait sur les Deploy Previews du site de **prod**. Évite des builds et des checks CI inutiles.
+5. Le gate d'accès (edge function `preview-auth`, déclaré dans `netlify.toml` et
    `netlify/edge-functions/`) s'active tout seul sur le site B (`STORYBLOK_VERSION=draft`) et reste
    inerte sur la prod.
 
