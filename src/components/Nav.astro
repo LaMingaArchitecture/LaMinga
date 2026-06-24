@@ -2,11 +2,11 @@
 import type { GlobalSettings } from '../types/storyblok';
 
 interface Props {
-  settings: GlobalSettings;
+  settings: GlobalSettings | null;
 }
 
 const { settings } = Astro.props;
-const social = settings.reseaux_sociaux ?? [];
+const social = settings?.reseaux_sociaux ?? [];
 ---
 
 <header class="site-header">

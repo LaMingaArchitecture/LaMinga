@@ -10,8 +10,21 @@ import type {
   TypologieEntry,
 } from '../types/storyblok';
 
-// Live content only. Fetch errors are intentionally NOT caught: a broken prod
-// build must fail loudly rather than ship stale/empty content silently.
+// Live content only. Missing content (HTTP 404 / story-not-found, empty list,
+// missing datasource) degrades gracefully: the fetch returns null/[] and the page
+// renders a placeholder, so the build still succeeds. Genuine errors (network,
+// 401 auth, 5xx) are intentionally NOT caught — they fail the build loudly rather
+// than silently deploy an empty site over real content.
+
+/** True when a Storyblok delivery error means "record not found" (HTTP 404). */
+function isNotFound(err: unknown): boolean {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'status' in err &&
+    (err as { status?: number }).status === 404
+  );
+}
 
 const SLUG = {
   home: 'home',
@@ -25,38 +38,56 @@ const DATASOURCE_TYPOLOGIE = 'typologie';
 async function fetchStoryContent<T>(
   slug: string,
   params: Record<string, unknown> = {},
-): Promise<T> {
-  const api = getStoryblokApi();
-  const { data } = await api.get(`cdn/stories/${slug}`, { version: storyblokVersion, ...params });
-  return data.story.content as T;
+): Promise<T | null> {
+  try {
+    const api = getStoryblokApi();
+    const { data } = await api.get(`cdn/stories/${slug}`, { version: storyblokVersion, ...params });
+    return data.story.content as T;
+  } catch (err) {
+    if (isNotFound(err)) {
+      console.info(`[content] story "${slug}" absente (${storyblokVersion}) — placeholder rendu`);
+      return null;
+    }
+    throw err;
+  }
 }
 
-export function getHomePage(): Promise<HomePageBlok> {
+export function getHomePage(): Promise<HomePageBlok | null> {
   return fetchStoryContent<HomePageBlok>(SLUG.home);
 }
 
-export function getProjectListPage(): Promise<ProjectListBlok> {
+export function getProjectListPage(): Promise<ProjectListBlok | null> {
   return fetchStoryContent<ProjectListBlok>(SLUG.projectList);
 }
 
-export function getAtelierPage(): Promise<AtelierPageBlok> {
+export function getAtelierPage(): Promise<AtelierPageBlok | null> {
   return fetchStoryContent<AtelierPageBlok>(SLUG.atelier);
 }
 
 // Plain fetch (no memo): the SSR preview must reflect live draft edits per request.
-export function getSettings(): Promise<GlobalSettings> {
+export function getSettings(): Promise<GlobalSettings | null> {
   return fetchStoryContent<GlobalSettings>(SLUG.settings);
 }
 
 export async function getTypologies(): Promise<TypologieEntry[]> {
-  const api = getStoryblokApi();
-  const { data } = await api.get('cdn/datasource_entries', {
-    datasource: DATASOURCE_TYPOLOGIE,
-    version: storyblokVersion,
-    per_page: 100,
-  });
-  const entries: Array<{ name: string; value: string }> = data.datasource_entries ?? [];
-  return entries.map((entry) => ({ name: entry.name, value: entry.value }));
+  try {
+    const api = getStoryblokApi();
+    const { data } = await api.get('cdn/datasource_entries', {
+      datasource: DATASOURCE_TYPOLOGIE,
+      version: storyblokVersion,
+      per_page: 100,
+    });
+    const entries: Array<{ name: string; value: string }> = data.datasource_entries ?? [];
+    return entries.map((entry) => ({ name: entry.name, value: entry.value }));
+  } catch (err) {
+    if (isNotFound(err)) {
+      console.info(
+        `[content] datasource "${DATASOURCE_TYPOLOGIE}" absente (${storyblokVersion}) — filtre vide`,
+      );
+      return [];
+    }
+    throw err;
+  }
 }
 
 function toSummary(blok: ProjectBlok, slug: string): ProjectSummary {
@@ -75,15 +106,23 @@ export function resolveSimilar(blok: ProjectBlok): ProjectSummary | null {
 // Single list fetch with the similar-project relation resolved, shared by the
 // grid and the static-path generation (no per-project N+1).
 async function getProjectStories(): Promise<ISbStoryData[]> {
-  const api = getStoryblokApi();
-  const { data } = await api.get('cdn/stories', {
-    version: storyblokVersion,
-    starts_with: 'projets/',
-    per_page: 100,
-    resolve_relations: ['project.projet_similaire'],
-  });
-  const stories: ISbStoryData[] = data.stories ?? [];
-  return stories.filter((story) => (story.content as ProjectBlok)?.component === 'project');
+  try {
+    const api = getStoryblokApi();
+    const { data } = await api.get('cdn/stories', {
+      version: storyblokVersion,
+      starts_with: 'projets/',
+      per_page: 100,
+      resolve_relations: ['project.projet_similaire'],
+    });
+    const stories: ISbStoryData[] = data.stories ?? [];
+    return stories.filter((story) => (story.content as ProjectBlok)?.component === 'project');
+  } catch (err) {
+    if (isNotFound(err)) {
+      console.info(`[content] aucune story sous "projets/" (${storyblokVersion}) — grille vide`);
+      return [];
+    }
+    throw err;
+  }
 }
 
 export async function getProjectSummaries(): Promise<ProjectSummary[]> {
