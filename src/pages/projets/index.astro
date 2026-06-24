@@ -7,6 +7,6 @@ import { getProjectListPage } from '../../lib/content';
 const blok = await getProjectListPage();
 ---
 
-<BaseLayout title="Projets — LaMinga">
+<BaseLayout title="Projets — LaMinga" noindex={!blok}>
   {blok ? <StoryblokComponent blok={blok} /> : <ContentNotice />}
 </BaseLayout>

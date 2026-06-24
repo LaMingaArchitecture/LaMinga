@@ -13,11 +13,14 @@ const {
 } = Astro.props;
 ---
 
-<section class="content-notice" role="status">
-  <p class="content-notice__title">{title}</p>
+<section class="content-notice">
+  <h1 class="content-notice__title">{title}</h1>
   <p class="content-notice__message">{message}</p>
 </section>
 
+<!-- Self-contained styles: intentional. This placeholder must render visibly even
+     with no global stylesheet, so it owns its own styling rather than relying on the
+     external class layer used by the other components. -->
 <style>
   .content-notice {
     max-width: 40rem;
