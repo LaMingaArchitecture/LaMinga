@@ -25,9 +25,12 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 ## Rendu
 
 - Prod (`main`) : SSG, token Public, version `published`
-- Preview : SSR à la demande sur la route `src/pages/preview/[...slug].astro`
-  (`prerender=false`), token Preview, version `draft` ; gardée en 404 hors `draft`
-- Sélection token + bridge dans `astro.config.mjs` via `loadEnv(STORYBLOK_VERSION)`
+- Preview : **2ᵉ site Netlify** qui build la même branche `main` avec `STORYBLOK_VERSION=draft`
+  (token Preview, bridge ON). Route SSR `src/pages/preview/[...slug].astro` (`prerender=false`) ;
+  gardée en 404 hors `draft`. Accès protégé par l'edge function `netlify/edge-functions/preview-auth.ts`
+- Sélection token + bridge + CSP dans `astro.config.mjs` via `loadEnv(STORYBLOK_VERSION)` —
+  commutateur unique (le site preview a `CONTEXT=production`, donc on se base sur `STORYBLOK_VERSION`,
+  pas sur `CONTEXT`)
 - Publication Storyblok → webhook → Build Hook Netlify → rebuild prod (cf. `docs/deployment.md`)
 
 ## Structure
@@ -39,7 +42,8 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
   placeholder, les erreurs réseau/401/5xx remontent), `storyblok.ts`, `image.ts`
 - `src/layouts/`, `src/types/`
 - Pages : `index`, `projets/index`, `projets/[slug]`, `atelier`, `preview/[...slug]`
-- `scripts/generate-headers.mjs` → `public/_headers` (cadrage par contexte, généré au build)
+- `scripts/generate-headers.mjs` → `public/_headers` (cadrage selon `STORYBLOK_VERSION`, généré au build)
+- `netlify/edge-functions/preview-auth.ts` — Basic-Auth du site preview (Deno ; hors toolchain Astro)
 
 ## Contenu (Storyblok)
 
@@ -54,9 +58,10 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 ## Sécurité / CSP
 
 - CSP native Astro (meta) en prod : `script/style` par hash + `default/img/connect-src` restreints
-- Cadrage : `public/_headers` généré par contexte — `DENY` en prod ; `frame-ancestors
+- Cadrage : `public/_headers` généré selon `STORYBLOK_VERSION` — `DENY` en prod ; `frame-ancestors
 https://app.storyblok.com` en preview uniquement (le bridge n'est autorisé qu'en preview)
-- En-têtes standards dans `netlify.toml` ; tokens = secrets de l'UI Netlify par contexte
+- Accès preview : edge function `preview-auth` (Basic-Auth) — protège tout le site preview, inerte en prod
+- En-têtes standards dans `netlify.toml` ; tokens = secrets de l'UI Netlify par site
 
 ## Conventions
 

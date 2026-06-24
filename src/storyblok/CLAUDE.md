@@ -14,6 +14,9 @@ le schéma `storyblok/content-model.md`.
   enregistrer.
 - **Rendu imbriqué** via `<StoryblokComponent blok={nestedBlok} />` (jamais d'import direct
   d'un bloc enregistré depuis une page → risque de cycle d'imports).
+- **Bloc non enregistré** (composant inconnu ou en cours de modélisation) → rendu par `FallbackBlok`
+  (`customFallbackComponent` dans `astro.config.mjs`) : rien en prod, notice discrète en draft. Un
+  bloc non modélisé ne casse jamais le build.
 - **Richtext** : toujours `renderRichText` (cf. `RichText.astro`) + `set:html` ; jamais de
   HTML brut concaténé.
 - **Images** : service Storyblok via `sbImage()` (`src/lib/image.ts`) — `/m/{w}x{h}/` +
