@@ -8,9 +8,10 @@ l'éditeur visuel Storyblok.
 
 - Astro 6 (TypeScript strict), `@storyblok/astro` 9 (région EU), adaptateur `@astrojs/netlify`,
   `@astrojs/sitemap` ; Node 22, pnpm (versions verrouillées par `pnpm-lock.yaml`).
-- **Prod = SSG** (token Public, contenu `published`). **Preview = SSR** sur la route
-  `/preview/` (token Preview, contenu `draft`) pour l'éditeur visuel. La publication déclenche
-  un rebuild de la prod via webhook → build hook.
+- **Prod = SSG** (token Public, contenu `published`). **Preview = un 2ᵉ site Netlify** qui build la
+  même branche `main` avec le contenu `draft` (token Preview ; route `/preview/` en SSR) pour
+  l'éditeur visuel, protégé par une Edge Function (Basic-Auth). La publication déclenche un rebuild
+  de la prod via webhook → build hook.
 - Langue **FR uniquement** (pas d'i18n). Modèle de contenu : `storyblok/content-model.md`.
 
 ## Prérequis
@@ -30,7 +31,8 @@ cp .env.example .env   # renseigner les tokens Storyblok (gestionnaire de mots d
 
 | Script                              | Description                           |
 | ----------------------------------- | ------------------------------------- |
-| `pnpm dev`                          | Serveur de développement              |
+| `pnpm dev`                          | Dév — contenu `published` (port 4321) |
+| `pnpm dev:preview`                  | Dév — contenu `draft` + bridge (4322) |
 | `pnpm build`                        | Build de production (SSG)             |
 | `pnpm preview`                      | Prévisualiser le build                |
 | `pnpm lint` / `pnpm lint:fix`       | ESLint                                |
@@ -51,21 +53,23 @@ Les hooks Husky sont actifs (`pre-commit` = lint-staged, `commit-msg` = commitli
 ## Variables d'environnement
 
 Voir `.env.example`. Les tokens Storyblok ne sont jamais commités : `.env` en local,
-variables de contexte dans l'UI Netlify en ligne.
+variables **par site** dans l'UI Netlify en ligne.
 
-| Variable                  | Rôle                                               |
-| ------------------------- | -------------------------------------------------- |
-| `STORYBLOK_PUBLIC_TOKEN`  | Token de delivery (prod SSG, contenu `published`)  |
-| `STORYBLOK_PREVIEW_TOKEN` | Token de preview (preview SSR, contenu `draft`)    |
-| `PUBLIC_SITE_URL`         | URL canonique du site (sitemap, balises canonical) |
-| `STORYBLOK_VERSION`       | `published` (prod) \| `draft` (preview)            |
+| Variable                  | Rôle                                                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `STORYBLOK_PUBLIC_TOKEN`  | Token de delivery (prod SSG, contenu `published`)                                                                        |
+| `STORYBLOK_PREVIEW_TOKEN` | Token de preview (preview SSR, contenu `draft`)                                                                          |
+| `PUBLIC_SITE_URL`         | URL canonique du site (sitemap, balises canonical)                                                                       |
+| `STORYBLOK_VERSION`       | `published` \| `draft` — défini par le script en local (`pnpm dev` / `dev:preview`), par site dans l'UI Netlify en ligne |
+| `PREVIEW_BASIC_AUTH`      | En ligne (site preview) : identifiants Basic-Auth (`user:password`) du gate d'accès                                      |
 
 ## Déploiement
 
-Prod statique (SSG) sur `main` ; environnement de preview SSR (route `/preview/`) pour
-l'éditeur visuel. La publication d'un contenu déclenche un rebuild de la prod via un webhook
-Storyblok → build hook Netlify. Procédure complète (build hook, webhook, éditeur visuel,
-protection par mot de passe, recette) : **[`docs/deployment.md`](docs/deployment.md)**.
+Prod statique (SSG) sur `main` (`laminga.netlify.app`) ; **un 2ᵉ site Netlify** build la même
+branche `main` avec le contenu `draft` pour la preview SSR (route `/preview/`), protégé par une
+Edge Function (Basic-Auth). La publication d'un contenu déclenche un rebuild de la prod via un
+webhook Storyblok → build hook Netlify. Procédure complète (second site, build hook, webhook,
+éditeur visuel, gate d'accès, recette) : **[`docs/deployment.md`](docs/deployment.md)**.
 
 ## Documentation
 

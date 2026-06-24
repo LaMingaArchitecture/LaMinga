@@ -36,5 +36,5 @@ Tout nouveau bloc : composant dans `src/storyblok/` (avec `storyblokEditable`), 
 
 ## Sécurité
 
-- Aucun secret commité (`.env` ignoré ; tokens en variables d'environnement par contexte).
+- Aucun secret commité (`.env` ignoré ; tokens en variables d'environnement par site Netlify).
 - Ne pas affaiblir la CSP de production ni autoriser le cadrage en dehors de la preview.

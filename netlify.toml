@@ -1,8 +1,15 @@
 # Netlify configuration for LaMinga.
-# Per-context environment (token / STORYBLOK_VERSION) is added at the
-# deployment step. Framing headers (X-Frame-Options / frame-ancestors) vary by
-# context and are emitted into public/_headers by scripts/generate-headers.mjs,
-# because [[headers]] blocks here cannot branch per deploy context.
+#
+# Two Netlify sites build this same repo from `main`:
+#   - prod    (laminga.netlify.app): STORYBLOK_VERSION=published, Public token, static SSG
+#   - preview (its own subdomain):   STORYBLOK_VERSION=draft,     Preview token, on-demand SSR
+# Per-site values (STORYBLOK_VERSION, tokens, PUBLIC_SITE_URL) live in each site's
+# Netlify UI environment variables — NOT here: values set in netlify.toml override
+# the UI, so pinning them here would force the same value on both sites.
+#
+# Framing headers (X-Frame-Options / frame-ancestors) vary per site and are emitted
+# into public/_headers by scripts/generate-headers.mjs (keyed off STORYBLOK_VERSION),
+# because [[headers]] blocks here cannot branch per site.
 
 [build]
   command = "pnpm build"
@@ -11,20 +18,15 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Production context (branch `main`): static SSG, Public token, published content.
-# STORYBLOK_PUBLIC_TOKEN is set as a secret in the Netlify UI (never committed).
-[context.production.environment]
-  STORYBLOK_VERSION = "published"
-  PUBLIC_SITE_URL = "https://www.laminga.fr"
+# Gate the preview site behind HTTP Basic-Auth so unpublished drafts aren't public.
+# The function self-disables on the prod site (STORYBLOK_VERSION !== 'draft'), so this
+# declaration is inert there. Credentials come from PREVIEW_BASIC_AUTH, set only on
+# the preview site.
+[[edge_functions]]
+  path = "/*"
+  function = "preview-auth"
 
-# Preview context (branch deploy `preview`): on-demand SSR, Preview token, draft.
-# STORYBLOK_PREVIEW_TOKEN is set as a secret in the Netlify UI (never committed).
-# Update PUBLIC_SITE_URL to the real preview deploy URL once the site exists.
-[context.preview.environment]
-  STORYBLOK_VERSION = "draft"
-  PUBLIC_SITE_URL = "https://preview--laminga.netlify.app"
-
-# Standard security headers — identical across all contexts.
+# Standard security headers — identical across both sites.
 [[headers]]
   for = "/*"
   [headers.values]
