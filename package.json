@@ -32,7 +32,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.9",
     "@commitlint/cli": "21.0.2",
-    "@commitlint/config-conventional": "21.0.2",
+    "@commitlint/config-conventional": "21.2.0",
     "@eslint/js": "10.0.1",
     "@netlify/edge-functions": "3.0.8",
     "cross-env": "10.1.0",
