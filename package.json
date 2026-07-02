@@ -26,7 +26,7 @@
   "dependencies": {
     "@astrojs/netlify": "7.0.13",
     "@astrojs/sitemap": "3.7.3",
-    "@storyblok/astro": "9.0.12",
+    "@storyblok/astro": "10.0.1",
     "astro": "6.4.8"
   },
   "devDependencies": {
