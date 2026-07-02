@@ -36,7 +36,7 @@
     "@eslint/js": "10.0.1",
     "@netlify/edge-functions": "3.0.8",
     "cross-env": "10.1.0",
-    "eslint": "10.5.0",
+    "eslint": "10.6.0",
     "eslint-plugin-astro": "1.7.0",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "globals": "17.6.0",
