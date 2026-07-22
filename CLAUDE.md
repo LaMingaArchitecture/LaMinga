@@ -37,7 +37,7 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 
 - `src/storyblok/` — un composant par bloc (prop `blok`, `storyblokEditable` sur la racine) ;
   voir `src/storyblok/CLAUDE.md`. Schéma : `storyblok/content-model.md`
-- `src/components/` — UI non-Storyblok (Nav, Footer, ProjectCard, TypologieFilter)
+- `src/components/` — UI non-Storyblok (Nav, Footer, ProjectCard, ThematiqueFilter)
 - `src/lib/` — `content.ts` (accès contenu live ; contenu manquant 404/vide → `null`/`[]` +
   placeholder, les erreurs réseau/401/5xx remontent), `storyblok.ts`, `image.ts`
 - `src/layouts/`, `src/types/`
@@ -47,12 +47,16 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 
 ## Contenu (Storyblok)
 
-- Langue : **FR uniquement** (pas d'i18n)
-- Types : `home_page`, `project_list`, `project`, `atelier_page`, `team_member`
-  - réglages globaux `global_settings` (+ `social_link`)
+- Langue : **FR uniquement** (pas d'i18n) — noms de champs en FR (équipe marketing)
+- Types : `home_page` (`home_slide`), `project_list`, `project` (`media_slide`, `engagement`),
+  `atelier_page` (`team_member`), `programme`, `global_settings` (+ `social_link`)
 - **Noms techniques en `snake_case`** = clés de `components` dans `astro.config.mjs`
-- Filtre unique : **`typologie`** (datasource, jamais de valeurs en dur)
-- "Projet similaire" = relation `projet_similaire` entre deux `project`
+- Classification à 2 niveaux : **`programme`** (relation, 1 par projet, avec `couleur`) +
+  **`thematiques`** (datasource `thematique`, plusieurs par projet — jamais de valeurs en dur)
+- Projets liés = relation `projets_lies` ; relations résolues via `PROJECT_RELATIONS` /
+  `HOME_RELATIONS` (`src/lib/content.ts`, fetch partagé sans N+1) — même liste dans `preview/[...slug]`
+- Assets SVG (logo, icônes) rendus depuis le filename brut (pas `sbImage`) ; vidéo mp4 → CSP `media-src`
+- Schéma détaillé : `storyblok/content-model.md`
 - Nav : Logo · Projets · Atelier · Réseaux Sociaux
 
 ## Sécurité / CSP
@@ -73,6 +77,9 @@ https://app.storyblok.com` en preview uniquement (le bridge n'est autorisé qu'e
 ## À ne pas faire
 
 - Committer un `.env` ou un token (cf. `.gitignore`)
+- **Référencer un identifiant de ticket ou d'outil de suivi externe** (n° d'issue, tag de
+  sprint, etc.) dans le code, les commentaires, les messages de commit ou la doc — se référer
+  uniquement au motif **métier ou technique**
 - Mettre la prod en SSR (la prod reste statique ; seul `/preview/` est SSR)
-- Coder des typologies en dur (toujours via la datasource)
+- Coder des thématiques ou programmes en dur (toujours via la datasource / les stories `programme`)
 - Casser la correspondance nom `snake_case` ↔ clé de la map `components`

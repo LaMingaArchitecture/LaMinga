@@ -7,20 +7,29 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const cover = project.cover?.filename ? sbImage(project.cover.filename, '800x600') : '';
+// Grid/related vignette: the B/W plan-masse if present, else the cover photo.
+const visual = project.vignette ?? project.photo;
+const cover = visual?.filename ? sbImage(visual.filename, '800x600') : '';
+const couleur = project.programme?.couleur;
 ---
 
-<a class="project-card" href={`/projets/${project.slug}`}>
+<a
+  class="project-card"
+  href={`/projets/${project.slug}`}
+  style={couleur ? `--programme-color: ${couleur}` : undefined}
+>
   {
     cover && (
       <img
         class="project-card__cover"
         src={cover}
-        alt={project.cover?.alt ?? project.titre}
+        alt={visual?.alt ?? project.titre}
         loading="lazy"
       />
     )
   }
-  <h3 class="project-card__title">{project.titre}</h3>
-  <p class="project-card__typologie">{project.typologie}</p>
+  <h3 class="project-card__title">
+    {project.titre}{project.ville && <span class="project-card__ville"> — {project.ville}</span>}
+  </h3>
+  {project.programme && <p class="project-card__programme">{project.programme.nom}</p>}
 </a>

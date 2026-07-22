@@ -53,6 +53,11 @@ jamais commités.
 2. **Storyblok → Settings → Webhooks** : sur l'événement **Story published / unpublished**, coller
    l'URL du build hook. Publier régénère alors la prod (SSG). Le site B n'a pas besoin de rebuild de
    contenu : sa route `/preview/` récupère le `draft` en direct (SSR).
+3. ⚠️ **Datasources** : ce webhook ne réagit **qu'aux stories**, pas aux modifications de la
+   datasource `thematique`. Une thématique ajoutée/renommée n'apparaît donc en prod qu'après un
+   rebuild. Deux options : (a) documenter le contournement côté éditeur (re-publier une story ou
+   déclencher le build hook — voir `docs/back-office.md`) ; (b) si Storyblok expose l'événement
+   _datasource entry_ sur ce plan, ajouter un second webhook pointant le même build hook.
 
 ## 4. Éditeur visuel (preview)
 
@@ -77,6 +82,7 @@ script qui choisit la version (cf. `.env.example`).
 - [ ] Site B : `/preview/<slug>` rend le `draft` à la demande (SSR).
 - [ ] L'éditeur visuel Storyblok affiche le site B et reflète les modifications en direct.
 - [ ] Publier une story déclenche un rebuild de la prod (build hook) et le contenu apparaît.
+- [ ] Une modification de la datasource `thematique` **seule** ne rebuild pas (contournement documenté dans `back-office.md`).
 - [ ] En prod, `/preview/...` renvoie 404 (la prod reste statique).
 - [ ] En-têtes : prod refuse le cadrage ; preview autorise `app.storyblok.com`.
 

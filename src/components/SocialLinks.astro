@@ -1,0 +1,36 @@
+---
+import { isHttpUrl } from '../lib/url';
+import type { SocialLinkBlok } from '../types/storyblok';
+
+interface Props {
+  links: SocialLinkBlok[];
+  class?: string;
+  label?: string;
+}
+
+const { links, class: className, label = 'Réseaux sociaux' } = Astro.props;
+// Normalize (trim) then keep only http(s) links, so the rendered href is exactly what was
+// validated — leading/trailing whitespace can't slip into the anchor. Blocks javascript:/data:.
+const safe = links
+  .map((link) => ({ ...link, url: link.url?.trim() ?? '' }))
+  .filter((link) => isHttpUrl(link.url));
+---
+
+{
+  safe.length > 0 && (
+    <ul class:list={['social-links', className]} aria-label={label}>
+      {safe.map((link) => (
+        <li>
+          <a href={link.url} target="_blank" rel="noopener noreferrer">
+            {link.icone?.filename ? (
+              // SVG icon rendered from the raw filename (the image service rasterizes SVG).
+              <img src={link.icone.filename} alt={link.plateforme} width="24" height="24" />
+            ) : (
+              link.plateforme
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

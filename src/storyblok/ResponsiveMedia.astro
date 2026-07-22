@@ -1,0 +1,58 @@
+---
+// Presentational helper (not a registered blok): renders a responsive picture or a
+// decorative muted-loop video from the shared media fields. Centralizes the CSP
+// media-src surface and the jsx-a11y `<track>` mitigation for every project/home video.
+import { sbImage } from '../lib/image';
+import type { StoryblokAsset } from '../types/storyblok';
+
+interface Props {
+  imagePaysage?: StoryblokAsset;
+  imagePortrait?: StoryblokAsset;
+  video?: StoryblokAsset;
+  poster?: StoryblokAsset;
+  alt: string;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+}
+
+const {
+  imagePaysage,
+  imagePortrait,
+  video,
+  poster,
+  alt,
+  loading = 'lazy',
+  class: className,
+} = Astro.props;
+
+// Video src uses the raw filename (an mp4 asset, not transformable by the image service).
+const videoSrc = video?.filename;
+const posterSrc = poster?.filename ? sbImage(poster.filename, '1600x0') : undefined;
+const portrait = imagePortrait?.filename;
+const paysage = imagePaysage?.filename ?? portrait;
+---
+
+{
+  videoSrc ? (
+    <video
+      class:list={['responsive-media', 'responsive-media--video', className]}
+      src={videoSrc}
+      poster={posterSrc}
+      muted
+      autoplay
+      loop
+      playsinline
+      preload={loading === 'eager' ? 'auto' : 'none'}
+      aria-label={alt || undefined}
+    >
+      {/* Decorative, muted loop with no dialogue — a valid empty VTT captions track
+          satisfies jsx-a11y while keeping the markup HTML-valid (track needs a src). */}
+      <track kind="captions" src="/media/empty.vtt" srclang="fr" label="Sans paroles" />
+    </video>
+  ) : paysage ? (
+    <picture class:list={['responsive-media', className]}>
+      {portrait && <source media="(max-width: 640px)" srcset={sbImage(portrait, '800x0')} />}
+      <img src={sbImage(paysage, '1600x0')} alt={alt} loading={loading} />
+    </picture>
+  ) : null
+}

@@ -1,0 +1,41 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import ResponsiveMedia from './ResponsiveMedia.astro';
+import { isResolved } from '../lib/content';
+import type { HomeSlideBlok, ProjectBlok } from '../types/storyblok';
+
+const { blok } = Astro.props as { blok: HomeSlideBlok };
+
+// `projet` arrives resolved via HOME_RELATIONS; narrow to the resolved story.
+const projet = isResolved(blok.projet) ? blok.projet : null;
+const content = projet ? (projet.content as ProjectBlok) : null;
+const href = projet ? `/projets/${projet.slug}` : undefined;
+const titre = content
+  ? [content.titre, content.ville, content.description_programme].filter(Boolean).join(' — ')
+  : '';
+const alt = blok.image_paysage?.alt ?? content?.titre ?? '';
+---
+
+<article
+  class:list={['home-slide', { 'home-slide--clair': blok.titre_clair }]}
+  {...storyblokEditable(blok)}
+>
+  <ResponsiveMedia
+    imagePaysage={blok.image_paysage}
+    imagePortrait={blok.image_portrait}
+    video={blok.video}
+    poster={blok.poster}
+    alt={alt}
+    loading="eager"
+  />
+  {
+    titre &&
+      (href ? (
+        <a class="home-slide__title" href={href}>
+          {titre}
+        </a>
+      ) : (
+        <p class="home-slide__title">{titre}</p>
+      ))
+  }
+</article>
