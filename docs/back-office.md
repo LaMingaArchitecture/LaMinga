@@ -97,6 +97,73 @@ Les images passent par le service d'images Storyblok (converties en WebP). Les *
 tels quels (ne pas les aplatir en PNG). Les vidéos sont hébergées sur Storyblok (`a.storyblok.com`) —
 le CSP `media-src` est déjà configuré pour ce domaine.
 
+## Charte graphique (couleurs, polices, assets)
+
+La charte est centralisée dans **une seule couche de design tokens** (`src/styles/tokens.css`) :
+chaque couleur, police, espacement et bordure du site en découle. Rien n'est codé en dur dans les
+composants — pour un changement global, l'équipe technique modifie ce seul fichier.
+
+### Palette
+
+| Nom (charte)     | Hex       | Usage principal                                                  |
+| ---------------- | --------- | ---------------------------------------------------------------- |
+| Beige clair      | `#f9f7f2` | fond de page                                                     |
+| Rouge corail     | `#ff6c4f` | accent home (logo/réseaux/flèches), programme Patrimoine         |
+| Violet aubergine | `#7e4080` | accent pages intérieures : nav, logo, texte de tableau, légendes |
+| Violet nuit      | `#32255b` | texte foncé principal                                            |
+| Violet vif       | `#a785ff` | violet secondaire ; programme Activité (proposé)                 |
+| Vert citron      | `#d5ee6e` | programme Équipement                                             |
+| Olive            | `#bbbd2b` | programme Aménagement (proposé)                                  |
+| Turquoise        | `#11a3c2` | programme Logement                                               |
+| Bleu clair       | `#bbd5fd` | panneaux d'information translucides                              |
+| Taupe clair      | `#d0b8b0` | onglet actif, sélection thématique, fond Projets à 10 %          |
+| Rose             | `#fec9d7` | programme Programmation (proposé)                                |
+| Gris             | `#c6c6c6` | neutre                                                           |
+| Jaune fluo       | `#ffff00` | annotation (non utilisé dans l'UI)                               |
+
+> **Accessibilité** : le Rouge corail `#ff6c4f` n'a pas un contraste suffisant sur fond clair
+> (~2,6:1). En **texte / interface**, le site applique donc un corail légèrement assombri
+> (`#b84e39`, ≥ 4,5:1) ; `#ff6c4f` reste la référence de marque et la couleur de **remplissage** du
+> programme Patrimoine (le texte posé dessus reste lisible automatiquement).
+
+### Typographies
+
+- **Helvetica** (pile système `Helvetica Neue, Helvetica, Arial`) : interface, titres, corps.
+- **Self Modern _italique_** (serif d'accent) : 2ᵉ ligne de filtres, légendes « Titre – Ville »,
+  en-têtes de tableau, libellés du pied de page. ⚠️ La police fournie est une **version d'essai**
+  (Fonderie Bretagne) : en attendant la confirmation de licence, le site auto-héberge la police
+  **libre Playfair Display _italique_** (OFL) comme substitut. Le remplacement par Self Modern se
+  fera sans toucher aux composants.
+
+### Où vivent les assets
+
+| Asset                        | Emplacement                                                            |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| Logo **violet** (pages int.) | **Storyblok** `config.logo` (modifiable par l'éditeur)                 |
+| Logo **corail** (home)       | **dépôt** (`public/logo/logo-corail.svg`) — variante de marque fixe    |
+| Icônes **Insta / LinkedIn**  | **dépôt** (composants `currentColor`, se colorent seuls corail/violet) |
+| Flèches (chevrons)           | **dépôt** (`public/icons/`, tracés vectoriels — plus de glyphe texte)  |
+| Police serif                 | **dépôt** auto-hébergée (`public/fonts/`)                              |
+| Icônes engagement            | **Storyblok** `engagement.icone`                                       |
+
+### Changer une couleur de programme (sans déploiement)
+
+Sur chaque story **`programme`** (`programmes/…`), le champ **`couleur`** (sélecteur natif) définit
+la couleur du programme : filtres, bordures et survol des vignettes s'y adaptent, et le texte posé
+sur un aplat reste lisible automatiquement. **Publier** la story suffit — aucune intervention
+technique. Correspondance actuelle : Logement = Turquoise, Équipement = Vert citron, Patrimoine =
+Rouge corail, Activité = Violet vif, Aménagement = Olive, Programmation = Rose (les trois derniers
+sont **proposés** — à valider).
+
+### Points ouverts
+
+- **Licence Self Modern** : la version fournie est un essai ; à acheter ou remplacer avant la mise
+  en ligne (le substitut libre Playfair Display est en place en attendant).
+- **Couleurs de programmes** Activité / Aménagement / Programmation : propositions à confirmer.
+- **Pictogrammes d'engagement** : les fichiers fournis sont en **JPG/PNG** (matriciels) et ne
+  correspondent pas au rendu vectoriel des maquettes — **demander les versions SVG** à l'équipe
+  marketing (le champ `engagement.icone` attend du SVG monochrome `currentColor`).
+
 ## Publier = mettre en ligne
 
 La **publication d'une story** déclenche une régénération de la production (quelques minutes). Un

@@ -1,0 +1,35 @@
+---
+/**
+ * Left chevron — outlined path (currentColor), the site-wide "précédent" control.
+ * Replaces the delivered Fleche G asset, which shipped as a live Helvetica "‹" <text> glyph and so
+ * broke wherever Helvetica was unavailable; redrawn here as a font-independent stroked path.
+ */
+interface Props {
+  size?: number | string;
+  class?: string;
+}
+const { size = 24, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['icon', className]}
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  width={size}
+  height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M15 5 8 12l7 7"></path>
+</svg>
+
+<style>
+  .icon {
+    display: block;
+  }
+</style>

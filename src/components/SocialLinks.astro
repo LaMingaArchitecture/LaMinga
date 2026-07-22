@@ -1,5 +1,7 @@
 ---
 import { isHttpUrl } from '../lib/url';
+import Instagram from './icons/Instagram.astro';
+import LinkedIn from './icons/LinkedIn.astro';
 import type { SocialLinkBlok } from '../types/storyblok';
 
 interface Props {
@@ -14,23 +16,47 @@ const { links, class: className, label = 'Réseaux sociaux' } = Astro.props;
 const safe = links
   .map((link) => ({ ...link, url: link.url?.trim() ?? '' }))
   .filter((link) => isHttpUrl(link.url));
+
+// Detect the network so Instagram/LinkedIn render as the official inline marks. Inline (not <img>)
+// lets them paint with currentColor = the page --accent, so they theme corail on the home header
+// and violet elsewhere with no per-page asset swap. Any other network falls back to the Storyblok
+// icon asset, then the platform name.
+type Platform = 'instagram' | 'linkedin' | null;
+const platformOf = (link: { plateforme?: string; url: string }): Platform => {
+  const hay = `${link.plateforme ?? ''} ${link.url}`.toLowerCase();
+  if (/instagram|insta/.test(hay)) return 'instagram';
+  if (/linkedin|lnkd/.test(hay)) return 'linkedin';
+  return null;
+};
 ---
 
 {
   safe.length > 0 && (
     <ul class:list={['social-links', className]} aria-label={label}>
-      {safe.map((link) => (
-        <li>
-          <a href={link.url} target="_blank" rel="noopener noreferrer">
-            {link.icone?.filename ? (
-              // SVG icon rendered from the raw filename (the image service rasterizes SVG).
-              <img src={link.icone.filename} alt={link.plateforme} width="24" height="24" />
-            ) : (
-              link.plateforme
-            )}
-          </a>
-        </li>
-      ))}
+      {safe.map((link) => {
+        const platform = platformOf(link);
+        return (
+          <li>
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.plateforme || platform || 'Réseau social'}
+            >
+              {platform === 'instagram' ? (
+                <Instagram />
+              ) : platform === 'linkedin' ? (
+                <LinkedIn />
+              ) : link.icone?.filename ? (
+                // Raw filename (the image service rasterizes SVG); decorative — the link is labelled.
+                <img src={link.icone.filename} alt="" width="24" height="24" />
+              ) : (
+                link.plateforme
+              )}
+            </a>
+          </li>
+        );
+      })}
     </ul>
   )
 }
@@ -52,6 +78,7 @@ const safe = links
     font-size: 0.875rem;
     text-decoration: none;
   }
+  .social-links :global(svg),
   .social-links img {
     width: 1.5rem;
     height: 1.5rem;

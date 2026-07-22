@@ -1,55 +1,8 @@
 /* ============================================================================
-   LaMinga — global design tokens, reset & app frame.
-
-   The colour and font values below are PDF-sampled placeholders: swap the hex /
-   font-family values for the client's real brand assets without touching any
-   component code (every component reads these custom properties). Only
-   --color-beige (#d0b8b0) comes verbatim from the design spec.
+   LaMinga — global reset, app frame & baseline content styles.
+   Design tokens (palette, typography, spacing, borders) live in ./tokens.css.
    ============================================================================ */
-
-:root {
-  /* ---- Palette --------------------------------------------------------- */
-  --color-paper: #ffffff;
-  --color-ink: #2b2b2b;
-  --color-beige: #d0b8b0; /* active-button tint + thématique tint (from spec) */
-  --color-beige-10: #faf8f7; /* Projets/Index page background (#d0b8b0 @ 10% over white) */
-  --color-violet: #6f2c91; /* inner-page accent (approx, swappable) — AA on paper */
-  --color-coral: #cc4321; /* home accent (approx, swappable) — deepened to meet AA on paper */
-  --color-line: #d8d0cc; /* thin borders for the boxed-cell aesthetic */
-  --color-muted: #626262; /* secondary text — ≥4.5:1 on paper (WCAG AA) */
-
-  /* Accent — flipped per page via body[data-accent] (see below). */
-  --accent: var(--color-violet);
-
-  /* ---- Typography ------------------------------------------------------ */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
-    'Apple Color Emoji', sans-serif;
-  --font-serif: 'Iowan Old Style', Georgia, 'Times New Roman', serif;
-
-  /* ---- Shape & spacing ------------------------------------------------- */
-  --radius: 6px;
-  --border-w: 1px;
-  --border: var(--border-w) solid var(--color-line);
-  --border-accent: var(--border-w) solid var(--accent);
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-
-  /* ---- Frame ----------------------------------------------------------- */
-  --header-h: 4.75rem;
-  --header-h-mobile: 3.75rem;
-  --transition: 200ms ease;
-
-  /* ---- z-index scale --------------------------------------------------- */
-  --z-header: 100;
-  --z-scrim: 200;
-  --z-panel: 210;
-}
+@import './tokens.css';
 
 /* ---- Reset --------------------------------------------------------------- */
 *,
@@ -96,14 +49,6 @@ button {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-
-/* Accent theme per page (BaseLayout sets data-accent). */
-body[data-accent='coral'] {
-  --accent: var(--color-coral);
-}
-body[data-accent='violet'] {
-  --accent: var(--color-violet);
 }
 
 /* ---- App frame: fixed fullscreen viewport with a per-page scroll opt-out -- */

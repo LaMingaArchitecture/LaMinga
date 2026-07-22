@@ -180,11 +180,12 @@ export function colorHex(color?: StoryblokColor): string | undefined {
   return raw && HEX_COLOR.test(raw) ? raw : undefined;
 }
 
-// Mirror of --color-ink / --color-paper (src/styles/global.css) — keep in sync if the brand ink
-// changes. INK_DARK_LUMINANCE is the WCAG relative luminance of INK_DARK (#2b2b2b).
-const INK_DARK = '#2b2b2b';
+// Mirror of --color-ink (src/styles/tokens.css: violet nuit) — keep in sync if the brand ink
+// changes. INK_LIGHT stays pure white for maximum legibility on dark programme fills.
+// INK_DARK_LUMINANCE is the WCAG relative luminance of INK_DARK (#32255b).
+const INK_DARK = '#32255b';
 const INK_LIGHT = '#ffffff';
-const INK_DARK_LUMINANCE = 0.0242;
+const INK_DARK_LUMINANCE = 0.0276;
 
 /** Contrast-safe text colour for a filled swatch: whichever of dark ink / white reads better on `hex`. */
 export function readableInk(hex: string): string {
