@@ -1,0 +1,115 @@
+/* ============================================================================
+   LaMinga — charte graphique / design tokens (single source of truth).
+
+   Source: LaMinga_Palette chromatique_01.pdf + LaMinga Templates V2.pdf.
+   Every colour, font, spacing and border on the site comes from a token below —
+   no component may hardcode a hex or font-family. Editors set programme colours
+   in Storyblok (rendered via the [data-programme] map in BaseLayout).
+
+   PALETTE (charte name — hex — role)
+     Beige clair       #f9f7f2  page background
+     Rouge corail      #ff6c4f  brand corail: programme Patrimoine fill + reference — the applied
+                                home accent (logo/social/links) uses --couleur-corail-aa (AA; below)
+     Violet aubergine  #7e4080  inner-page accent: nav, logo, table text, captions
+     Violet nuit       #32255b  primary dark text
+     Violet vif        #a785ff  secondary violet; programme Activité (proposed)
+     Vert citron       #d5ee6e  programme Équipement
+     Olive             #bbbd2b  programme Aménagement (proposed)
+     Turquoise         #11a3c2  programme Logement
+     Bleu clair        #bbd5fd  translucent info panels
+     Taupe clair       #d0b8b0  active nav tint, thématique selection, Projets bg @10%
+     Rose              #fec9d7  programme Programmation (proposed)
+     Gris              #c6c6c6  neutral
+     Jaune fluo        #ffff00  annotation only (not used in UI)
+
+   TYPOGRAPHY
+     Helvetica (system stack)      UI, titles, body — the .ttc is not embedded.
+     Self Modern italic (serif)    accent labels: filter row 2, "Titre – Ville" captions,
+                                   table headers, footer labels. Self Modern is a *trial* font;
+                                   pending a confirmed licence we self-host the OFL didone
+                                   Playfair Display Italic as a stand-in (font-display: swap).
+   ============================================================================ */
+
+/* Self-hosted OFL stand-in for Self Modern italic (subset: Latin + French). Self-hosted only —
+   the strict prod CSP allows `font-src 'self'`, no external font CDN. Swap this face for the
+   licensed Self Modern woff2 once confirmed; the --font-serif stack does not change. */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/fonts/playfair-italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  /* ---- Charte palette — primitives (source of truth) ------------------- */
+  --couleur-beige-clair: #f9f7f2;
+  --couleur-corail: #ff6c4f;
+  --couleur-violet-aubergine: #7e4080;
+  --couleur-violet-nuit: #32255b;
+  --couleur-violet-vif: #a785ff;
+  --couleur-vert-citron: #d5ee6e;
+  --couleur-olive: #bbbd2b;
+  --couleur-turquoise: #11a3c2;
+  --couleur-bleu-clair: #bbd5fd;
+  --couleur-taupe-clair: #d0b8b0;
+  --couleur-rose: #fec9d7;
+  --couleur-gris: #c6c6c6;
+  --couleur-jaune-fluo: #ffff00;
+
+  /* Corail deepened from #ff6c4f to meet WCAG AA (≈4.68:1 on beige, 5.02:1 on white) as
+     foreground text/UI — the charte #ff6c4f is only ~2.6:1 on the light ground. #ff6c4f stays the
+     brand reference and the programme-Patrimoine *fill* (readableInk keeps fill labels legible). */
+  --couleur-corail-aa: #b84e39;
+
+  /* ---- Semantic aliases — component-facing ---------------------------- */
+  --color-paper: var(--couleur-beige-clair);
+  --color-ink: var(--couleur-violet-nuit);
+  --color-violet: var(--couleur-violet-aubergine);
+  --color-coral: var(--couleur-corail-aa);
+  --color-beige: var(--couleur-taupe-clair); /* active-button tint + thématique tint */
+  --color-beige-10: #f5f1eb; /* Projets/Index bg (#d0b8b0 @10% over beige clair) */
+  --color-line: #d8d0cc; /* thin borders for the boxed-cell aesthetic */
+  --color-muted: #626262; /* secondary text — ≥4.5:1 on paper (WCAG AA) */
+  --color-scrim: color-mix(in srgb, var(--couleur-violet-nuit) 55%, transparent); /* overlays */
+
+  /* Accent — flipped per page via body[data-accent] (see bottom). */
+  --accent: var(--color-violet);
+
+  /* ---- Typography ------------------------------------------------------ */
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-serif: 'Playfair Display', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+
+  /* ---- Shape & spacing ------------------------------------------------- */
+  --radius: 6px;
+  --border-w: 1px;
+  --border: var(--border-w) solid var(--color-line);
+  --border-accent: var(--border-w) solid var(--accent);
+  /* Structural separators between header / content / footer — visible, accent-tinted. */
+  --border-rule: var(--border-w) solid color-mix(in srgb, var(--accent) 32%, transparent);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* ---- Frame ----------------------------------------------------------- */
+  --header-h: 4.75rem;
+  --header-h-mobile: 3.75rem;
+  --transition: 200ms ease;
+
+  /* ---- z-index scale --------------------------------------------------- */
+  --z-header: 100;
+  --z-scrim: 200;
+  --z-panel: 210;
+}
+
+/* Accent theme per page (BaseLayout sets data-accent): corail on the immersive home, violet else. */
+body[data-accent='coral'] {
+  --accent: var(--color-coral);
+}
+body[data-accent='violet'] {
+  --accent: var(--color-violet);
+}

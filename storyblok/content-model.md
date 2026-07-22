@@ -176,6 +176,10 @@ La route SSR `src/pages/preview/[...slug].astro` réutilise ces mêmes constante
 Le logo et les icônes (`social_link.icone`, `engagement.icone`) sont rendus depuis le **filename brut**
 (pas via `sbImage()`, qui rasterise en webp).
 
+Exception : les icônes **Instagram** et **LinkedIn** sont rendues par des composants `currentColor`
+du dépôt (`src/components/icons/`), thémés par `--accent` ; `social_link.icone` n'est utilisé qu'en
+repli pour d'autres réseaux.
+
 ## Stories (recette)
 
 | Slug                  | Type              | Rôle                                           |

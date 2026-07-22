@@ -52,6 +52,7 @@ const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {programmeColorCss && <style is:global set:html={programmeColorCss} />}
   </head>
   <body
@@ -59,7 +60,7 @@ const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
     data-scroll={scroll ? '' : undefined}
     data-immersive={immersive ? '' : undefined}
   >
-    <Nav settings={settings} />
+    <Nav settings={settings} accent={accent} />
     <main id="contenu">
       <slot />
     </main>

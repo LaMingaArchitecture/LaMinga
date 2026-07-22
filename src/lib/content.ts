@@ -180,14 +180,13 @@ export function colorHex(color?: StoryblokColor): string | undefined {
   return raw && HEX_COLOR.test(raw) ? raw : undefined;
 }
 
-// Mirror of --color-ink / --color-paper (src/styles/global.css) — keep in sync if the brand ink
-// changes. INK_DARK_LUMINANCE is the WCAG relative luminance of INK_DARK (#2b2b2b).
-const INK_DARK = '#2b2b2b';
+// Mirror of --color-ink (src/styles/tokens.css: violet nuit) — keep in sync if the brand ink
+// changes. INK_LIGHT stays pure white for maximum legibility on dark programme fills.
+const INK_DARK = '#32255b';
 const INK_LIGHT = '#ffffff';
-const INK_DARK_LUMINANCE = 0.0242;
 
-/** Contrast-safe text colour for a filled swatch: whichever of dark ink / white reads better on `hex`. */
-export function readableInk(hex: string): string {
+// WCAG relative luminance of a #rgb / #rrggbb hex (sRGB); null when the value isn't a valid hex.
+function relativeLuminance(hex: string): number | null {
   let h = hex.replace('#', '');
   if (h.length === 3 || h.length === 4) {
     h = h
@@ -197,15 +196,25 @@ export function readableInk(hex: string): string {
       .join('');
   }
   h = h.slice(0, 6);
-  if (h.length < 6) return INK_LIGHT;
+  if (h.length < 6) return null;
   const toLinear = (v: number) => {
     const c = v / 255;
     return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   };
-  const l =
+  return (
     0.2126 * toLinear(parseInt(h.slice(0, 2), 16)) +
     0.7152 * toLinear(parseInt(h.slice(2, 4), 16)) +
-    0.0722 * toLinear(parseInt(h.slice(4, 6), 16));
+    0.0722 * toLinear(parseInt(h.slice(4, 6), 16))
+  );
+}
+
+// Derived from INK_DARK so the luminance can never drift out of sync with the ink hex.
+const INK_DARK_LUMINANCE = relativeLuminance(INK_DARK) ?? 0;
+
+/** Contrast-safe text colour for a filled swatch: whichever of dark ink / white reads better on `hex`. */
+export function readableInk(hex: string): string {
+  const l = relativeLuminance(hex);
+  if (l === null) return INK_LIGHT;
   const contrastDark = (l + 0.05) / (INK_DARK_LUMINANCE + 0.05);
   const contrastLight = 1.05 / (l + 0.05);
   return contrastDark >= contrastLight ? INK_DARK : INK_LIGHT;

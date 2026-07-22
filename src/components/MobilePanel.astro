@@ -120,7 +120,7 @@ const tel = telHref(settings?.telephone);
     position: fixed;
     inset: 0;
     z-index: var(--z-scrim);
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--color-scrim);
     opacity: 0;
     visibility: hidden;
     transition:
@@ -222,10 +222,11 @@ const tel = telHref(settings?.telephone);
     font-style: normal;
     color: color-mix(in srgb, var(--color-ink) 75%, var(--color-paper));
   }
-  .mobile-nav__mentions {
+  /* Specific enough to win over `.mobile-nav__contact a` (which paints ink) — no !important. */
+  .mobile-nav__contact a.mobile-nav__mentions {
     font-style: italic;
     font-family: var(--font-serif);
-    color: var(--accent) !important;
+    color: var(--accent);
   }
 
   /* Desktop: no burger/panel — the stacked buttons + social take over. */
