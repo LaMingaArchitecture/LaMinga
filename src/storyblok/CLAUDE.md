@@ -21,15 +21,23 @@ le schéma `storyblok/content-model.md`.
   HTML brut concaténé.
 - **Images** : service Storyblok via `sbImage()` (`src/lib/image.ts`) — `/m/{w}x{h}/` +
   `filters:format(webp)`. Toujours un `alt` (fallback raisonnable).
+- **SVG** (logo, `social_link.icone`, `engagement.icone`) : rendus depuis le **filename brut**, PAS
+  `sbImage()` (qui rasterise en webp). Icône décorative accompagnée d'un texte → `alt=""`.
+- **Vidéo** (`media_slide`/`home_slide`/atelier) : via `ResponsiveMedia.astro` — `<video muted
+autoplay loop playsinline>` + `<track kind="captions" />` (a11y lint). Hôtes autorisés par le CSP
+  `media-src` (`astro.config.mjs`).
 - **Données / relations** : récupérées dans `src/lib/content.ts` (live uniquement). Contenu
   manquant (404 / liste vide / datasource absente) → `null`/`[]` + placeholder `ContentNotice`
   (le build dégrade sans échouer) ; les erreurs réseau/401/5xx remontent et font échouer le build.
   - `version` : `draft` (preview) vs `published` (prod) — déjà géré par `storyblokVersion`.
-  - "Projet similaire" : relation `projet_similaire`, résolue via
-    `resolve_relations: ['project.projet_similaire']`.
-  - Filtre projets : datasource `typologie` (`getTypologies`), jamais de valeurs en dur.
-- **Blocs de page** (`home_page`, `project_list`) : ils chargent eux-mêmes leurs données dérivées
-  (grille, typologies) via `getProjectSummaries`/`getTypologies`, car rendus par `StoryblokComponent`.
+  - Relations : `programme` (couleur) + `projets_lies` résolues via `PROJECT_RELATIONS`,
+    `home_slide.projet` via `HOME_RELATIONS` (constantes exportées de `content.ts`, réutilisées par
+    `preview/[...slug].astro`). Narrowers purs : `resolveProgramme` / `resolveRelated`.
+  - Filtre projets : datasource `thematique` (`getThematiques`), jamais de valeurs en dur ;
+    programmes = stories `programme` (nom + couleur).
+- **Blocs de page** (`home_page`, `project_list`) : `home_page` rend son `carrousel` de `home_slide`
+  via `StoryblokComponent` ; `project_list` charge la grille + les thématiques via
+  `getProjectSummaries`/`getThematiques`.
 - **Types** : tout bloc a une interface dans `src/types/storyblok.ts` (étend `SbBlokData`,
   discriminant `component` en `snake_case`). Pas de `any`.
 - **Régénérer les types** après un changement de schéma Storyblok (re-pull du modèle) et

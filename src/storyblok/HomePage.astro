@@ -1,28 +1,14 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
-import RichText from './RichText.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { getProjectSummaries } from '../lib/content';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import type { HomePageBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: HomePageBlok };
-// `[]` when no project is published — the grid renders empty by design (a missing
-// *page* shows ContentNotice; an agency with zero projects is a valid state).
-const projects = await getProjectSummaries();
+// Ordered homepage slides (each links to a project and derives its title from it).
+// Rendered in document order here; the fullscreen-carousel interaction is a separate concern.
+const slides = blok.carrousel ?? [];
 ---
 
 <div class="home" {...storyblokEditable(blok)}>
-  <section class="home__intro">
-    {blok.titre && <h1>{blok.titre}</h1>}
-    {blok.intro && <RichText doc={blok.intro} />}
-  </section>
-  <ul class="project-grid">
-    {
-      projects.map((project) => (
-        <li>
-          <ProjectCard project={project} />
-        </li>
-      ))
-    }
-  </ul>
+  {slides.map((slide) => <StoryblokComponent blok={slide} />)}
 </div>

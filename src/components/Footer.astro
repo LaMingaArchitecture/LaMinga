@@ -1,5 +1,6 @@
 ---
 import { renderRichText } from '@storyblok/astro';
+import SocialLinks from './SocialLinks.astro';
 import type { GlobalSettings } from '../types/storyblok';
 
 interface Props {
@@ -7,16 +8,12 @@ interface Props {
 }
 
 const { settings } = Astro.props;
-const mentions = settings?.footer_mentions ? renderRichText(settings.footer_mentions) : '';
+const mentions = settings?.mentions_legales ? renderRichText(settings.mentions_legales) : '';
 const social = settings?.reseaux_sociaux ?? [];
 ---
 
 <footer class="site-footer">
-  {
-    settings?.footer_adresse && (
-      <address class="site-footer__address">{settings.footer_adresse}</address>
-    )
-  }
+  {settings?.nom_atelier && <span class="site-footer__name">{settings.nom_atelier}</span>}
   {
     settings?.email && (
       <a class="site-footer__email" href={`mailto:${settings.email}`}>
@@ -25,17 +22,26 @@ const social = settings?.reseaux_sociaux ?? [];
     )
   }
   {
-    social.length > 0 && (
-      <ul class="site-footer__social" aria-label="Réseaux sociaux">
-        {social.map((link) => (
-          <li>
-            <a href={link.url} target="_blank" rel="noopener noreferrer">
-              {link.plateforme}
-            </a>
-          </li>
-        ))}
-      </ul>
+    settings?.telephone && (
+      <a class="site-footer__tel" href={`tel:${settings.telephone.replace(/\s+/g, '')}`}>
+        {settings.telephone}
+      </a>
     )
   }
+  {
+    settings?.adresse_paris && (
+      <address class="site-footer__address" style="white-space: pre-line">
+        {settings.adresse_paris}
+      </address>
+    )
+  }
+  {
+    settings?.adresse_anglet && (
+      <address class="site-footer__address" style="white-space: pre-line">
+        {settings.adresse_anglet}
+      </address>
+    )
+  }
+  <SocialLinks links={social} class="site-footer__social" />
   {mentions && <div class="site-footer__mentions" set:html={mentions} />}
 </footer>

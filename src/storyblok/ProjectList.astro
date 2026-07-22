@@ -1,15 +1,15 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
 import RichText from './RichText.astro';
-import TypologieFilter from '../components/TypologieFilter.astro';
-import { getProjectSummaries, getTypologies } from '../lib/content';
+import ThematiqueFilter from '../components/ThematiqueFilter.astro';
+import { getProjectSummaries, getThematiques } from '../lib/content';
 import type { ProjectListBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: ProjectListBlok };
 // `[]` when no project is published — the grid/filter render empty by design (a
 // missing *page* shows ContentNotice; an agency with zero projects is a valid state).
 const projects = await getProjectSummaries();
-const typologies = await getTypologies();
+const thematiques = await getThematiques();
 ---
 
 <div class="project-list" {...storyblokEditable(blok)}>
@@ -17,5 +17,5 @@ const typologies = await getTypologies();
     <h1>{blok.titre}</h1>
     {blok.intro && <RichText doc={blok.intro} />}
   </header>
-  <TypologieFilter projects={projects} typologies={typologies} />
+  <ThematiqueFilter projects={projects} thematiques={thematiques} />
 </div>

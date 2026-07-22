@@ -1,17 +1,27 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
-import ImageGallery from './ImageGallery.astro';
-import { resolveSimilar } from '../lib/content';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import RichText from './RichText.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { sbImage } from '../lib/image';
+import { getThematiques, resolveProgramme, resolveRelated } from '../lib/content';
 import type { ProjectBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: ProjectBlok };
-const similar = resolveSimilar(blok);
+const programme = resolveProgramme(blok);
+const related = resolveRelated(blok);
+// Map datasource values (slugs) to human-readable names, as ThematiqueFilter does.
+const thematiqueEntries = await getThematiques();
+const thematiques = (blok.thematiques ?? []).map(
+  (value) => thematiqueEntries.find((entry) => entry.value === value)?.name ?? value,
+);
 const data: Array<[string, string | undefined]> = [
-  ['Année', blok.annee],
-  ['Localisation', blok.localisation],
-  ["Maître d'ouvrage", blok.maitre_ouvrage],
+  ["Maîtrise d'ouvrage", blok.maitre_ouvrage],
   ['Équipe', blok.equipe],
-  ['Crédits', blok.credits],
+  ['Statut', blok.statut],
+  ['m² SDP', blok.surface_sdp],
+  ['Montant HT', blok.montant_ht],
+  ['Divers', blok.divers],
 ];
 const rows = data.filter(([, value]) => Boolean(value));
 ---
@@ -19,8 +29,40 @@ const rows = data.filter(([, value]) => Boolean(value));
 <article class="project" {...storyblokEditable(blok)}>
   <header class="project__header">
     <h1>{blok.titre}</h1>
-    <p class="project__typologie">{blok.typologie}</p>
+    {blok.ville && <p class="project__ville">{blok.ville}</p>}
+    {
+      programme && (
+        <p
+          class="project__programme"
+          style={programme.couleur ? `--programme-color: ${programme.couleur}` : undefined}
+        >
+          {programme.nom}
+        </p>
+      )
+    }
+    {blok.description_programme && <p class="project__desc">{blok.description_programme}</p>}
+    {
+      thematiques.length > 0 && (
+        <ul class="project__thematiques">
+          {thematiques.map((name) => (
+            <li>{name}</li>
+          ))}
+        </ul>
+      )
+    }
   </header>
+
+  {
+    blok.carrousel && blok.carrousel.length > 0 && (
+      <div class="project__carrousel">
+        {blok.carrousel.map((slide) => (
+          <StoryblokComponent blok={slide} />
+        ))}
+      </div>
+    )
+  }
+
+  {blok.texte && <RichText doc={blok.texte} />}
 
   {
     rows.length > 0 && (
@@ -35,13 +77,40 @@ const rows = data.filter(([, value]) => Boolean(value));
     )
   }
 
-  {blok.visuels && <ImageGallery images={blok.visuels} />}
+  {
+    blok.engagements && blok.engagements.length > 0 && (
+      <ul class="project__engagements">
+        {blok.engagements.map((engagement) => (
+          <li>
+            <StoryblokComponent blok={engagement} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
 
   {
-    similar && (
-      <aside class="project__similar">
-        <h2>Projet similaire</h2>
-        <a href={`/projets/${similar.slug}`}>{similar.titre}</a>
+    blok.vignette_plan?.filename && (
+      <img
+        class="project__vignette"
+        src={sbImage(blok.vignette_plan.filename, '600x0')}
+        alt={blok.vignette_plan.alt ?? `Plan-masse — ${blok.titre}`}
+        loading="lazy"
+      />
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <aside class="project__related">
+        <h2>Sélection de projets en relation</h2>
+        <ul class="project-grid">
+          {related.map((project) => (
+            <li>
+              <ProjectCard project={project} />
+            </li>
+          ))}
+        </ul>
       </aside>
     )
   }

@@ -2,45 +2,81 @@
 import { storyblokEditable } from '@storyblok/astro';
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import RichText from './RichText.astro';
+import ResponsiveMedia from './ResponsiveMedia.astro';
+import { sbImage } from '../lib/image';
 import type { AtelierPageBlok } from '../types/storyblok';
 
-interface Props {
-  blok: AtelierPageBlok;
-}
+const { blok } = Astro.props as { blok: AtelierPageBlok };
 
-const { blok } = Astro.props;
+const clients: Array<[string, string | undefined]> = [
+  ['Collectivités', blok.clients_collectivites],
+  ['OPH', blok.clients_oph],
+  ['MOA Privé', blok.clients_moa],
+];
+const clientCols = clients.filter(([, value]) => Boolean(value));
+const equipe = blok.equipe ?? [];
 ---
 
 <article class="atelier" {...storyblokEditable(blok)}>
   {
-    blok.intro && (
-      <section class="atelier__intro">
-        <RichText doc={blok.intro} />
+    blok.video?.filename && (
+      <section class="atelier__video">
+        <ResponsiveMedia video={blok.video} alt="" loading="eager" />
       </section>
     )
   }
+
+  <section class="atelier__manifeste">
+    {
+      blok.image?.filename && (
+        <img
+          class="atelier__illustration"
+          src={sbImage(blok.image.filename, '1600x0')}
+          alt={blok.image.alt ?? ''}
+          loading="lazy"
+        />
+      )
+    }
+    {
+      blok.texte_minga && (
+        <div class="atelier__minga">
+          <h2>{blok.titre_minga ?? 'Minga (tradition sud-américaine)'}</h2>
+          <RichText doc={blok.texte_minga} />
+        </div>
+      )
+    }
+    {
+      blok.texte_construire && (
+        <div class="atelier__construire">
+          <h2>{blok.titre_construire ?? 'Construire ensemble'}</h2>
+          <RichText doc={blok.texte_construire} />
+        </div>
+      )
+    }
+  </section>
+
   {
-    blok.competences && (
-      <section class="atelier__competences">
-        <h2>Compétences</h2>
-        <RichText doc={blok.competences} />
-      </section>
-    )
-  }
-  {
-    blok.clients && (
+    clientCols.length > 0 && (
       <section class="atelier__clients">
-        <h2>Clients</h2>
-        <RichText doc={blok.clients} />
+        <h2>{blok.titre_clients ?? 'Des clients engagés'}</h2>
+        <div class="atelier__clients-cols">
+          {clientCols.map(([label, value]) => (
+            <div class="atelier__clients-col">
+              <h3>{label}</h3>
+              <p style="white-space: pre-line">{value}</p>
+            </div>
+          ))}
+        </div>
       </section>
     )
   }
+
   {
-    blok.equipe && blok.equipe.length > 0 && (
+    equipe.length > 0 && (
       <section class="atelier__equipe">
-        <h2>Équipe</h2>
+        <h2>{blok.titre_equipe ?? 'LaMinga, une équipe soudée, des partenaires engagés'}</h2>
         <ul class="team-grid">
-          {blok.equipe.map((member) => (
+          {equipe.map((member) => (
             <li>
               <StoryblokComponent blok={member} />
             </li>

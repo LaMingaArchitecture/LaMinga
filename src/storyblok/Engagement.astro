@@ -1,0 +1,22 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import type { EngagementBlok } from '../types/storyblok';
+
+const { blok } = Astro.props as { blok: EngagementBlok };
+---
+
+<div class="engagement" {...storyblokEditable(blok)}>
+  {
+    blok.icone?.filename && (
+      <img
+        class="engagement__icon"
+        src={blok.icone.filename}
+        alt=""
+        width="48"
+        height="48"
+        loading="lazy"
+      />
+    )
+  }
+  <span class="engagement__label">{blok.libelle}</span>
+</div>

@@ -1,0 +1,18 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import { colorHex } from '../lib/content';
+import type { ProgrammeBlok } from '../types/storyblok';
+
+// Programme is a content type used mainly as a relation target (nom + couleur read
+// via resolve_relations). This standalone render is a minimal chip for completeness.
+const { blok } = Astro.props as { blok: ProgrammeBlok };
+const couleur = colorHex(blok.couleur);
+---
+
+<span
+  class="programme"
+  style={couleur ? `--programme-color: ${couleur}` : undefined}
+  {...storyblokEditable(blok)}
+>
+  {blok.nom}
+</span>

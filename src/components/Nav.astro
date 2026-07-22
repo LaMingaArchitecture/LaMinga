@@ -1,4 +1,5 @@
 ---
+import SocialLinks from './SocialLinks.astro';
 import type { GlobalSettings } from '../types/storyblok';
 
 interface Props {
@@ -7,27 +8,20 @@ interface Props {
 
 const { settings } = Astro.props;
 const social = settings?.reseaux_sociaux ?? [];
+const nomAtelier = settings?.nom_atelier ?? 'LaMinga';
+// SVG logo rendered from the raw filename (the image service would rasterize it).
+const logo = settings?.logo?.filename;
 ---
 
 <header class="site-header">
   <nav class="nav" aria-label="Navigation principale">
-    <a href="/" class="nav__logo">LaMinga</a>
+    <a href="/" class="nav__logo">
+      {logo ? <img src={logo} alt={nomAtelier} height="32" /> : nomAtelier}
+    </a>
     <ul class="nav__links">
       <li><a href="/projets">Projets</a></li>
       <li><a href="/atelier">Atelier</a></li>
     </ul>
-    {
-      social.length > 0 && (
-        <ul class="nav__social" aria-label="Réseaux sociaux">
-          {social.map((link) => (
-            <li>
-              <a href={link.url} target="_blank" rel="noopener noreferrer">
-                {link.plateforme}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    <SocialLinks links={social} class="nav__social" />
   </nav>
 </header>

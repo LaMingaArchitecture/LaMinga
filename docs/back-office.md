@@ -1,14 +1,14 @@
 # Guide back-office — créer du contenu (LaMinga)
 
 Guide pour l'équipe LaMinga (non-technique). Tout le contenu se gère dans **Storyblok** ; le
-site se met à jour automatiquement à la **publication**.
+site se met à jour à la **publication**.
 
 ## Se connecter
 
 1. Aller sur [app.storyblok.com](https://app.storyblok.com) et se connecter.
 2. Ouvrir l'espace **LaMinga**.
-3. Le contenu vit dans **Content** ; les listes déroulantes (typologies) dans
-   **Block Library / Datasources**.
+3. Le contenu vit dans **Content** ; les listes déroulantes (thématiques) dans
+   **Block Library → Datasources**.
 
 ## Voir ses modifications en direct (éditeur visuel)
 
@@ -19,37 +19,87 @@ l'équipe technique.
 ## Créer une fiche projet
 
 1. **Content → dossier `projets` → + Entry**.
-2. Choisir le type **Project**. Donner un **nom** (le _slug_, ex. `villa-belvedere`, forme
-   l'URL `/projets/villa-belvedere` — éviter accents/espaces).
+2. Choisir le type **Projet**. Donner un **nom** (le _slug_, ex. `buzenval`, forme l'URL
+   `/projets/buzenval` — éviter accents/espaces).
 3. Remplir les champs :
-   - **Titre**, **Typologie** (liste déroulante — alimentée par la datasource, pas de saisie libre),
-   - **Année, Localisation, Maître d'ouvrage, Équipe, Crédits**,
-   - **Visuels** : ajouter les images (galerie). L'affichage **carrousel** ou **scroll** se règle
-     via le champ **Affichage**,
-   - **Projet similaire** : sélectionner une autre fiche projet (lien en bas de page).
+   - **Titre**, **Ville**.
+   - **Programme** : sélectionner **un** programme (Logement, Équipement, Patrimoine, Activité,
+     Aménagement, Programmation) — chaque programme a **sa couleur** (voir plus bas).
+   - **Thématiques** : en cocher plusieurs (Restructuration, Sur-élévation, Réemploi…) — liste
+     alimentée par la datasource, pas de saisie libre.
+   - **Description du programme** : une ligne (ex. « Restructuration de logements insalubres à
+     logements sociaux »).
+   - **Maîtrise d'ouvrage, Équipe, Statut, Surface (m² SDP), Montant HT, Divers**.
+   - **Texte descriptif** (texte riche).
+   - **Engagements** : jusqu'à **3** (icône SVG + libellé, ex. « Mise en valeur de l'existant »).
+   - **Carrousel** : ajouter des **Slides média** dans l'ordre (image paysage + portrait, vidéo mp4
+     optionnelle + poster, et la case **Titre en clair** = texte clair sur visuel foncé).
+   - **Vignette plan-masse (N&B)** : le plan-masse affiché dans la grille Projets.
+   - **Photo de couverture** (optionnel) : photo représentative (vue « VRAC » + survol de l'Index).
+     Si vide, la 1ʳᵉ image du carrousel est utilisée.
+   - **Projets liés** : sélectionner d'autres fiches projet (« Sélection de projets en relation »).
 4. **Save** (brouillon) → vérifier dans l'éditeur visuel → **Publish** pour mettre en ligne.
 
-> La page **Projets** (`/projets`) et l'accueil affichent automatiquement les projets publiés,
-> groupés/filtrés par typologie. Pas besoin de les ajouter à la main (sauf mise en avant via la
-> page d'accueil).
+> La page **Projets** (`/projets`) et l'accueil affichent automatiquement les projets publiés. Pas
+> besoin de les ajouter à la main.
+
+## Gérer les programmes (couleurs)
+
+**Content → dossier `programmes`** : une story par programme. Chaque programme a un **Nom** et une
+**Couleur** (sélecteur de couleur natif). Changer une couleur ou un nom se reflète sur le site après
+publication (rebuild).
+
+## Ajouter une thématique
+
+**Datasources → `thematique` → + Entry** : _name_ (affiché) + _value_ (technique, ex. `reemploi`,
+sans accents/espaces).
+
+> ⚠️ **Important** : contrairement aux stories, une modification de **datasource** ne déclenche
+> **pas** automatiquement la mise à jour du site (le webhook ne réagit qu'aux publications de
+> stories). Pour publier une nouvelle thématique en ligne : **re-publier n'importe quelle story**
+> (ex. `config`), ce qui déclenche un rebuild ; ou demander à l'équipe technique de lancer le
+> **build hook** Netlify. En attendant, la thématique est bien visible dans l'éditeur visuel (draft).
+
+## Composer la page d'accueil
+
+Story **`home`** (type _Page d'accueil_) : le **Carrousel d'accueil** est une liste de **Slides
+accueil**. Pour chaque slide : un visuel (image paysage + portrait, ou vidéo mp4 + poster), le
+**Projet** mis en avant (le titre affiché est repris du projet), et la case **Titre en clair**.
 
 ## Modifier l'Atelier
 
-Story **`atelier`** (type _Atelier Page_) : intro, compétences, clients (texte riche) et la liste
-des **membres de l'équipe** (ajouter/retirer des blocs _Team Member_ : nom, photo, rôle).
+Story **`atelier`** (type _Page Atelier_) : vidéo d'introduction, image d'illustration, textes
+**Minga** et **Construire ensemble** (les titres ont des valeurs par défaut, modifiables), les trois
+listes de clients (Collectivités / OPH / MOA privée, **un client par ligne**) et les **Membres de
+l'équipe** (nom, photo N&B, rôle, bio).
 
-## Réglages globaux (réseaux sociaux, footer)
+## Réglages globaux (logo, contact, réseaux sociaux)
 
-Story **`config`** (type _Global Settings_) : liens réseaux sociaux (header/footer), adresse,
-e-mail, mentions légales.
+Story **`config`** (type _Réglages globaux_) : **logo** (SVG), nom de l'atelier, e-mail, téléphone,
+**adresse Paris** + **adresse Anglet**, mentions légales, et les **Réseaux sociaux** (chacun :
+plateforme, URL, **icône SVG**).
 
-## Ajouter une typologie
+## Spécifications visuelles (équipe marketing)
 
-**Datasources → `typologie` → +Entry** : _name_ (affiché) + _value_ (technique, ex.
-`logement`). Les filtres de la page Projets se mettent à jour automatiquement.
+Fournir les assets aux formats suivants :
+
+| Asset                                       | Format / ratio conseillé                                                                                     |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **Image paysage** (carrousel, home)         | JPG/WebP, paysage ~**16:9**, ≥ 1600 px de large                                                              |
+| **Image portrait** (mobile)                 | JPG/WebP, portrait ~**3:4**, ≥ 900 px de large                                                               |
+| **Vignette plan-masse**                     | plan N&B, **carré ~1:1**, ≥ 800 px                                                                           |
+| **Photo de couverture**                     | JPG/WebP, paysage ~4:3, ≥ 800 px                                                                             |
+| **Photo membre équipe**                     | JPG/WebP **N&B**, carré ~1:1, ≥ 500 px                                                                       |
+| **Logo, icônes réseaux, icônes engagement** | **SVG** vectoriel, fond transparent, monochrome de préférence (`currentColor`)                               |
+| **Vidéos** (carrousel, home, atelier)       | **mp4 (H.264/AAC)**, ≤ **1080p**, budget **≤ ~5 Mo** par vidéo, **muette**, + une **image poster** par vidéo |
+
+Les images passent par le service d'images Storyblok (converties en WebP). Les **SVG** sont servis
+tels quels (ne pas les aplatir en PNG). Les vidéos sont hébergées sur Storyblok (`a.storyblok.com`) —
+le CSP `media-src` est déjà configuré pour ce domaine.
 
 ## Publier = mettre en ligne
 
-La **publication** déclenche une régénération du site de production (quelques minutes). Un
+La **publication d'une story** déclenche une régénération de la production (quelques minutes). Un
 brouillon non publié reste visible uniquement dans l'éditeur visuel. En cas d'erreur, l'équipe
-technique peut restaurer une version précédente (rollback).
+technique peut restaurer une version précédente (rollback). Rappel : une modification de **datasource**
+nécessite le contournement décrit plus haut.

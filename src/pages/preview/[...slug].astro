@@ -6,6 +6,7 @@ import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import { STORYBLOK_VERSION } from 'astro:env/server';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getStoryblokApi } from '../../lib/storyblok';
+import { PROJECT_RELATIONS, HOME_RELATIONS } from '../../lib/content';
 
 // On-demand SSR route that renders DRAFT content live for the Storyblok Visual
 // Editor. The guard keeps production effectively static: in the published
@@ -22,7 +23,7 @@ async function fetchDraftContent(): Promise<SbBlokData | null> {
     const api = getStoryblokApi();
     const { data } = await api.get(`cdn/stories/${slug}`, {
       version: 'draft',
-      resolve_relations: ['project.projet_similaire'],
+      resolve_relations: [...PROJECT_RELATIONS, ...HOME_RELATIONS],
     });
     return (data?.story?.content ?? null) as SbBlokData | null;
   } catch {

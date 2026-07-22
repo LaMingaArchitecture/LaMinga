@@ -1,0 +1,21 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import ResponsiveMedia from './ResponsiveMedia.astro';
+import type { MediaSlideBlok } from '../types/storyblok';
+
+const { blok } = Astro.props as { blok: MediaSlideBlok };
+const alt = blok.image_paysage?.alt ?? blok.image_portrait?.alt ?? '';
+---
+
+<figure
+  class:list={['media-slide', { 'media-slide--clair': blok.titre_clair }]}
+  {...storyblokEditable(blok)}
+>
+  <ResponsiveMedia
+    imagePaysage={blok.image_paysage}
+    imagePortrait={blok.image_portrait}
+    video={blok.video}
+    poster={blok.poster}
+    alt={alt}
+  />
+</figure>
