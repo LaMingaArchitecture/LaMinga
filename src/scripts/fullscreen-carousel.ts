@@ -45,20 +45,26 @@ const enhance = (root: HTMLElement): void => {
     render();
   };
 
-  // Keep `index` truthful for swipe/scroll, and play only the visible slide's video.
+  // Play only the CURRENT slide's video (the one ≥60% visible) and pause every other, so a
+  // barely-visible slide mid-swipe never starts playback and two videos never play at once.
+  const syncVideos = (activeSlide: HTMLElement): void => {
+    slides.forEach((slide) => {
+      const video = slide.querySelector('video');
+      if (!video) return;
+      if (slide === activeSlide && !reduce.matches) void video.play().catch(() => {});
+      else video.pause();
+    });
+  };
+
+  // Keep `index` truthful for swipe/scroll and drive video playback off the same ≥0.6 gate.
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
+        if (!entry.isIntersecting || entry.intersectionRatio < 0.6) return;
         const slide = entry.target as HTMLElement;
-        const video = slide.querySelector('video');
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-          index = slides.indexOf(slide);
-          render();
-        }
-        if (video) {
-          if (entry.isIntersecting && !reduce.matches) void video.play().catch(() => {});
-          else video.pause();
-        }
+        index = slides.indexOf(slide);
+        render();
+        syncVideos(slide);
       });
     },
     { root: track, threshold: [0.6] },
