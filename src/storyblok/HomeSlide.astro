@@ -4,7 +4,7 @@ import ResponsiveMedia from './ResponsiveMedia.astro';
 import { isResolved } from '../lib/content';
 import type { HomeSlideBlok, ProjectBlok } from '../types/storyblok';
 
-const { blok } = Astro.props as { blok: HomeSlideBlok };
+const { blok, first = false } = Astro.props as { blok: HomeSlideBlok; first?: boolean };
 
 // `projet` arrives resolved via HOME_RELATIONS; narrow to the resolved story.
 const projet = isResolved(blok.projet) ? blok.projet : null;
@@ -26,7 +26,7 @@ const alt = blok.image_paysage?.alt ?? content?.titre ?? '';
     video={blok.video}
     poster={blok.poster}
     alt={alt}
-    loading="eager"
+    loading={first ? 'eager' : 'lazy'}
   />
   {
     titre &&

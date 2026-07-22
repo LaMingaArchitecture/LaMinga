@@ -1,0 +1,147 @@
+---
+/**
+ * FullscreenCarousel — generic, blok-type-agnostic fullscreen scroller.
+ * Wraps already-rendered slides via <slot/> (home_slide now, media_slide later), so it owns the
+ * scroll-snap track + slide sizing and neither slide type needs to know it's in a carousel.
+ * Progressive enhancement: the CSS scroll-snap track works with no JS (native swipe/scroll);
+ * `fullscreen-carousel.ts` layers arrows, keyboard nav, ARIA live announcements, lazy video, and
+ * reveals the controls (.fc--enhanced) so there are no dead controls when JS is off.
+ */
+import type { HTMLAttributes } from 'astro/types';
+import Chevron from './icons/Chevron.astro';
+
+interface Props extends HTMLAttributes<'section'> {
+  /** Accessible name for the carousel region (home: "Projets à la une"; project page: the title). */
+  ariaLabel: string;
+  /** Slide count — renders the counter's N server-side and seeds the script. */
+  slideCount: number;
+  /** Show the "X / N" counter (project page: true; home: false). */
+  counter?: boolean;
+}
+
+const { ariaLabel, slideCount, counter = false, class: className, ...attrs } = Astro.props;
+---
+
+<section
+  class:list={['fc', className]}
+  aria-roledescription="carousel"
+  aria-label={ariaLabel}
+  data-fc
+  {...attrs}
+>
+  <div class="fc__track" data-fc-track>
+    <slot />
+  </div>
+
+  <button
+    type="button"
+    class="fc__arrow fc__arrow--prev"
+    data-fc-prev
+    aria-label="Projet précédent"
+  >
+    <Chevron direction="left" size={40} />
+  </button>
+  <button type="button" class="fc__arrow fc__arrow--next" data-fc-next aria-label="Projet suivant">
+    <Chevron direction="right" size={40} />
+  </button>
+
+  {
+    counter && (
+      <p class="fc__counter" data-fc-counter aria-hidden="true">
+        <span data-fc-current>1</span> / {slideCount}
+      </p>
+    )
+  }
+
+  {/* Slide changes announced here; the visual counter stays aria-hidden to avoid double-speak. */}
+  <p class="visually-hidden" data-fc-live aria-live="polite" role="status"></p>
+</section>
+
+<script>
+  import '../scripts/fullscreen-carousel';
+</script>
+
+<style>
+  .fc {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .fc__track {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .fc__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Generic slide sizing — turns ANY slot child into a full-viewport snap slide. */
+  .fc__track > :global(*) {
+    flex: 0 0 100%;
+    height: 100%;
+    margin: 0;
+    scroll-snap-align: start;
+  }
+  .fc__track > :global(*) :global(img),
+  .fc__track > :global(*) :global(video) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Controls are absolute overlays gated on enhancement → no dead controls (no-JS), zero CLS. */
+  .fc__arrow,
+  .fc__counter {
+    display: none;
+  }
+  .fc--enhanced .fc__arrow {
+    display: grid;
+  }
+  .fc--enhanced .fc__counter {
+    display: block;
+  }
+
+  .fc__arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: var(--space-2);
+    border: 0;
+    background: none;
+    color: var(--accent);
+    cursor: pointer;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
+    touch-action: manipulation;
+  }
+  .fc__arrow--prev {
+    left: var(--space-2);
+  }
+  .fc__arrow--next {
+    right: var(--space-2);
+  }
+  .fc__arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .fc__counter {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    z-index: 2;
+    margin: 0;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
+  }
+</style>
