@@ -105,8 +105,14 @@ export function getSettings(): Promise<GlobalSettings | null> {
   return fetchStoryContent<GlobalSettings>(SLUG.settings);
 }
 
+// Cache the published datasource for the whole SSG build (it is static during a build) —
+// getThematiques is called by the Projets list and by every project detail page. Never cache
+// in draft/preview: the SSR editor must reflect live datasource edits per request.
+let thematiquesCache: Promise<ThematiqueEntry[]> | undefined;
+
 export function getThematiques(): Promise<ThematiqueEntry[]> {
-  return tolerateNotFound(
+  if (storyblokVersion === 'published' && thematiquesCache) return thematiquesCache;
+  const result = tolerateNotFound(
     async () => {
       const api = getStoryblokApi();
       const { data } = await api.get('cdn/datasource_entries', {
@@ -120,6 +126,8 @@ export function getThematiques(): Promise<ThematiqueEntry[]> {
     [],
     `datasource "${DATASOURCE_THEMATIQUE}" absente (${storyblokVersion}) — filtre vide`,
   );
+  if (storyblokVersion === 'published') thematiquesCache = result;
+  return result;
 }
 
 const HEX_COLOR = /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;

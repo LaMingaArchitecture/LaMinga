@@ -45,8 +45,9 @@ const paysage = imagePaysage?.filename ?? portrait;
       preload={loading === 'eager' ? 'auto' : 'none'}
       aria-label={alt || undefined}
     >
-      {/* Decorative, muted loop — an empty captions track satisfies jsx-a11y. */}
-      <track kind="captions" />
+      {/* Decorative, muted loop with no dialogue — a valid empty VTT captions track
+          satisfies jsx-a11y while keeping the markup HTML-valid (track needs a src). */}
+      <track kind="captions" src="/media/empty.vtt" srclang="fr" label="Sans paroles" />
     </video>
   ) : paysage ? (
     <picture class:list={['responsive-media', className]}>

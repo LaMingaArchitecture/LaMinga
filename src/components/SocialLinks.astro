@@ -9,8 +9,11 @@ interface Props {
 }
 
 const { links, class: className, label = 'Réseaux sociaux' } = Astro.props;
-// Drop any link whose URL is not http(s) (blocks editor-supplied javascript:/data: hrefs).
-const safe = links.filter((link) => isHttpUrl(link.url));
+// Normalize (trim) then keep only http(s) links, so the rendered href is exactly what was
+// validated — leading/trailing whitespace can't slip into the anchor. Blocks javascript:/data:.
+const safe = links
+  .map((link) => ({ ...link, url: link.url?.trim() ?? '' }))
+  .filter((link) => isHttpUrl(link.url));
 ---
 
 {
