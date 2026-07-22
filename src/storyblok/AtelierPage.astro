@@ -63,7 +63,7 @@ const equipe = blok.equipe ?? [];
           {clientCols.map(([label, value]) => (
             <div class="atelier__clients-col">
               <h3>{label}</h3>
-              <p style="white-space: pre-line">{value}</p>
+              <p class="pre-line">{value}</p>
             </div>
           ))}
         </div>
@@ -86,3 +86,62 @@ const equipe = blok.equipe ?? [];
     )
   }
 </article>
+
+<!-- Baseline: readable stacked sections for the one scrolling page. Refined by the atelier ticket. -->
+<style>
+  .atelier > section {
+    padding: var(--space-8) var(--space-4);
+  }
+  .atelier > section + section {
+    border-top: var(--border);
+  }
+  .atelier__video :global(video),
+  .atelier__illustration {
+    width: 100%;
+    height: auto;
+    max-height: 70svh;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .atelier__manifeste,
+  .atelier__clients {
+    max-width: 60rem;
+    margin-inline: auto;
+    display: grid;
+    gap: var(--space-6);
+  }
+  .atelier :where(h2) {
+    margin: 0;
+    color: var(--accent);
+  }
+  .atelier__clients-cols {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+  .atelier__clients-col h3 {
+    margin: 0 0 var(--space-2);
+  }
+  .atelier__clients-col p {
+    margin: 0;
+  }
+  .atelier__equipe {
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+  .team-grid {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-6) 0 0;
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  }
+  .team-grid :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+</style>

@@ -1,22 +1,45 @@
 ---
+import '../styles/global.css';
 import { PUBLIC_SITE_URL } from 'astro:env/client';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { getSettings } from '../lib/content';
+import { getSettings, getProgrammes, buildProgrammeColorCss } from '../lib/content';
 
 interface Props {
   title?: string;
   description?: string;
   /** Set on placeholder pages so missing-content pages aren't indexed as live. */
   noindex?: boolean;
+  /** Slim contact footer bar (Projets + Atelier + Mentions). Default false (immersive). */
+  footer?: boolean;
+  /** Let the page scroll instead of locking to the viewport (Atelier + Mentions). Default false. */
+  scroll?: boolean;
+  /** Accent theme: 'coral' on the immersive home, 'violet' everywhere else. */
+  accent?: 'coral' | 'violet';
 }
 
 const {
   title = 'LaMinga',
   description = "Atelier d'architecture LaMinga.",
   noindex = false,
+  footer = false,
+  scroll = false,
+  accent = 'violet',
 } = Astro.props;
+
 const settings = await getSettings();
+// Programmes feed the site-wide programme→colour map below. getProgrammes is build-cached
+// (published), so the whole SSG build makes a single call.
+const programmes = await getProgrammes();
+
+// Programme colours are applied via a global <style> keyed on [data-programme="<slug>"] rather
+// than inline style="" attributes (which the strict hash-based CSP would block). This <style> is
+// emitted in <head> BEFORE Astro's CSP <meta>, so it is not governed by the meta-CSP and always
+// applies; buildProgrammeColorCss validates both interpolated values (slug whitelist + colorHex).
+const programmeColorCss = buildProgrammeColorCss(programmes);
+
+// The header floats over the hero on footer-less pages and sits as a solid bar otherwise.
+const immersive = !footer;
 const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
 ---
 
@@ -29,12 +52,17 @@ const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
+    {programmeColorCss && <style is:global set:html={programmeColorCss} />}
   </head>
-  <body>
+  <body
+    data-accent={accent}
+    data-scroll={scroll ? '' : undefined}
+    data-immersive={immersive ? '' : undefined}
+  >
     <Nav settings={settings} />
     <main id="contenu">
       <slot />
     </main>
-    <Footer settings={settings} />
+    {footer && <Footer settings={settings} />}
   </body>
 </html>

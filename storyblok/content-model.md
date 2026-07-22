@@ -22,7 +22,21 @@ Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga 
   Programmation.
 - **Thématiques** = plusieurs par projet, depuis la datasource `thematique` (2ᵉ ligne de filtres).
 
-## Composants (blocs)
+## Contrat d'URL de la page Projets
+
+La page Projets porte les filtres (programme + thématique) et le basculement grille/Index. Elle lit
+ces paramètres de requête au chargement (liens profonds + état partageable) et met à jour l'URL +
+`sessionStorage` quand ils changent, de sorte qu'un retour sur `/projets` restaure les **filtres
+précédents**. Paramètres indépendants et combinables (vocabulaire FR, cohérent avec le contenu) :
+
+| Paramètre            | Valeur                                                 | Effet                          |
+| -------------------- | ------------------------------------------------------ | ------------------------------ |
+| `programme=<slug>`   | slug de la story `programme` (ex. `logement`)          | pré-sélectionne un programme   |
+| `thematique=<value>` | `value` de la datasource `thematique` (ex. `reemploi`) | pré-sélectionne une thématique |
+| `vue=index`          | —                                                      | ouvre la vue Index (tableau)   |
+
+Exemple combiné : `/projets?vue=index&programme=logement`. Une valeur absente ou inconnue est
+ignorée (état par défaut : grille, « Tous »). Implémenté dans `src/components/ProjectExplorer.astro`.
 
 ### `programme` (content type — stories sous `programmes/`)
 

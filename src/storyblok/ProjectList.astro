@@ -1,14 +1,15 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
 import RichText from './RichText.astro';
-import ThematiqueFilter from '../components/ThematiqueFilter.astro';
-import { getProjectSummaries, getThematiques } from '../lib/content';
+import ProjectExplorer from '../components/ProjectExplorer.astro';
+import { getProjectSummaries, getProgrammes, getThematiques } from '../lib/content';
 import type { ProjectListBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: ProjectListBlok };
 // `[]` when no project is published — the grid/filter render empty by design (a
 // missing *page* shows ContentNotice; an agency with zero projects is a valid state).
 const projects = await getProjectSummaries();
+const programmes = await getProgrammes();
 const thematiques = await getThematiques();
 ---
 
@@ -17,5 +18,24 @@ const thematiques = await getThematiques();
     <h1>{blok.titre}</h1>
     {blok.intro && <RichText doc={blok.intro} />}
   </header>
-  <ThematiqueFilter projects={projects} thematiques={thematiques} />
+  <ProjectExplorer projects={projects} programmes={programmes} thematiques={thematiques} />
 </div>
+
+<!-- Baseline: the beige-10 backdrop + a scrollable frame. The full programme /
+     thématique filter, PM/VRAC grids and Index view are the Projets-page ticket. -->
+<style>
+  .project-list {
+    height: 100%;
+    overflow-y: auto;
+    padding: var(--space-6) var(--space-4) var(--space-8);
+    background: var(--color-beige-10);
+  }
+  .project-list__header {
+    max-width: 72rem;
+    margin: 0 auto var(--space-6);
+  }
+  .project-list__header h1 {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,255 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import type { ProgrammeLink, ProjectSummary, ThematiqueEntry } from '../types/storyblok';
+
+interface Props {
+  projects: ProjectSummary[];
+  programmes: ProgrammeLink[];
+  thematiques: ThematiqueEntry[];
+}
+
+const { projects, programmes, thematiques } = Astro.props;
+// Only surface programmes / thematiques actually used by published projects.
+const usedProgrammes = new Set(projects.map((p) => p.programme?.slug).filter(Boolean));
+const usedThematiques = new Set(projects.flatMap((p) => p.thematiques));
+const programmeFilters = programmes.filter((p) => usedProgrammes.has(p.slug));
+const thematiqueFilters = thematiques.filter((t) => usedThematiques.has(t.value));
+---
+
+<div class="explorer" data-explorer>
+  <div class="explorer__filters">
+    {
+      programmeFilters.length > 0 && (
+        <div class="explorer__row" role="group" aria-label="Filtrer par programme">
+          {/* data-programme-filter drives the JS filter; data-programme receives the
+              --programme-color / --programme-ink vars from BaseLayout's global colour map. */}
+          {programmeFilters.map((programme) => (
+            <button
+              type="button"
+              class="explorer__chip explorer__chip--programme"
+              data-programme-filter={programme.slug}
+              data-programme={programme.slug}
+              aria-pressed="false"
+            >
+              {programme.nom}
+            </button>
+          ))}
+        </div>
+      )
+    }
+    <div class="explorer__row explorer__row--thematiques">
+      <div class="explorer__thematiques" role="group" aria-label="Filtrer par thématique">
+        {
+          thematiqueFilters.map((thematique) => (
+            <button
+              type="button"
+              class="explorer__chip"
+              data-thematique-filter={thematique.value}
+              aria-pressed="false"
+            >
+              {thematique.name}
+            </button>
+          ))
+        }
+      </div>
+      <button
+        type="button"
+        class="explorer__chip explorer__index-toggle"
+        data-view-toggle
+        aria-pressed="false"
+      >
+        Index
+      </button>
+    </div>
+  </div>
+
+  <p class="explorer__empty" data-empty hidden>Aucun projet ne correspond à ces filtres.</p>
+
+  {/* Grid view — plan-masse / cover vignettes */}
+  <ul class="project-grid" data-view="grid">
+    {
+      projects.map((project) => (
+        <li
+          data-filterable
+          data-programme={project.programme?.slug ?? ''}
+          data-thematiques={project.thematiques.join(' ')}
+        >
+          <ProjectCard project={project} />
+        </li>
+      ))
+    }
+  </ul>
+
+  {/* Index view — table */}
+  <div class="explorer__index" data-view="index" hidden>
+    <table class="index-table">
+      <thead>
+        <tr>
+          <th scope="col">Nom du projet</th>
+          <th scope="col">Maîtrise d'ouvrage</th>
+          <th scope="col">Lieu</th>
+          <th scope="col">Programme</th>
+          <th scope="col">Statut</th>
+          <th scope="col"><span class="visually-hidden">Lien</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          projects.map((project) => (
+            <tr
+              data-filterable
+              data-programme={project.programme?.slug ?? ''}
+              data-thematiques={project.thematiques.join(' ')}
+            >
+              <th scope="row">
+                <a href={`/projets/${project.slug}`}>{project.titre}</a>
+              </th>
+              <td>{project.maitre_ouvrage}</td>
+              <td>{project.ville}</td>
+              <td>{project.description_programme}</td>
+              <td>{project.statut}</td>
+              <td class="index-table__link">
+                <a href={`/projets/${project.slug}`}>Voir le projet</a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .explorer {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+  .explorer__filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+  .explorer__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .explorer__row--thematiques {
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .explorer__thematiques {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .explorer__chip {
+    padding: var(--space-1) var(--space-3);
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition:
+      background var(--transition),
+      border-color var(--transition),
+      color var(--transition);
+  }
+  .explorer__chip:hover {
+    border-color: var(--accent);
+  }
+
+  /* Programme chips carry their Storyblok colour; selected = filled + readable ink. */
+  .explorer__chip--programme {
+    border-color: var(--programme-color, var(--color-line));
+  }
+  .explorer__chip--programme[aria-pressed='true'] {
+    background: var(--programme-color, var(--accent));
+    color: var(--programme-ink, var(--color-paper));
+    border-color: var(--programme-color, var(--accent));
+    font-weight: 600;
+  }
+
+  /* Thematique chips: beige tint when selected (not the Index toggle). */
+  .explorer__thematiques .explorer__chip[aria-pressed='true'] {
+    background: var(--color-beige);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .explorer__index-toggle {
+    font-family: var(--font-serif);
+    font-style: italic;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .explorer__index-toggle[aria-pressed='true'] {
+    background: var(--accent);
+    color: var(--color-paper);
+  }
+
+  .explorer__empty {
+    margin: var(--space-6) 0;
+    color: var(--color-muted);
+  }
+
+  [data-filterable][hidden] {
+    display: none;
+  }
+  /* Hide the inactive view — needed because .project-grid sets display:grid,
+     which would otherwise override the [hidden] attribute on the grid. */
+  [data-view][hidden] {
+    display: none;
+  }
+
+  /* Index table */
+  .explorer__index {
+    overflow-x: auto;
+  }
+  .index-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  .index-table th,
+  .index-table td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: var(--border);
+    vertical-align: top;
+  }
+  .index-table thead th {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+  .index-table tbody th {
+    font-weight: 600;
+  }
+  .index-table tbody tr {
+    transition: color var(--transition);
+  }
+  .index-table tbody tr:hover {
+    color: var(--programme-color, var(--accent));
+  }
+  .index-table a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .index-table tbody th a:hover,
+  .index-table__link a:hover {
+    text-decoration: underline;
+  }
+  .index-table__link {
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  import '../scripts/projets-explorer';
+</script>

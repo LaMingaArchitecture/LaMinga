@@ -10,14 +10,9 @@ const { project } = Astro.props;
 // Grid/related vignette: the B/W plan-masse if present, else the cover photo.
 const visual = project.vignette ?? project.photo;
 const cover = visual?.filename ? sbImage(visual.filename, '800x600') : '';
-const couleur = project.programme?.couleur;
 ---
 
-<a
-  class="project-card"
-  href={`/projets/${project.slug}`}
-  style={couleur ? `--programme-color: ${couleur}` : undefined}
->
+<a class="project-card" href={`/projets/${project.slug}`} data-programme={project.programme?.slug}>
   {
     cover && (
       <img
@@ -28,8 +23,51 @@ const couleur = project.programme?.couleur;
       />
     )
   }
-  <h3 class="project-card__title">
+  <p class="project-card__title">
     {project.titre}{project.ville && <span class="project-card__ville"> — {project.ville}</span>}
-  </h3>
+  </p>
   {project.programme && <p class="project-card__programme">{project.programme.nom}</p>}
 </a>
+
+<style>
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-paper);
+    border: var(--border-w) solid var(--programme-color, var(--color-line));
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--color-ink);
+    transition:
+      transform var(--transition),
+      box-shadow var(--transition);
+  }
+  .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -18px rgba(0, 0, 0, 0.45);
+  }
+  .project-card__cover {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    object-fit: cover;
+  }
+  .project-card__title {
+    margin: 0;
+    padding: var(--space-2) var(--space-3) 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+  }
+  .project-card__ville {
+    color: inherit;
+  }
+  .project-card__programme {
+    margin: var(--space-1) 0 0;
+    padding: 0 var(--space-3) var(--space-3);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+</style>
