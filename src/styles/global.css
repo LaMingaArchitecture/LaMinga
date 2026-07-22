@@ -92,7 +92,7 @@ body:not([data-immersive]) > header {
   top: 0;
   z-index: var(--z-header);
   background: var(--color-paper);
-  border-bottom: var(--border);
+  border-bottom: var(--border-rule);
 }
 
 /* Freeze background scroll while the mobile lateral panel is open. */

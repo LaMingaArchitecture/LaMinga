@@ -86,6 +86,8 @@
   --border-w: 1px;
   --border: var(--border-w) solid var(--color-line);
   --border-accent: var(--border-w) solid var(--accent);
+  /* Structural separators between header / content / footer — visible, accent-tinted. */
+  --border-rule: var(--border-w) solid color-mix(in srgb, var(--accent) 32%, transparent);
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
