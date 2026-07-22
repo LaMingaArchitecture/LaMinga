@@ -105,21 +105,21 @@ composants — pour un changement global, l'équipe technique modifie ce seul fi
 
 ### Palette
 
-| Nom (charte)     | Hex       | Usage principal                                                  |
-| ---------------- | --------- | ---------------------------------------------------------------- |
-| Beige clair      | `#f9f7f2` | fond de page                                                     |
-| Rouge corail     | `#ff6c4f` | accent home (logo/réseaux/flèches), programme Patrimoine         |
-| Violet aubergine | `#7e4080` | accent pages intérieures : nav, logo, texte de tableau, légendes |
-| Violet nuit      | `#32255b` | texte foncé principal                                            |
-| Violet vif       | `#a785ff` | violet secondaire ; programme Activité (proposé)                 |
-| Vert citron      | `#d5ee6e` | programme Équipement                                             |
-| Olive            | `#bbbd2b` | programme Aménagement (proposé)                                  |
-| Turquoise        | `#11a3c2` | programme Logement                                               |
-| Bleu clair       | `#bbd5fd` | panneaux d'information translucides                              |
-| Taupe clair      | `#d0b8b0` | onglet actif, sélection thématique, fond Projets à 10 %          |
-| Rose             | `#fec9d7` | programme Programmation (proposé)                                |
-| Gris             | `#c6c6c6` | neutre                                                           |
-| Jaune fluo       | `#ffff00` | annotation (non utilisé dans l'UI)                               |
+| Nom (charte)     | Hex       | Usage principal                                                                     |
+| ---------------- | --------- | ----------------------------------------------------------------------------------- |
+| Beige clair      | `#f9f7f2` | fond de page                                                                        |
+| Rouge corail     | `#ff6c4f` | réf. de marque ; programme Patrimoine (accent home appliqué : `#b84e39`, voir note) |
+| Violet aubergine | `#7e4080` | accent pages intérieures : nav, logo, texte de tableau, légendes                    |
+| Violet nuit      | `#32255b` | texte foncé principal                                                               |
+| Violet vif       | `#a785ff` | violet secondaire ; programme Activité (proposé)                                    |
+| Vert citron      | `#d5ee6e` | programme Équipement                                                                |
+| Olive            | `#bbbd2b` | programme Aménagement (proposé)                                                     |
+| Turquoise        | `#11a3c2` | programme Logement                                                                  |
+| Bleu clair       | `#bbd5fd` | panneaux d'information translucides                                                 |
+| Taupe clair      | `#d0b8b0` | onglet actif, sélection thématique, fond Projets à 10 %                             |
+| Rose             | `#fec9d7` | programme Programmation (proposé)                                                   |
+| Gris             | `#c6c6c6` | neutre                                                                              |
+| Jaune fluo       | `#ffff00` | annotation (non utilisé dans l'UI)                                                  |
 
 > **Accessibilité** : le Rouge corail `#ff6c4f` n'a pas un contraste suffisant sur fond clair
 > (~2,6:1). En **texte / interface**, le site applique donc un corail légèrement assombri
@@ -137,14 +137,17 @@ composants — pour un changement global, l'équipe technique modifie ce seul fi
 
 ### Où vivent les assets
 
-| Asset                        | Emplacement                                                            |
-| ---------------------------- | ---------------------------------------------------------------------- |
-| Logo **violet** (pages int.) | **Storyblok** `config.logo` (modifiable par l'éditeur)                 |
-| Logo **corail** (home)       | **dépôt** (`public/logo/logo-corail.svg`) — variante de marque fixe    |
-| Icônes **Insta / LinkedIn**  | **dépôt** (composants `currentColor`, se colorent seuls corail/violet) |
-| Flèches (chevrons)           | **dépôt** (`public/icons/`, tracés vectoriels — plus de glyphe texte)  |
-| Police serif                 | **dépôt** auto-hébergée (`public/fonts/`)                              |
-| Icônes engagement            | **Storyblok** `engagement.icone`                                       |
+| Asset                        | Emplacement                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------------- |
+| Logo **violet** (pages int.) | **Storyblok** `config.logo` (modifiable par l'éditeur)                                |
+| Logo **corail** (home)       | **dépôt** (`public/logo/logo-corail.svg`) — variante de marque fixe                   |
+| Icônes **Insta / LinkedIn**  | **dépôt** (composants `currentColor`, se colorent seuls corail/violet)                |
+| Flèches (chevrons)           | **dépôt** (composant `Chevron.astro` — livré pour les carrousels, pas encore branché) |
+| Police serif                 | **dépôt** auto-hébergée (`public/fonts/`)                                             |
+| Icônes engagement            | **Storyblok** `engagement.icone`                                                      |
+
+> Les SVG **logo** (corail/violet) et le **favicon** du dépôt portent les couleurs de la charte
+> **en dur** (rendus en `<img>`, ils ne lisent pas les tokens) : à mettre à jour si la palette change.
 
 ### Changer une couleur de programme (sans déploiement)
 

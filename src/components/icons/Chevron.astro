@@ -1,0 +1,38 @@
+---
+/**
+ * Chevron — outlined path (currentColor), the site-wide "précédent"/"suivant" control.
+ * Replaces the delivered Fleche G/D assets, which shipped as live Helvetica "‹"/"›" <text> glyphs
+ * and broke wherever Helvetica was unavailable; redrawn here as font-independent stroked paths.
+ * Delivered for the carousel/scroller page tickets — not yet wired into the shell.
+ */
+interface Props {
+  direction?: 'left' | 'right';
+  size?: number | string;
+  class?: string;
+}
+const { direction = 'right', size = 24, class: className } = Astro.props;
+const d = direction === 'left' ? 'M15 5 8 12l7 7' : 'm9 5 7 7-7 7';
+---
+
+<svg
+  class:list={['icon', className]}
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  width={size}
+  height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={d}></path>
+</svg>
+
+<style>
+  .icon {
+    display: block;
+  }
+</style>

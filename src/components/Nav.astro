@@ -14,11 +14,11 @@ const social = settings?.reseaux_sociaux ?? [];
 const nomAtelier = settings?.nom_atelier ?? 'LaMinga';
 // Logo per the charte: the corail variant ships in the repo for the immersive home header; the
 // violet variant is editor-managed in Storyblok (global_settings.logo), with a repo violet
-// fallback. Rendered from the raw filename/path (the image service would rasterize the SVG).
+// fallback (also for an empty/whitespace Storyblok value — `??` alone won't catch `''`). Rendered
+// from the raw filename/path (the image service would rasterize the SVG).
+const storyblokLogo = settings?.logo?.filename?.trim();
 const logo =
-  accent === 'coral'
-    ? '/logo/logo-corail.svg'
-    : (settings?.logo?.filename ?? '/logo/logo-violet.svg');
+  accent === 'coral' ? '/logo/logo-corail.svg' : storyblokLogo || '/logo/logo-violet.svg';
 
 // Active section from the current path — a project detail belongs to the Projets section.
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -57,13 +57,7 @@ const activeSection: 'projets' | 'atelier' | null =
     </div>
 
     <a href="/" class="nav__logo" aria-label={`${nomAtelier} — accueil`}>
-      {
-        logo ? (
-          <img class="nav__logo-img" src={logo} alt={nomAtelier} />
-        ) : (
-          <span class="nav__logo-text">LaMinga.</span>
-        )
-      }
+      <img class="nav__logo-img" src={logo} alt={nomAtelier} />
     </a>
 
     <div class="nav__right">
@@ -83,7 +77,7 @@ const activeSection: 'projets' | 'atelier' | null =
   }
 
   /* Logo — centered, links home. The official SVG already carries the boxed-outline mark, so the
-     wrapper stays borderless (no double box); the text fallback below re-creates the box. */
+     wrapper stays borderless (no double box). */
   .nav__logo {
     grid-column: 2;
     justify-self: center;
@@ -96,16 +90,6 @@ const activeSection: 'projets' | 'atelier' | null =
   .nav__logo-img {
     height: 2.25rem;
     width: auto;
-  }
-  .nav__logo-text {
-    padding: var(--space-2) var(--space-3);
-    border: var(--border-w) solid var(--accent);
-    border-radius: var(--radius);
-    background: color-mix(in srgb, var(--color-paper) 85%, transparent);
-    font-weight: 700;
-    font-size: 1.125rem;
-    letter-spacing: -0.01em;
-    color: var(--accent);
   }
 
   /* Left = burger (mobile) / stacked buttons (desktop); right = social (desktop). */
@@ -176,9 +160,6 @@ const activeSection: 'projets' | 'atelier' | null =
     }
     .nav__logo-img {
       height: 3.5rem;
-    }
-    .nav__logo-text {
-      font-size: 1.375rem;
     }
   }
 </style>

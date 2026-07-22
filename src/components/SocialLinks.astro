@@ -21,11 +21,21 @@ const safe = links
 // lets them paint with currentColor = the page --accent, so they theme corail on the home header
 // and violet elsewhere with no per-page asset swap. Any other network falls back to the Storyblok
 // icon asset, then the platform name.
-type Platform = 'instagram' | 'linkedin' | null;
-const platformOf = (link: { plateforme?: string; url: string }): Platform => {
-  const hay = `${link.plateforme ?? ''} ${link.url}`.toLowerCase();
-  if (/instagram|insta/.test(hay)) return 'instagram';
-  if (/linkedin|lnkd/.test(hay)) return 'linkedin';
+type Platform = 'instagram' | 'linkedin';
+const DISPLAY_NAME: Record<Platform, string> = { instagram: 'Instagram', linkedin: 'LinkedIn' };
+// Detect by URL host (anchored) rather than free-text substrings, so a label/URL merely containing
+// "insta"/"lnkd" can't be mis-branded with the wrong official mark.
+const platformOf = (url: string): Platform | null => {
+  let host: string;
+  try {
+    host = new URL(url).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+  if (host === 'instagram.com' || host.endsWith('.instagram.com')) return 'instagram';
+  if (host === 'linkedin.com' || host.endsWith('.linkedin.com') || host === 'lnkd.in') {
+    return 'linkedin';
+  }
   return null;
 };
 ---
@@ -34,15 +44,12 @@ const platformOf = (link: { plateforme?: string; url: string }): Platform => {
   safe.length > 0 && (
     <ul class:list={['social-links', className]} aria-label={label}>
       {safe.map((link) => {
-        const platform = platformOf(link);
+        const platform = platformOf(link.url);
+        const label =
+          link.plateforme?.trim() || (platform ? DISPLAY_NAME[platform] : 'Réseau social');
         return (
           <li>
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.plateforme || platform || 'Réseau social'}
-            >
+            <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={label}>
               {platform === 'instagram' ? (
                 <Instagram />
               ) : platform === 'linkedin' ? (

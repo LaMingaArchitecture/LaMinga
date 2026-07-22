@@ -8,7 +8,8 @@
 
    PALETTE (charte name — hex — role)
      Beige clair       #f9f7f2  page background
-     Rouge corail      #ff6c4f  home accent (logo/social/chevrons/links); programme Patrimoine
+     Rouge corail      #ff6c4f  brand corail: programme Patrimoine fill + reference — the applied
+                                home accent (logo/social/links) uses --couleur-corail-aa (AA; below)
      Violet aubergine  #7e4080  inner-page accent: nav, logo, table text, captions
      Violet nuit       #32255b  primary dark text
      Violet vif        #a785ff  secondary violet; programme Activité (proposed)
@@ -68,11 +69,9 @@
   --color-coral: var(--couleur-corail-aa);
   --color-beige: var(--couleur-taupe-clair); /* active-button tint + thématique tint */
   --color-beige-10: #f5f1eb; /* Projets/Index bg (#d0b8b0 @10% over beige clair) */
-  --color-info: var(--couleur-bleu-clair); /* translucent info panels */
   --color-line: #d8d0cc; /* thin borders for the boxed-cell aesthetic */
   --color-muted: #626262; /* secondary text — ≥4.5:1 on paper (WCAG AA) */
   --color-scrim: color-mix(in srgb, var(--couleur-violet-nuit) 55%, transparent); /* overlays */
-  --shadow-1: 0 6px 20px color-mix(in srgb, var(--couleur-violet-nuit) 28%, transparent);
 
   /* Accent — flipped per page via body[data-accent] (see bottom). */
   --accent: var(--color-violet);
