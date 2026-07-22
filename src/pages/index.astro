@@ -7,6 +7,6 @@ import { getHomePage } from '../lib/content';
 const home = await getHomePage();
 ---
 
-<BaseLayout title="LaMinga — Atelier d'architecture" noindex={!home}>
+<BaseLayout title="LaMinga — Atelier d'architecture" accent="coral" noindex={!home}>
   {home ? <StoryblokComponent blok={home} /> : <ContentNotice />}
 </BaseLayout>

@@ -12,3 +12,19 @@ const slides = blok.carrousel ?? [];
 <div class="home" {...storyblokEditable(blok)}>
   {slides.map((slide) => <StoryblokComponent blok={slide} />)}
 </div>
+
+<!-- Baseline: fullscreen horizontal scroll-snap carousel. The richer carousel
+     interaction (arrows, autoplay) is the home-page ticket's concern. -->
+<style>
+  .home {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .home::-webkit-scrollbar {
+    display: none;
+  }
+</style>

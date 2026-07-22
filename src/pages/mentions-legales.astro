@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RichText from '../storyblok/RichText.astro';
+import ContentNotice from '../components/ContentNotice.astro';
+import { getSettings } from '../lib/content';
+
+const settings = await getSettings();
+const mentions = settings?.mentions_legales;
+---
+
+<BaseLayout title="Mentions légales — LaMinga" footer scroll noindex={!mentions}>
+  <section class="mentions">
+    <h1 class="mentions__title">Mentions légales</h1>
+    {
+      mentions ? (
+        <RichText doc={mentions} />
+      ) : (
+        <ContentNotice
+          title="Mentions légales indisponibles"
+          message="Les mentions légales n'ont pas encore été publiées dans Storyblok."
+        />
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .mentions {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+  }
+  .mentions__title {
+    color: var(--accent);
+    margin-top: 0;
+  }
+</style>

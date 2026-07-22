@@ -138,9 +138,17 @@ export interface GlobalSettings extends SbBlokData {
   reseaux_sociaux?: SocialLinkBlok[];
 }
 
-/** Resolved programme label + normalized hex colour. */
+/** Resolved programme label + story slug + normalized hex colour. */
 export interface ProgrammeSummary {
   nom: string;
+  slug?: string;
+  couleur?: string;
+}
+
+/** Programme surfaced to the UI: label, story slug (colour-map key + deep-link), hex colour. */
+export interface ProgrammeLink {
+  nom: string;
+  slug: string;
   couleur?: string;
 }
 

@@ -1,6 +1,5 @@
 ---
-import { renderRichText } from '@storyblok/astro';
-import SocialLinks from './SocialLinks.astro';
+import { telHref } from '../lib/url';
 import type { GlobalSettings } from '../types/storyblok';
 
 interface Props {
@@ -8,40 +7,125 @@ interface Props {
 }
 
 const { settings } = Astro.props;
-const mentions = settings?.mentions_legales ? renderRichText(settings.mentions_legales) : '';
-const social = settings?.reseaux_sociaux ?? [];
+const tel = telHref(settings?.telephone);
+// Collapse the textarea line breaks so each address sits on a single line — the footer stays a
+// slim, even bar of boxed cells (the two addresses share one cell, inline). The mobile panel, by
+// contrast, keeps the line breaks (via .pre-line) since it has vertical room.
+const oneLine = (value?: string) => value?.replace(/\s*\n\s*/g, ' ').trim() || undefined;
+const addrParis = oneLine(settings?.adresse_paris);
+const addrAnglet = oneLine(settings?.adresse_anglet);
+const hasAddress = Boolean(addrParis || addrAnglet);
 ---
 
 <footer class="site-footer">
-  {settings?.nom_atelier && <span class="site-footer__name">{settings.nom_atelier}</span>}
-  {
-    settings?.email && (
-      <a class="site-footer__email" href={`mailto:${settings.email}`}>
-        {settings.email}
-      </a>
-    )
-  }
-  {
-    settings?.telephone && (
-      <a class="site-footer__tel" href={`tel:${settings.telephone.replace(/\s+/g, '')}`}>
-        {settings.telephone}
-      </a>
-    )
-  }
-  {
-    settings?.adresse_paris && (
-      <address class="site-footer__address" style="white-space: pre-line">
-        {settings.adresse_paris}
-      </address>
-    )
-  }
-  {
-    settings?.adresse_anglet && (
-      <address class="site-footer__address" style="white-space: pre-line">
-        {settings.adresse_anglet}
-      </address>
-    )
-  }
-  <SocialLinks links={social} class="site-footer__social" />
-  {mentions && <div class="site-footer__mentions" set:html={mentions} />}
+  <div class="site-footer__group">
+    {
+      settings?.nom_atelier && (
+        <span class="site-footer__cell site-footer__name">{settings.nom_atelier}</span>
+      )
+    }
+    {
+      settings?.email && (
+        <a class="site-footer__cell" href={`mailto:${settings.email}`}>
+          <span class="site-footer__label">mail</span>
+          <span>{settings.email}</span>
+        </a>
+      )
+    }
+    {
+      tel && (
+        <a class="site-footer__cell" href={tel}>
+          <span class="site-footer__label">tel</span>
+          <span>{settings?.telephone}</span>
+        </a>
+      )
+    }
+    {
+      hasAddress && (
+        <span class="site-footer__cell site-footer__addresses">
+          <span class="site-footer__label">adresses</span>
+          {addrParis && <span>{addrParis}</span>}
+          {addrParis && addrAnglet && (
+            <span class="site-footer__sep" aria-hidden="true">
+              ·
+            </span>
+          )}
+          {addrAnglet && <span>{addrAnglet}</span>}
+        </span>
+      )
+    }
+  </div>
+
+  <a class="site-footer__cell site-footer__mentions" href="/mentions-legales"> mentions légales </a>
 </footer>
+
+<style>
+  .site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+    border-top: var(--border);
+    background: var(--color-paper);
+    font-size: 0.8125rem;
+  }
+
+  /* Contact cells grouped left; legal link pinned right (justify-content on the footer). */
+  .site-footer__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .site-footer__cell {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border);
+    border-radius: var(--radius);
+    color: var(--color-ink);
+    text-decoration: none;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+  a.site-footer__cell:hover {
+    border-color: var(--accent);
+  }
+
+  .site-footer__name {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .site-footer__label {
+    font-style: italic;
+    font-family: var(--font-serif);
+    color: var(--color-muted);
+  }
+
+  /* Addresses share one cell; allow the text to wrap on tighter widths (others stay tidy). */
+  .site-footer__addresses {
+    white-space: normal;
+  }
+  .site-footer__sep {
+    color: var(--color-line);
+  }
+
+  .site-footer__mentions {
+    font-style: italic;
+    font-family: var(--font-serif);
+    color: var(--accent);
+  }
+
+  /* From tablet up: spread the contact group left, legal link right. */
+  @media (min-width: 48rem) {
+    .site-footer {
+      justify-content: space-between;
+    }
+  }
+</style>

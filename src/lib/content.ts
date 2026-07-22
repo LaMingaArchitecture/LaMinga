@@ -5,6 +5,7 @@ import type {
   GlobalSettings,
   HomePageBlok,
   ProgrammeBlok,
+  ProgrammeLink,
   ProgrammeSummary,
   ProjectBlok,
   ProjectListBlok,
@@ -130,6 +131,42 @@ export function getThematiques(): Promise<ThematiqueEntry[]> {
   return result;
 }
 
+// Cache the published programme stories for the whole SSG build (static during a build) —
+// getProgrammes feeds the site-wide programme→colour map (BaseLayout) and the Projets explorer
+// filter chips. Never cache in draft/preview: the SSR editor must reflect live edits per request.
+let programmesCache: Promise<ProgrammeLink[]> | undefined;
+
+/**
+ * List the `programme` stories (under `programmes/`) as { nom, slug, couleur }. Consumers: the
+ * global colour map (buildProgrammeColorCss) and the Projets explorer chips, which deep-link as
+ * `/projets?programme=<slug>`. Mirrors the getThematiques cache/404 contract: a missing folder
+ * degrades to an empty list rather than failing the build. `slug` is the story's own slug.
+ */
+export function getProgrammes(): Promise<ProgrammeLink[]> {
+  if (storyblokVersion === 'published' && programmesCache) return programmesCache;
+  const result = tolerateNotFound(
+    async () => {
+      const api = getStoryblokApi();
+      const { data } = await api.get('cdn/stories', {
+        version: storyblokVersion,
+        starts_with: 'programmes/',
+        per_page: 100,
+      });
+      const stories: ISbStoryData[] = data.stories ?? [];
+      return stories
+        .filter((story) => (story.content as ProgrammeBlok)?.component === 'programme')
+        .map((story) => {
+          const content = story.content as ProgrammeBlok;
+          return { nom: content.nom, slug: story.slug, couleur: colorHex(content.couleur) };
+        });
+    },
+    [],
+    `aucune story sous "programmes/" (${storyblokVersion}) — menu programmes vide`,
+  );
+  if (storyblokVersion === 'published') programmesCache = result;
+  return result;
+}
+
 const HEX_COLOR = /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
 /**
@@ -143,6 +180,57 @@ export function colorHex(color?: StoryblokColor): string | undefined {
   return raw && HEX_COLOR.test(raw) ? raw : undefined;
 }
 
+// Mirror of --color-ink / --color-paper (src/styles/global.css) — keep in sync if the brand ink
+// changes. INK_DARK_LUMINANCE is the WCAG relative luminance of INK_DARK (#2b2b2b).
+const INK_DARK = '#2b2b2b';
+const INK_LIGHT = '#ffffff';
+const INK_DARK_LUMINANCE = 0.0242;
+
+/** Contrast-safe text colour for a filled swatch: whichever of dark ink / white reads better on `hex`. */
+export function readableInk(hex: string): string {
+  let h = hex.replace('#', '');
+  if (h.length === 3 || h.length === 4) {
+    h = h
+      .slice(0, 3)
+      .split('')
+      .map((c) => c + c)
+      .join('');
+  }
+  h = h.slice(0, 6);
+  if (h.length < 6) return INK_LIGHT;
+  const toLinear = (v: number) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  const l =
+    0.2126 * toLinear(parseInt(h.slice(0, 2), 16)) +
+    0.7152 * toLinear(parseInt(h.slice(2, 4), 16)) +
+    0.0722 * toLinear(parseInt(h.slice(4, 6), 16));
+  const contrastDark = (l + 0.05) / (INK_DARK_LUMINANCE + 0.05);
+  const contrastLight = 1.05 / (l + 0.05);
+  return contrastDark >= contrastLight ? INK_DARK : INK_LIGHT;
+}
+
+// slug is interpolated into a CSS attribute selector emitted via set:html — whitelist to URL-safe
+// chars so a crafted Storyblok slug can't break out and inject CSS/markup (couleur is validated by
+// colorHex above). Both interpolated values are therefore sanitized.
+const SAFE_SLUG = /^[a-z0-9-]+$/;
+
+/**
+ * Build the site-wide programme→colour map as a CSS string keyed on [data-programme="<slug>"].
+ * Emitted once by BaseLayout as a global <style>; consumed by ProjectCard, the project detail
+ * badge and the Projets explorer chips (each element carries `data-programme={slug}`).
+ */
+export function buildProgrammeColorCss(programmes: ProgrammeLink[]): string {
+  return programmes
+    .filter((programme) => programme.couleur && SAFE_SLUG.test(programme.slug))
+    .map(
+      (programme) =>
+        `[data-programme="${programme.slug}"]{--programme-color:${programme.couleur};--programme-ink:${readableInk(programme.couleur!)}}`,
+    )
+    .join('');
+}
+
 /** True when a relation field arrived resolved (a story object, not a bare uuid). */
 export function isResolved(rel: unknown): rel is ISbStoryData {
   return typeof rel === 'object' && rel !== null && 'content' in rel;
@@ -153,7 +241,7 @@ function toProgramme(blok: ProjectBlok): ProgrammeSummary | undefined {
   const rel = blok.programme;
   if (isResolved(rel)) {
     const programme = rel.content as ProgrammeBlok;
-    return { nom: programme.nom, couleur: colorHex(programme.couleur) };
+    return { nom: programme.nom, slug: rel.slug, couleur: colorHex(programme.couleur) };
   }
   return undefined;
 }

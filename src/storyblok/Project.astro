@@ -10,7 +10,7 @@ import type { ProjectBlok } from '../types/storyblok';
 const { blok } = Astro.props as { blok: ProjectBlok };
 const programme = resolveProgramme(blok);
 const related = resolveRelated(blok);
-// Map datasource values (slugs) to human-readable names, as ThematiqueFilter does.
+// Map datasource values to human-readable names via the thematique datasource.
 const thematiqueEntries = await getThematiques();
 const thematiques = (blok.thematiques ?? []).map(
   (value) => thematiqueEntries.find((entry) => entry.value === value)?.name ?? value,
@@ -32,10 +32,7 @@ const rows = data.filter(([, value]) => Boolean(value));
     {blok.ville && <p class="project__ville">{blok.ville}</p>}
     {
       programme && (
-        <p
-          class="project__programme"
-          style={programme.couleur ? `--programme-color: ${programme.couleur}` : undefined}
-        >
+        <p class="project__programme" data-programme={programme.slug}>
           {programme.nom}
         </p>
       )
@@ -115,3 +112,110 @@ const rows = data.filter(([, value]) => Boolean(value));
     )
   }
 </article>
+
+<!-- Baseline: a readable article that scrolls inside the locked viewport and clears the
+     floating header. The immersive carousel + info-overlay experience is the project-page ticket. -->
+<style>
+  .project {
+    height: 100%;
+    overflow-y: auto;
+    padding: calc(var(--header-h-mobile) + var(--space-6)) var(--space-4) var(--space-8);
+  }
+  .project > * {
+    max-width: 60rem;
+    margin-inline: auto;
+  }
+  .project__header h1 {
+    margin: 0;
+    color: var(--accent);
+  }
+  .project__ville {
+    margin: var(--space-1) 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-muted);
+  }
+  .project__programme {
+    display: inline-block;
+    margin: var(--space-3) 0 0;
+    padding: var(--space-1) var(--space-3);
+    border: var(--border-w) solid var(--programme-color, var(--accent));
+    border-radius: var(--radius);
+    color: var(--programme-color, var(--accent));
+    font-size: 0.875rem;
+  }
+  .project__desc {
+    margin: var(--space-3) 0 0;
+    font-weight: 600;
+  }
+  .project__thematiques {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: 0;
+    margin: var(--space-3) 0 0;
+  }
+  .project__thematiques li {
+    padding: var(--space-1) var(--space-3);
+    border: var(--border);
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+  }
+  .project__carrousel {
+    display: grid;
+    gap: var(--space-4);
+    margin: var(--space-6) auto;
+  }
+  .project__carrousel :global(img),
+  .project__carrousel :global(video) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .project__data {
+    margin: var(--space-6) auto;
+  }
+  .project__data-row {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-2) 0;
+    border-bottom: var(--border);
+  }
+  .project__data-row dt {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-muted);
+  }
+  .project__data-row dd {
+    margin: 0;
+  }
+  .project__engagements {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    padding: 0;
+    margin: var(--space-6) auto;
+  }
+  .project__vignette {
+    max-width: 20rem;
+    margin: var(--space-6) auto;
+  }
+  .project__related {
+    margin-top: var(--space-8);
+  }
+  .project__related h2 {
+    color: var(--accent);
+  }
+
+  @media (min-width: 48rem) {
+    .project {
+      padding-top: calc(var(--header-h) + var(--space-6));
+    }
+    .project__data-row {
+      grid-template-columns: 12rem 1fr;
+      gap: var(--space-4);
+    }
+  }
+</style>
