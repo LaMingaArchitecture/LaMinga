@@ -124,7 +124,8 @@ const activeSection: 'projets' | 'atelier' | null =
     padding: var(--space-1) var(--space-3);
     border: var(--border-w) solid var(--accent);
     border-radius: var(--radius);
-    background: color-mix(in srgb, var(--color-paper) 85%, transparent);
+    /* Solid paper box — cohesive with the white logo card the labels sit beside. */
+    background: var(--color-paper);
     color: var(--accent);
     font-size: 0.9375rem;
     text-decoration: none;
@@ -151,6 +152,11 @@ const activeSection: 'projets' | 'atelier' | null =
     }
     .nav__buttons {
       display: flex;
+    }
+    .nav__btn {
+      min-width: 9rem;
+      padding: var(--space-2) var(--space-4);
+      font-size: 1.125rem;
     }
     .nav__right :global(.nav__social) {
       display: flex;

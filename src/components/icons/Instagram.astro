@@ -1,9 +1,9 @@
 ---
 /**
- * Instagram mark — official LaMinga asset (Contenus 2/SVG/Insta), outlined + optimized.
- * Themed inline: the plate/lens paint with `currentColor` (= the page --accent, so corail on the
- * home header and violet elsewhere) and the knockout paints with --color-paper. Rendered inline
- * (not <img>) precisely so currentColor resolves against the surrounding link colour.
+ * Instagram mark — monochrome outline on a TRANSPARENT background (per client feedback: no filled
+ * badge/plate). Paints with `currentColor` (= the page --accent: corail on the home header, violet
+ * elsewhere), so it themes with no per-page asset swap. Rendered inline (not <img>) so currentColor
+ * resolves against the surrounding link colour.
  */
 interface Props {
   size?: number | string;
@@ -15,35 +15,24 @@ const { size = 24, class: className } = Astro.props;
 <svg
   class:list={['icon', className]}
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 93.6 91.98"
+  viewBox="0 0 24 24"
   width={size}
   height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
   aria-hidden="true"
   focusable="false"
 >
-  <path
-    fill="currentColor"
-    d="M47.9 0s.15.08.2.08l1.42.03.95.06c10.94.73 21.2 5.37 29.05 12.86l1.01 1c7.25 7.36 11.84 16.9 12.92 27.11l.09 1.55c0 .07.03.26.08.26v6.1s-.07.19-.08.26l-.08 1.55c-1.05 10.14-5.59 19.65-12.76 27a46.9 46.9 0 0 1-29.68 13.98l-1.57.08-.35.08h-4.38l-.35-.08-1.66-.09a47 47 0 0 1-29.93-14.35C5.21 69.55.72 59.27.18 48.42L.1 47.16l-.11-.63.02-.99.09-.71.06-1.09C.67 32.69 5.31 22.2 13.09 14.23A46.94 46.94 0 0 1 43.33.18l1.02-.06c.54-.03 1.06-.01 1.55-.1zm16.92 69.17c2.99 0 5.62-2.48 5.62-5.4V28.29c0-2.87-2.56-5.4-5.49-5.4H28.84c-3.08 0-5.5 2.68-5.5 5.63v35.03c0 3.11 2.61 5.64 5.78 5.64h35.7Z"
-  ></path>
-  <path
-    class="knockout"
-    d="M45.89.02c-.49.08-1.01.06-1.55.1l-1.02.06C31.81 1 21.06 6.06 13.1 14.22 5.33 22.2.69 32.68.18 43.74l-.06 1.09-.09.71L0 0zM44.7 91.98H0V46.53l.11.63.08 1.26c.54 10.86 5.03 21.13 12.58 29.04A46.94 46.94 0 0 0 42.7 91.81l1.66.09.35.08ZM47.9 0h45.71v42.94s-.07-.19-.08-.26l-.09-1.55c-1.08-10.21-5.66-19.75-12.92-27.11l-1.01-1C71.66 5.54 61.4.9 50.46.17l-.95-.06-1.42-.03s-.24-.06-.2-.08Zm45.7 49.04v42.94H49.08l.35-.08 1.57-.08a46.9 46.9 0 0 0 29.68-13.98c7.17-7.35 11.71-16.86 12.76-27l.08-1.55c0-.07.03-.26.08-.26ZM64.82 69.17h-35.7c-3.17.01-5.78-2.52-5.78-5.63V28.52c0-2.95 2.42-5.62 5.5-5.62h36.11c2.93 0 5.5 2.53 5.5 5.4v35.49c0 2.92-2.64 5.4-5.63 5.4Zm-.23-33.26v-5.88c0-.82-.76-1.39-1.55-1.39h-5.76c-.79 0-1.54.58-1.54 1.39v6c.1.71.69 1.3 1.45 1.3h5.94c.76 0 1.45-.63 1.45-1.42ZM54.17 51.75c2.96-3.31 2.97-8.16.12-11.49-3.78-4.41-10.78-4.45-14.61-.1-2.99 3.39-2.93 8.38.14 11.7 3.83 4.15 10.56 4.13 14.36-.12Zm10.42-10.07-3.6.78c1.47 4.78.2 9.81-3.22 13.37-5.83 6.07-15.83 6.07-21.65 0-3.42-3.56-4.69-8.59-3.22-13.37l-3.68-.79v20.45c0 .73.5 1.27 1.28 1.27h32.8c.68 0 1.28-.44 1.29-1.14V41.67Z"
-  ></path>
-  <path
-    fill="currentColor"
-    d="M64.59 41.68v20.58c0 .7-.62 1.14-1.29 1.14H30.49c-.78 0-1.28-.55-1.28-1.28V41.67l3.68.79c-1.47 4.78-.2 9.8 3.22 13.37 5.83 6.07 15.82 6.07 21.65 0 3.42-3.56 4.69-8.59 3.22-13.37l3.6-.78Z"
-  ></path>
-  <path
-    fill="currentColor"
-    d="M54.17 51.75c-3.79 4.25-10.53 4.26-14.36.12-3.07-3.33-3.13-8.31-.14-11.7 3.83-4.35 10.83-4.31 14.61.1 2.85 3.33 2.84 8.18-.12 11.49Zm10.42-15.84c0 .79-.7 1.42-1.45 1.42H57.2c-.76 0-1.36-.59-1.46-1.3v-6c0-.81.76-1.39 1.55-1.39h5.76c.79 0 1.54.58 1.54 1.39z"
-  ></path>
+  <rect x="2" y="2" width="20" height="20" rx="5.5"></rect>
+  <circle cx="12" cy="12" r="4.25"></circle>
+  <circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none"></circle>
 </svg>
 
 <style>
   .icon {
     display: block;
-  }
-  .knockout {
-    fill: var(--color-paper);
   }
 </style>
