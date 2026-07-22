@@ -45,11 +45,12 @@ const platformOf = (url: string): Platform | null => {
     <ul class:list={['social-links', className]} aria-label={label}>
       {safe.map((link) => {
         const platform = platformOf(link.url);
-        const label =
+        // Always non-empty: trimmed editor label, else the detected network name, else a generic.
+        const linkLabel =
           link.plateforme?.trim() || (platform ? DISPLAY_NAME[platform] : 'Réseau social');
         return (
           <li>
-            <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={label}>
+            <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={linkLabel}>
               {platform === 'instagram' ? (
                 <Instagram />
               ) : platform === 'linkedin' ? (
@@ -58,7 +59,8 @@ const platformOf = (url: string): Platform | null => {
                 // Raw filename (the image service rasterizes SVG); decorative — the link is labelled.
                 <img src={link.icone.filename} alt="" width="24" height="24" />
               ) : (
-                link.plateforme
+                // Text fallback: the computed label (never empty), consistent with aria-label.
+                linkLabel
               )}
             </a>
           </li>
