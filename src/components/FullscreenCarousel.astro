@@ -24,7 +24,7 @@ const { ariaLabel, slideCount, counter = false, class: className, ...attrs } = A
 
 <section
   class:list={['fc', className]}
-  aria-roledescription="carousel"
+  aria-roledescription="carrousel"
   aria-label={ariaLabel}
   data-fc
   {...attrs}
@@ -37,11 +37,16 @@ const { ariaLabel, slideCount, counter = false, class: className, ...attrs } = A
     type="button"
     class="fc__arrow fc__arrow--prev"
     data-fc-prev
-    aria-label="Projet précédent"
+    aria-label="Diapositive précédente"
   >
     <Chevron direction="left" size={40} />
   </button>
-  <button type="button" class="fc__arrow fc__arrow--next" data-fc-next aria-label="Projet suivant">
+  <button
+    type="button"
+    class="fc__arrow fc__arrow--next"
+    data-fc-next
+    aria-label="Diapositive suivante"
+  >
     <Chevron direction="right" size={40} />
   </button>
 

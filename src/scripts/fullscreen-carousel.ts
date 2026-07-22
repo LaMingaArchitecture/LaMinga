@@ -22,13 +22,13 @@ const enhance = (root: HTMLElement): void => {
 
   slides.forEach((slide, i) => {
     slide.setAttribute('role', 'group');
-    slide.setAttribute('aria-roledescription', 'slide');
+    slide.setAttribute('aria-roledescription', 'diapositive');
     slide.setAttribute('aria-label', `${i + 1} sur ${count}`);
   });
 
   const render = (): void => {
     if (currentEl) currentEl.textContent = String(index + 1);
-    if (live) live.textContent = `Slide ${index + 1} sur ${count}`;
+    if (live) live.textContent = `Diapositive ${index + 1} sur ${count}`;
     if (prev) prev.disabled = index === 0;
     if (next) next.disabled = index === count - 1;
     // Never orphan focus when the focused arrow disables at an end.

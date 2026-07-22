@@ -42,17 +42,9 @@ const alt = blok.image_paysage?.alt ?? content?.titre ?? '';
 
 <style>
   .home-slide {
+    /* Slide sizing (flex/height/scroll-snap) + media object-fit are owned by FullscreenCarousel's
+       generic `.fc__track > *` rule (single source of truth); keep only slide-specific styling. */
     position: relative;
-    flex: 0 0 100%;
-    height: 100%;
-    scroll-snap-align: start;
-  }
-  .home-slide :global(img),
-  .home-slide :global(video) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
   }
   .home-slide__title {
     position: absolute;
