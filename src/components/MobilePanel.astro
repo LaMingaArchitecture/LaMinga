@@ -14,12 +14,14 @@ const tel = telHref(settings?.telephone);
 ---
 
 <div class="mobile-nav">
-  {/* Visually-hidden but focusable: the no-JS open/close control (label toggles it). */}
+  {
+    /* Visually-hidden but focusable checkbox = the no-JS open control (the burger label toggles
+      it). Its accessible name comes from that label ("Ouvrir le menu") — no aria-label override. */
+  }
   <input
     class="mobile-nav__checkbox visually-hidden"
     type="checkbox"
     id="mobile-nav-toggle"
-    aria-label="Menu"
     aria-controls="mobile-panel"
   />
   <label class="mobile-nav__burger" for="mobile-nav-toggle">
@@ -27,7 +29,7 @@ const tel = telHref(settings?.telephone);
     <span class="visually-hidden">Ouvrir le menu</span>
   </label>
 
-  {/* Scrim closes on click via the enhancement script; the in-panel ✕ is the no-JS close. */}
+  {/* Scrim closes on click (enhancement script). */}
   <div class="mobile-nav__scrim" aria-hidden="true"></div>
 
   <div
@@ -39,7 +41,7 @@ const tel = telHref(settings?.telephone);
   >
     <div class="mobile-nav__panel-head">
       <span class="mobile-nav__title">{settings?.nom_atelier ?? 'LaMinga'}</span>
-      <label class="mobile-nav__close" for="mobile-nav-toggle">
+      <button type="button" class="mobile-nav__close">
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
           <path
             d="M6 6l12 12M18 6L6 18"
@@ -49,7 +51,7 @@ const tel = telHref(settings?.telephone);
             stroke-linecap="round"></path>
         </svg>
         <span class="visually-hidden">Fermer le menu</span>
-      </label>
+      </button>
     </div>
 
     <nav class="mobile-nav__links" aria-label="Navigation">
@@ -175,6 +177,9 @@ const tel = telHref(settings?.telephone);
     width: 2.75rem;
     height: 2.75rem;
     margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-2)) 0 0;
+    padding: 0;
+    background: none;
+    border: 0;
     color: var(--accent);
     cursor: pointer;
   }

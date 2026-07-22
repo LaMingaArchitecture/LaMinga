@@ -14,7 +14,9 @@ export function telHref(telephone?: string | null): string | undefined {
 }
 
 // http(s) / mailto / tel / same-origin (relative or #anchor) are the schemes allowed in richtext.
-const SAFE_HREF = /^(?:https?:|mailto:|tel:|\/|#)/i;
+// A single leading `/` is a same-origin path; `//host` or `/\host` are protocol-relative
+// (external) and must be rejected — hence the negative lookahead.
+const SAFE_HREF = /^(?:https?:|mailto:|tel:|\/(?![/\\])|#)/i;
 
 /**
  * Defense-in-depth for editor-authored richtext links: neutralize any `href` whose scheme

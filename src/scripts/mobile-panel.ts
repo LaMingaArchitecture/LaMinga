@@ -8,6 +8,7 @@ if (root) {
   const checkbox = root.querySelector<HTMLInputElement>('.mobile-nav__checkbox');
   const panel = root.querySelector<HTMLElement>('.mobile-nav__panel');
   const scrim = root.querySelector<HTMLElement>('.mobile-nav__scrim');
+  const closeButton = panel?.querySelector<HTMLButtonElement>('.mobile-nav__close');
   const desktop = window.matchMedia('(min-width: 48rem)');
   // Regions hidden from AT / pointer while the modal panel is open (footer is a sibling of main).
   const backdrop = [
@@ -43,6 +44,7 @@ if (root) {
   });
 
   scrim?.addEventListener('click', () => close(true));
+  closeButton?.addEventListener('click', () => close(true));
 
   panel?.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
