@@ -1,0 +1,113 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import Chevron from './icons/Chevron.astro';
+import { projectSearchText } from '../lib/search';
+import type { ProjectSummary } from '../types/storyblok';
+
+interface Props {
+  projects: ProjectSummary[];
+}
+
+const { projects } = Astro.props;
+---
+
+{
+  /* Vignettes view: two rows of square plan-masse tiles on a horizontal-scroll rail (column-major,
+    so each column stacks two projects). Filtering hides non-matching <li>s; the rest regroup left. */
+}
+<div class="vignettes" data-view="grid">
+  <ul class="vignettes__rail" data-rail>
+    {
+      projects.map((project) => (
+        <li
+          class="vignettes__item"
+          data-filterable
+          data-programme={project.programme?.slug ?? ''}
+          data-thematiques={project.thematiques.join(' ')}
+          data-search={projectSearchText(project)}
+        >
+          <ProjectCard project={project} variant="vignette" />
+        </li>
+      ))
+    }
+  </ul>
+  <div class="vignettes__controls" data-rail-controls hidden>
+    <button type="button" class="vignettes__arrow" data-rail-prev aria-label="Projets précédents">
+      <Chevron direction="left" size={28} />
+    </button>
+    <button type="button" class="vignettes__arrow" data-rail-next aria-label="Projets suivants">
+      <Chevron direction="right" size={28} />
+    </button>
+  </div>
+</div>
+
+<style>
+  .vignettes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-height: 0;
+  }
+  .vignettes[hidden] {
+    display: none;
+  }
+
+  .vignettes__rail {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 var(--space-2);
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: clamp(8.5rem, 20vw, 13rem);
+    gap: var(--space-4) var(--space-3);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .vignettes__rail::-webkit-scrollbar {
+    display: none;
+  }
+  .vignettes__item {
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+  .vignettes__item[hidden] {
+    display: none;
+  }
+
+  /* Controls revealed by the script only when the rail overflows (no dead controls). */
+  .vignettes__controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+  }
+  .vignettes__controls[hidden] {
+    display: none;
+  }
+  .vignettes__arrow {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: var(--space-2);
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--color-paper);
+    color: var(--accent);
+    cursor: pointer;
+    touch-action: manipulation;
+    transition:
+      border-color var(--transition),
+      color var(--transition);
+  }
+  .vignettes__arrow:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+  .vignettes__arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+</style>

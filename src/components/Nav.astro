@@ -37,7 +37,7 @@ const activeSection: 'projets' | 'atelier' | null =
       <ul class="nav__buttons">
         <li>
           <a
-            class="nav__btn"
+            class="nav__btn brand-box"
             href="/atelier"
             aria-current={activeSection === 'atelier' ? 'page' : undefined}
           >
@@ -46,7 +46,7 @@ const activeSection: 'projets' | 'atelier' | null =
         </li>
         <li>
           <a
-            class="nav__btn"
+            class="nav__btn brand-box"
             href="/projets"
             aria-current={activeSection === 'projets' ? 'page' : undefined}
           >
@@ -118,27 +118,25 @@ const activeSection: 'projets' | 'atelier' | null =
     flex-direction: column;
     gap: var(--space-2);
   }
+  /* Box outline comes from the .brand-box utility (open-corner edges). Set background-color (not the
+     background shorthand) so hover/active fills don't wipe the edge gradients. */
   .nav__btn {
     display: block;
     min-width: 7.5rem;
     padding: var(--space-1) var(--space-3);
-    border: var(--border-w) solid var(--accent);
-    border-radius: var(--radius);
-    /* Solid paper box — cohesive with the white logo card the labels sit beside. */
-    background: var(--color-paper);
     color: var(--accent);
     font-size: 0.9375rem;
     text-decoration: none;
     text-align: left;
-    transition:
-      background var(--transition),
-      color var(--transition);
+    /* The fill swaps via --brand-box-fill (a gradient layer), which can't transition; only the text
+       colour animates. */
+    transition: color var(--transition);
   }
   .nav__btn:hover {
-    background: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
+    --brand-box-fill: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
   }
   .nav__btn[aria-current='page'] {
-    background: var(--color-beige);
+    --brand-box-fill: var(--color-beige);
     color: var(--color-ink);
     font-weight: 600;
   }
