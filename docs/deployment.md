@@ -39,15 +39,23 @@ jamais commités.
 1. **Netlify → Add new project → Import from Git** : sélectionner **le même dépôt** que la prod.
 2. **Build & deploy → Continuous deployment → Branches** : régler la branche de production sur **`main`**.
 3. Renseigner les variables d'environnement du site B (cf. §1).
-4. **Désactiver les Deploy Previews** du site B (Build & deploy → Branches and deploy contexts →
-   Deploy Previews → _Don't build_) : le site preview n'a besoin de builder que `main` ; la revue de
-   code se fait sur les Deploy Previews du site de **prod**. Évite des builds et des checks CI inutiles.
+4. **Contexte de déploiement du site B** (Build & deploy → Branches and deploy contexts) :
+   **Deploy Previews → _Don't build_** **et** **branch deploys → _Deploy only the production branch_
+   (`main`)** — identique au site A (§3 étape 0). Le site B n'a jamais besoin de preview de PR : son
+   `/preview/` récupère le `draft` en direct (SSR), donc seul un **changement de code** justifie un
+   rebuild, c.-à-d. sur merge dans `main`. Évite des builds inutiles.
 5. Le gate d'accès (edge function `preview-auth`, déclaré dans `netlify.toml` et
    `netlify/edge-functions/`) s'active tout seul sur le site B (`STORYBLOK_VERSION=draft`) et reste
    inerte sur la prod.
 
 ## 3. Build hook + webhook de publication (prod uniquement)
 
+0. **Contexte de déploiement du site A (build uniquement sur merge).** Build & deploy → Branches and
+   deploy contexts : **Deploy Previews → _Don't build_** et **branch deploys → _Deploy only the
+   production branch_ (`main`)**. La prod ne build alors que lorsqu'un merge atterrit sur `main` — la
+   revue de PR se fait **en local** (`pnpm build && pnpm preview`, ou `pnpm dev`), pas via une preview
+   hébergée. Motif : sous le modèle à crédits, **chaque** build (Deploy Preview et branch deploy
+   compris) consomme des crédits (cf. § Coût).
 1. **Site A → Build & deploy → Build hooks** : créer un hook `storyblok-publish` ciblant `main`.
    Copier l'URL (`https://api.netlify.com/build_hooks/…`).
 2. **Storyblok → Settings → Webhooks** : sur l'événement **Story published / unpublished**, coller
@@ -88,12 +96,20 @@ script qui choisit la version (cf. `.env.example`).
 
 ## Coût (plan Free, modèle à crédits)
 
-Chaque merge sur `main` déclenche **deux production deploys** (site A + site B) ≈ **30 crédits** sur
-les **300 crédits/mois** (plafond strict, sans dépassement). Acceptable pour des merges peu
-fréquents ; les Deploy Previews de PR et les branch deploys ne sont pas comptés.
+Sous le modèle à crédits, **tout** build consomme des crédits — production, Deploy Preview **et**
+branch deploy compris (300 crédits/mois, plafond strict, sans dépassement). D'où la stratégie
+**build uniquement sur merge** : les Deploy Previews et branch deploys sont désactivés sur les deux
+sites (cf. §2 pour B, §3 étape 0 pour A), donc rien ne build tant que le code n'atterrit pas sur
+`main`. Chaque merge déclenche alors **deux production deploys** (site A + site B) ≈ **30 crédits**,
+soit ~10 merges/mois de marge — confortable, les merges de code étant peu fréquents et les
+changements de contenu passant par le webhook (build hook), bon marché.
+
+Filet de sécurité : `netlify.toml` définit un `ignore` qui annule le build quand un push ne touche
+**que** des fichiers `*.md` / `docs/` — même sur `main`.
 
 ## Promotion du code
 
-Une feature = une branche = une PR = un Deploy Preview. La promotion = le merge sur `main` (revue +
-CI), qui redéploie **les deux** sites depuis `main`. Le contenu des éditeurs se publie
+Une feature = une branche = une PR, **revue en local** (`pnpm build && pnpm preview`) — pas de
+Deploy Preview hébergé (désactivé pour économiser les crédits). La promotion = le merge sur `main`
+(revue + CI), qui redéploie **les deux** sites depuis `main`. Le contenu des éditeurs se publie
 automatiquement via le webhook. En cas de souci : rollback Netlify en un clic.
