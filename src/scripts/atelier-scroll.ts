@@ -10,8 +10,11 @@ const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)');
 // frame rules. Parallax runs only here; elsewhere the page is a plain scrolling document.
 const DESKTOP = window.matchMedia('(min-width: 48rem) and (orientation: landscape)');
 
-// Reveal each panel as it enters the viewport; the first present panel is revealed synchronously so
-// an above-the-fold panel never flashes from its hidden start state before the observer fires.
+// Reveal each panel as it enters the viewport. Any panel already on screen at load is revealed
+// synchronously so it never flashes from its hidden start state before the async observer's first
+// callback — this covers the first section AND whatever a restored scroll position (reload /
+// back-nav) lands on. A panel whose centre is off-screen (a below-the-fold section, or one clipped
+// by the desktop article) stays hidden and fades in on scroll as intended.
 const setupReveal = (sections: HTMLElement[]): void => {
   const io = new IntersectionObserver(
     (entries) => {
@@ -21,11 +24,17 @@ const setupReveal = (sections: HTMLElement[]): void => {
     },
     { threshold: 0.25 },
   );
-  sections.forEach((section) => {
-    const panel = section.querySelector<HTMLElement>('[data-atelier-panel]');
-    if (panel) io.observe(panel);
+  const panels = sections
+    .map((section) => section.querySelector<HTMLElement>('[data-atelier-panel]'))
+    .filter((panel): panel is HTMLElement => panel !== null);
+  panels.forEach((panel) => io.observe(panel));
+  // Read all rects, then write — reveal panels whose centre is currently within the viewport.
+  const onScreen = panels.filter((panel) => {
+    const rect = panel.getBoundingClientRect();
+    const centre = rect.top + rect.height / 2;
+    return centre > 0 && centre < window.innerHeight;
   });
-  sections[0]?.querySelector<HTMLElement>('[data-atelier-panel]')?.classList.add('is-visible');
+  onScreen.forEach((panel) => panel.classList.add('is-visible'));
 };
 
 // Play only the ≥60%-visible section's <video> (there may be none), pause the rest — and pause all
