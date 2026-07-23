@@ -115,10 +115,16 @@ reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté
 
 ### `atelier_page` (content type — story `atelier`)
 
+Quatre sections plein écran défilées verticalement (vidéo → manifeste → clients → équipe), chacune
+avec son fond propre. Champs média optionnels : une section au contenu vide est masquée.
+
 | Champ                   | Type     | Config                                             |
 | ----------------------- | -------- | -------------------------------------------------- |
-| `video`                 | asset    | filetypes: videos (intro, plan fixe)               |
-| `image`                 | asset    | illustration                                       |
+| `video`                 | asset    | filetypes: videos (fond §1, intro, plan fixe)      |
+| `poster`                | asset    | filetypes: images — poster de la vidéo §1          |
+| `image`                 | asset    | illustration (fond §2)                             |
+| `image_clients`         | asset    | filetypes: images — fond §3 (clients)              |
+| `image_equipe`          | asset    | filetypes: images — fond §4 (équipe)               |
 | `titre_minga`           | text     | opt. — défaut « Minga (tradition sud-américaine) » |
 | `texte_minga`           | richtext |                                                    |
 | `titre_construire`      | text     | opt. — défaut « Construire ensemble »              |

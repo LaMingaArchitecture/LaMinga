@@ -107,7 +107,13 @@ export interface ProjectListBlok extends SbBlokData {
 export interface AtelierPageBlok extends SbBlokData {
   component: 'atelier_page';
   video?: StoryblokAsset;
+  /** Poster still for the §1 intro video. */
+  poster?: StoryblokAsset;
   image?: StoryblokAsset;
+  /** §3 clients section background. */
+  image_clients?: StoryblokAsset;
+  /** §4 team section background. */
+  image_equipe?: StoryblokAsset;
   titre_minga?: string;
   texte_minga?: RichText;
   titre_construire?: string;

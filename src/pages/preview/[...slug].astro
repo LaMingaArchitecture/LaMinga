@@ -36,8 +36,19 @@ const content = await fetchDraftContent();
 if (!content) {
   return new Response(`Aperçu introuvable : ${slug}`, { status: 404 });
 }
+
+// Mirror each page's production chrome so the Visual Editor preview matches the live page. The
+// Atelier needs its immersive fullscreen-scroll frame (footer + overlaid header + immersiveScroll);
+// every other story keeps the plain scrolling document.
+const isAtelier = content.component === 'atelier_page';
 ---
 
-<BaseLayout title="Aperçu — LaMinga" scroll>
+<BaseLayout
+  title="Aperçu — LaMinga"
+  scroll={!isAtelier}
+  footer={isAtelier}
+  immersive={isAtelier}
+  immersiveScroll={isAtelier}
+>
   <StoryblokComponent blok={content} />
 </BaseLayout>

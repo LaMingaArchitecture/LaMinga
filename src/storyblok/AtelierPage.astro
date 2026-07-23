@@ -2,12 +2,12 @@
 import { storyblokEditable } from '@storyblok/astro';
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import RichText from './RichText.astro';
-import ResponsiveMedia from './ResponsiveMedia.astro';
-import { sbImage } from '../lib/image';
+import AtelierBg from './AtelierBg.astro';
 import type { AtelierPageBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: AtelierPageBlok };
 
+// Hard-coded FR column labels (marketing team names them in the design, not in Storyblok).
 const clients: Array<[string, string | undefined]> = [
   ['Collectivités', blok.clients_collectivites],
   ['OPH', blok.clients_oph],
@@ -15,57 +15,68 @@ const clients: Array<[string, string | undefined]> = [
 ];
 const clientCols = clients.filter(([, value]) => Boolean(value));
 const equipe = blok.equipe ?? [];
+const hasManifeste = Boolean(blok.image?.filename || blok.texte_minga || blok.texte_construire);
 ---
 
-<article class="atelier" {...storyblokEditable(blok)}>
+{
+  /* The Atelier is the site's one scrolling page. Mobile: a normal scrolling document. Desktop
+    (≥48rem landscape, via global.css): a fixed viewport whose sections scroll-snap fullscreen —
+    a full-bleed background (video §1, photos §2–4) under a translucent bleu-clair panel. A tiny
+    vanilla island (atelier-scroll) adds panel reveals + a subtle background parallax; with no JS
+    the native scroll-snap track still works and every panel stays visible. Empty sections skip. */
+}
+<article
+  class="atelier"
+  aria-label="Atelier LaMinga — présentation en sections plein écran"
+  data-atelier
+  {...storyblokEditable(blok)}
+>
   {
     blok.video?.filename && (
-      <section class="atelier__video">
-        <ResponsiveMedia video={blok.video} alt="" loading="eager" />
+      <section class="atelier__sec atelier__sec--video" data-atelier-sec>
+        <AtelierBg video={blok.video} poster={blok.poster} />
       </section>
     )
   }
 
-  <section class="atelier__manifeste">
-    {
-      blok.image?.filename && (
-        <img
-          class="atelier__illustration"
-          src={sbImage(blok.image.filename, '1600x0')}
-          alt={blok.image.alt ?? ''}
-          loading="lazy"
-        />
-      )
-    }
-    {
-      blok.texte_minga && (
-        <div class="atelier__minga">
-          <h2>{blok.titre_minga ?? 'Minga (tradition sud-américaine)'}</h2>
-          <RichText doc={blok.texte_minga} />
+  {
+    hasManifeste && (
+      <section class="atelier__sec atelier__sec--manifeste" data-atelier-sec>
+        {blok.image?.filename && <AtelierBg image={blok.image} />}
+        <div class="atelier__panel atelier__panel--manifeste" data-atelier-panel>
+          {blok.texte_minga && (
+            <div class="atelier__block">
+              <h2 class="atelier__title">
+                {blok.titre_minga ?? 'Minga (tradition sud-américaine)'}
+              </h2>
+              <RichText doc={blok.texte_minga} />
+            </div>
+          )}
+          {blok.texte_construire && (
+            <div class="atelier__block">
+              <h2 class="atelier__title">{blok.titre_construire ?? 'Construire ensemble'}</h2>
+              <RichText doc={blok.texte_construire} />
+            </div>
+          )}
         </div>
-      )
-    }
-    {
-      blok.texte_construire && (
-        <div class="atelier__construire">
-          <h2>{blok.titre_construire ?? 'Construire ensemble'}</h2>
-          <RichText doc={blok.texte_construire} />
-        </div>
-      )
-    }
-  </section>
+      </section>
+    )
+  }
 
   {
     clientCols.length > 0 && (
-      <section class="atelier__clients">
-        <h2>{blok.titre_clients ?? 'Des clients engagés'}</h2>
-        <div class="atelier__clients-cols">
-          {clientCols.map(([label, value]) => (
-            <div class="atelier__clients-col">
-              <h3>{label}</h3>
-              <p class="pre-line">{value}</p>
-            </div>
-          ))}
+      <section class="atelier__sec atelier__sec--clients" data-atelier-sec>
+        {blok.image_clients?.filename && <AtelierBg image={blok.image_clients} />}
+        <div class="atelier__panel atelier__panel--clients" data-atelier-panel>
+          <h2 class="atelier__title">{blok.titre_clients ?? 'Des clients engagés'}</h2>
+          <div class="atelier__clients-cols">
+            {clientCols.map(([label, value]) => (
+              <div class="atelier__clients-col">
+                <h3 class="atelier__col-title">{label}</h3>
+                <p class="atelier__clients-list pre-line">{value}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     )
@@ -73,75 +84,161 @@ const equipe = blok.equipe ?? [];
 
   {
     equipe.length > 0 && (
-      <section class="atelier__equipe">
-        <h2>{blok.titre_equipe ?? 'LaMinga, une équipe soudée, des partenaires engagés'}</h2>
-        <ul class="team-grid">
-          {equipe.map((member) => (
-            <li>
-              <StoryblokComponent blok={member} />
-            </li>
-          ))}
-        </ul>
+      <section class="atelier__sec atelier__sec--equipe" data-atelier-sec>
+        {blok.image_equipe?.filename && <AtelierBg image={blok.image_equipe} />}
+        <div class="atelier__panel atelier__panel--equipe" data-atelier-panel>
+          <h2 class="atelier__title">
+            {blok.titre_equipe ?? 'LaMinga, une équipe soudée, des partenaires engagés'}
+          </h2>
+          <ul class="team-grid">
+            {equipe.map((member) => (
+              <li>
+                <StoryblokComponent blok={member} />
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
     )
   }
 </article>
 
-<!-- Baseline: readable stacked sections for the one scrolling page. Refined by the atelier ticket. -->
+<script>
+  import '../scripts/atelier-scroll';
+</script>
+
 <style>
-  .atelier > section {
-    padding: var(--space-8) var(--space-4);
+  /* ---- Base = mobile-first: sections stack full-height; the document scrolls (global.css frame). */
+  .atelier {
+    position: relative;
   }
-  .atelier > section + section {
-    border-top: var(--border);
+  .atelier__sec {
+    position: relative;
+    min-height: 100svh;
+    overflow: hidden;
+    padding: calc(var(--header-h-mobile) + var(--space-5)) var(--space-4) var(--space-5);
   }
-  .atelier__video :global(video),
-  .atelier__illustration {
-    width: 100%;
-    height: auto;
-    max-height: 70svh;
-    object-fit: cover;
-    border-radius: var(--radius);
-  }
-  .atelier__manifeste,
-  .atelier__clients {
-    max-width: 60rem;
+
+  /* ---- Translucent bleu-clair panel (recipe shared with the project overlays). ---------------- */
+  .atelier__panel {
+    position: relative;
+    z-index: 1;
     margin-inline: auto;
-    display: grid;
-    gap: var(--space-6);
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--couleur-bleu-clair) 92%, transparent);
+    border-radius: var(--radius);
+    padding: var(--space-6);
   }
-  .atelier :where(h2) {
-    margin: 0;
-    color: var(--accent);
+  .atelier__panel--manifeste {
+    max-width: 40rem;
   }
+  .atelier__panel--clients,
+  .atelier__panel--equipe {
+    width: 100%;
+    max-width: 76rem;
+  }
+  .atelier__block + .atelier__block {
+    margin-top: var(--space-6);
+  }
+
+  /* Coral italic-serif headings (the design's accent voice), on every section + column. */
+  .atelier__title {
+    margin: 0 0 var(--space-4);
+    color: var(--color-coral);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.4rem, 1rem + 1.6vw, 2rem);
+    line-height: 1.2;
+  }
+
   .atelier__clients-cols {
     display: grid;
     gap: var(--space-6);
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
   }
-  .atelier__clients-col h3 {
-    margin: 0 0 var(--space-2);
+  .atelier__col-title {
+    margin: 0 0 var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: var(--border-w) solid var(--color-coral);
+    color: var(--color-coral);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.25rem;
   }
-  .atelier__clients-col p {
+  .atelier__clients-list {
     margin: 0;
+    color: var(--color-ink);
+    font-weight: 600;
+    line-height: 1.7;
   }
-  .atelier__equipe {
-    max-width: 72rem;
-    margin-inline: auto;
-  }
+
   .team-grid {
     list-style: none;
+    margin: var(--space-5) 0 0;
     padding: 0;
-    margin: var(--space-6) 0 0;
     display: grid;
-    gap: var(--space-6);
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: var(--space-5);
+    /* Cap photo width so 5 members read as a row of framed portraits (mockup), not huge tiles. */
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 11rem));
+    justify-content: center;
   }
-  .team-grid :global(img) {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: var(--radius);
+  .team-grid > li {
+    margin: 0;
+  }
+
+  /* ---- Reveal (JS-only): panels rise + fade in on entry; the first section shows immediately. --
+     Gated on .atelier--enhanced so with no JS every panel is fully visible from the start. */
+  .atelier--enhanced .atelier__panel {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition:
+      opacity 600ms ease,
+      transform 600ms ease;
+  }
+  .atelier--enhanced .atelier__panel.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---- Desktop enhancement (≥48rem landscape): the fixed-viewport scroll-snap track. The
+     breakpoint matches global.css's frame rules and atelier-scroll.ts's parallax guard. --------- */
+  @media (min-width: 48rem) and (orientation: landscape) {
+    .atelier {
+      height: 100%;
+      overflow-y: auto;
+      scroll-snap-type: y proximity;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+    }
+    .atelier::-webkit-scrollbar {
+      display: none;
+    }
+    .atelier__sec {
+      /* min-height (not fixed height): sections that fit stay exactly one screen and snap cleanly;
+         a taller one (the team grid on short screens) grows and scrolls within the track — no
+         nested panel scroll. */
+      min-height: 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Top pad clears the overlaid (absolute) header; bottom pad breathes above the footer bar. */
+      padding: calc(var(--header-h) + var(--space-6)) var(--space-4) var(--space-6);
+    }
+    .atelier__sec--manifeste {
+      justify-content: flex-end;
+    }
+  }
+
+  /* Reduced motion: no reveal transition — content is simply present (parallax reset lives in
+     AtelierBg; the global kill-switch zeroes the transitions). */
+  @media (prefers-reduced-motion: reduce) {
+    .atelier--enhanced .atelier__panel {
+      opacity: 1;
+      transform: none;
+    }
   }
 </style>

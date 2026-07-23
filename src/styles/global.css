@@ -100,6 +100,35 @@ body.panel-open {
   overflow: hidden;
 }
 
+/* Atelier — mobile-first immersive scroll frame (BaseLayout sets data-immersive-scroll). Base =
+   a normal scrolling document with a pinned header, so the tall footer sits after the last section
+   and the burger stays reachable. From 48rem in landscape the viewport locks and the page's inner
+   article scroll-snaps between fullscreen sections (article/section rules live in AtelierPage.astro;
+   the `(min-width:48rem) and (orientation:landscape)` breakpoint is shared with that scoped CSS and
+   with atelier-scroll.ts's parallax guard — keep the three in sync). The :not(.panel-open) guard
+   keeps the mobile menu's scroll-lock working; the header overrides only `position` (data-immersive
+   still supplies the transparent overlay background). */
+body[data-immersive-scroll] {
+  height: auto;
+}
+body[data-immersive-scroll]:not(.panel-open) {
+  overflow-y: auto;
+}
+body[data-immersive-scroll] > header {
+  position: fixed;
+}
+@media (min-width: 48rem) and (orientation: landscape) {
+  body[data-immersive-scroll] {
+    height: 100svh;
+  }
+  body[data-immersive-scroll]:not(.panel-open) {
+    overflow: hidden;
+  }
+  body[data-immersive-scroll] > header {
+    position: absolute;
+  }
+}
+
 /* ---- Utilities ----------------------------------------------------------- */
 .visually-hidden {
   position: absolute;

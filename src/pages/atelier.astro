@@ -7,6 +7,6 @@ import { getAtelierPage } from '../lib/content';
 const blok = await getAtelierPage();
 ---
 
-<BaseLayout title="Atelier — LaMinga" footer scroll noindex={!blok}>
+<BaseLayout title="Atelier — LaMinga" footer immersive immersiveScroll noindex={!blok}>
   {blok ? <StoryblokComponent blok={blok} /> : <ContentNotice />}
 </BaseLayout>

@@ -1,5 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
+import RichText from './RichText.astro';
 import { sbImage } from '../lib/image';
 import type { TeamMemberBlok } from '../types/storyblok';
 
@@ -10,14 +11,59 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
   {
     blok.photo?.filename && (
       <img
+        class="team-member__photo"
         src={sbImage(blok.photo.filename, '500x500')}
         alt={blok.photo.alt ?? blok.nom}
+        width="500"
+        height="500"
         loading="lazy"
       />
     )
   }
-  <figcaption>
+  <figcaption class="team-member__caption">
     <span class="team-member__name">{blok.nom}</span>
     {blok.role && <span class="team-member__role">{blok.role}</span>}
+    {blok.bio && <RichText doc={blok.bio} />}
   </figcaption>
 </figure>
+
+<style>
+  .team-member {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  /* Black-and-white via CSS so colour uploads still render greyscale; coral frame from the design. */
+  .team-member__photo {
+    width: 100%;
+    /* height:auto lets aspect-ratio drive the square; without it the width/height attrs (CLS hints)
+       set an explicit height that combines with width:100% and distorts the crop. */
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border: 2px solid var(--color-coral);
+    filter: grayscale(100%);
+  }
+  .team-member__caption {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .team-member__name {
+    color: var(--color-coral);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .team-member__role {
+    color: var(--color-coral);
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+  .team-member :global(.richtext) {
+    margin-top: var(--space-2);
+    color: var(--color-ink);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+</style>
