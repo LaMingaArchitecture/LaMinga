@@ -118,6 +118,37 @@ body.panel-open {
   white-space: pre-line;
 }
 
+/* Brand boxed element (architectural-sketch look): a thin accent outline drawn as four separate
+   edge strokes that stop short of the corners, so the corners stay open (never linked). No real
+   border / box-shadow — the four edges are background gradients inset by --brand-box-gap. The base
+   fill is the page paper; a *selected* fill (--brand-box-fill) is drawn as an extra layer inset by
+   the same gap, so the white corners survive when active (set --brand-box-fill, never a background
+   shorthand, which would wipe the edges). Used on the nav menu buttons + Liste table cells. */
+.brand-box {
+  background-color: var(--color-paper);
+  background-image:
+    /* four open-corner edges (painted on top) */
+    linear-gradient(var(--brand-box-line), var(--brand-box-line)),
+    linear-gradient(var(--brand-box-line), var(--brand-box-line)),
+    linear-gradient(var(--brand-box-line), var(--brand-box-line)),
+    linear-gradient(var(--brand-box-line), var(--brand-box-line)),
+    /* inset selected fill (transparent unless --brand-box-fill is set) */
+    linear-gradient(var(--brand-box-fill, transparent), var(--brand-box-fill, transparent));
+  background-repeat: no-repeat;
+  background-position:
+    var(--brand-box-gap) 0,
+    var(--brand-box-gap) 100%,
+    0 var(--brand-box-gap),
+    100% var(--brand-box-gap),
+    center;
+  background-size:
+    calc(100% - 2 * var(--brand-box-gap)) var(--brand-box-w),
+    calc(100% - 2 * var(--brand-box-gap)) var(--brand-box-w),
+    var(--brand-box-w) calc(100% - 2 * var(--brand-box-gap)),
+    var(--brand-box-w) calc(100% - 2 * var(--brand-box-gap)),
+    calc(100% - 2 * var(--brand-box-gap)) calc(100% - 2 * var(--brand-box-gap));
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

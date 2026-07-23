@@ -4,29 +4,44 @@ import type { ProjectSummary } from '../types/storyblok';
 
 interface Props {
   project: ProjectSummary;
+  /** 'card' = 4/3 cover + programme label (related strip); 'vignette' = square plan-masse tile (Projets rail). */
+  variant?: 'card' | 'vignette';
 }
 
-const { project } = Astro.props;
-// Grid/related vignette: the B/W plan-masse if present, else the cover photo.
+const { project, variant = 'card' } = Astro.props;
+const isVignette = variant === 'vignette';
+// Plan-masse vignette preferred, else the cover photo (VRAC fallback).
 const visual = project.vignette ?? project.photo;
-const cover = visual?.filename ? sbImage(visual.filename, '800x600') : '';
+const cover = visual?.filename ? sbImage(visual.filename, isVignette ? '600x600' : '800x600') : '';
 ---
 
-<a class="project-card" href={`/projets/${project.slug}`} data-programme={project.programme?.slug}>
+<a
+  class:list={['project-card', { 'project-card--vignette': isVignette }]}
+  href={`/projets/${project.slug}`}
+  data-programme={project.programme?.slug}
+>
   {
-    cover && (
+    cover ? (
       <img
         class="project-card__cover"
         src={cover}
         alt={visual?.alt ?? project.titre}
         loading="lazy"
       />
+    ) : (
+      isVignette && (
+        <span class="project-card__cover project-card__cover--empty" aria-hidden="true" />
+      )
     )
   }
   <p class="project-card__title">
     {project.titre}{project.ville && <span class="project-card__ville"> — {project.ville}</span>}
   </p>
-  {project.programme && <p class="project-card__programme">{project.programme.nom}</p>}
+  {
+    !isVignette && project.programme && (
+      <p class="project-card__programme">{project.programme.nom}</p>
+    )
+  }
 </a>
 
 <style>
@@ -69,5 +84,34 @@ const cover = visual?.filename ? sbImage(visual.filename, '800x600') : '';
     padding: 0 var(--space-3) var(--space-3);
     font-size: 0.75rem;
     color: var(--color-muted);
+  }
+
+  /* Vignette variant — square plan-masse tile for the Projets rail. The square + caption stay
+     neutral until a programme filter is active; the explorer root then colours the cover border +
+     caption (see a :global rule in ProjectExplorer), using each tile's own --programme-color. */
+  .project-card--vignette {
+    border: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+  .project-card--vignette:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .project-card--vignette .project-card__cover {
+    aspect-ratio: 1 / 1;
+    background: var(--color-paper);
+    border: var(--border-w) solid transparent;
+  }
+  /* Placeholder square when a project has no plan-masse / cover image (keeps the rail structured).
+     Scoped under .project-card--vignette so it out-ranks that rule's `border: … transparent`. */
+  .project-card--vignette .project-card__cover--empty {
+    display: block;
+    width: 100%;
+    border-color: var(--color-line);
+  }
+  .project-card--vignette .project-card__title {
+    padding: var(--space-2) 0 0;
+    color: var(--accent);
   }
 </style>

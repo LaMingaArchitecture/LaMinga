@@ -10,7 +10,7 @@ Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga 
 
 - **`thematique`** (slug `thematique`) — alimente la 2ᵉ ligne de filtres de la page Projets.
   Entrées (name → value) : Restructuration → `restructuration`, Sur-élévation → `sur-elevation`,
-  Réemploi → `reemploi` (liste évolutive). Le bouton **« Index »** est un basculement de vue, **pas**
+  Réemploi → `reemploi` (liste évolutive). L'affichage **« Liste »** est un basculement de vue, **pas**
   une entrée de datasource.
 
 > Les valeurs sont gérées par les éditeurs ; le code n'en code aucune en dur.
@@ -24,8 +24,8 @@ Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga 
 
 ## Contrat d'URL de la page Projets
 
-La page Projets porte les filtres (programme + thématique) et le basculement grille/Index. Elle lit
-ces paramètres de requête au chargement (liens profonds + état partageable) et met à jour l'URL +
+La page Projets porte les filtres (programme + thématique) et le basculement Vignettes/Liste. Elle
+lit ces paramètres de requête au chargement (liens profonds + état partageable) et met à jour l'URL +
 `sessionStorage` quand ils changent, de sorte qu'un retour sur `/projets` restaure les **filtres
 précédents**. Paramètres indépendants et combinables (vocabulaire FR, cohérent avec le contenu) :
 
@@ -33,10 +33,12 @@ précédents**. Paramètres indépendants et combinables (vocabulaire FR, cohér
 | -------------------- | ------------------------------------------------------ | ------------------------------ |
 | `programme=<slug>`   | slug de la story `programme` (ex. `logement`)          | pré-sélectionne un programme   |
 | `thematique=<value>` | `value` de la datasource `thematique` (ex. `reemploi`) | pré-sélectionne une thématique |
-| `vue=index`          | —                                                      | ouvre la vue Index (tableau)   |
+| `vue=index`          | —                                                      | ouvre la vue Liste (tableau)   |
 
 Exemple combiné : `/projets?vue=index&programme=logement`. Une valeur absente ou inconnue est
-ignorée (état par défaut : grille, « Tous »). Implémenté dans `src/components/ProjectExplorer.astro`.
+ignorée (état par défaut : Vignettes, « Tous »). La **Recherche** (champ texte) filtre en direct mais
+reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté dans
+`src/components/ProjectExplorer.astro`.
 
 ### `programme` (content type — stories sous `programmes/`)
 

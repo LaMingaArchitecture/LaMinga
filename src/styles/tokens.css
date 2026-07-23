@@ -82,6 +82,13 @@
   --border-accent: var(--border-w) solid var(--accent);
   /* Structural separators between header / content / footer — visible, accent-tinted. */
   --border-rule: var(--border-w) solid color-mix(in srgb, var(--accent) 32%, transparent);
+  /* Brand boxed element: a thin accent outline whose four edges stop just short of the corners,
+     leaving them open (architectural-sketch look). Drawn as four edge strokes — see .brand-box in
+     global.css. When selected, the fill is inset by the same gap so the corners stay open.
+     Applied to the nav menu buttons + Liste table cells. */
+  --brand-box-gap: 3px;
+  --brand-box-w: 1px;
+  --brand-box-line: var(--accent);
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;

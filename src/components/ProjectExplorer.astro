@@ -1,5 +1,6 @@
 ---
-import ProjectCard from './ProjectCard.astro';
+import ProjectVignettes from './ProjectVignettes.astro';
+import ProjectIndexTable from './ProjectIndexTable.astro';
 import type { ProgrammeLink, ProjectSummary, ThematiqueEntry } from '../types/storyblok';
 
 interface Props {
@@ -9,149 +10,148 @@ interface Props {
 }
 
 const { projects, programmes, thematiques } = Astro.props;
+
 // Only surface programmes / thematiques actually used by published projects.
 const usedProgrammes = new Set(projects.map((p) => p.programme?.slug).filter(Boolean));
 const usedThematiques = new Set(projects.flatMap((p) => p.thematiques));
 const programmeFilters = programmes.filter((p) => usedProgrammes.has(p.slug));
 const thematiqueFilters = thematiques.filter((t) => usedThematiques.has(t.value));
+
+// Which programmes each thematique appears in → the script uses this to keep row 2 limited to the
+// thematiques present in the selected programme's projects (all in-use thematiques when none).
+const thematiqueProgrammes = new Map<string, Set<string>>();
+for (const project of projects) {
+  const slug = project.programme?.slug;
+  if (!slug) continue;
+  for (const value of project.thematiques) {
+    let set = thematiqueProgrammes.get(value);
+    if (!set) {
+      set = new Set<string>();
+      thematiqueProgrammes.set(value, set);
+    }
+    set.add(slug);
+  }
+}
+const programmesForThematique = (value: string) =>
+  [...(thematiqueProgrammes.get(value) ?? [])].join(' ');
 ---
 
 <div class="explorer" data-explorer>
-  <div class="explorer__filters">
-    {
-      programmeFilters.length > 0 && (
-        <div class="explorer__row" role="group" aria-label="Filtrer par programme">
-          {/* data-programme-filter drives the JS filter; data-programme receives the
-              --programme-color / --programme-ink vars from BaseLayout's global colour map. */}
-          {programmeFilters.map((programme) => (
-            <button
-              type="button"
-              class="explorer__chip explorer__chip--programme"
-              data-programme-filter={programme.slug}
-              data-programme={programme.slug}
-              aria-pressed="false"
-            >
-              {programme.nom}
-            </button>
-          ))}
-        </div>
-      )
-    }
-    <div class="explorer__row explorer__row--thematiques">
-      <div class="explorer__thematiques" role="group" aria-label="Filtrer par thématique">
-        {
-          thematiqueFilters.map((thematique) => (
-            <button
-              type="button"
-              class="explorer__chip"
-              data-thematique-filter={thematique.value}
-              aria-pressed="false"
-            >
-              {thematique.name}
-            </button>
-          ))
-        }
-      </div>
+  <div class="explorer__sticky">
+    <div class="explorer__filters">
+      {
+        programmeFilters.length > 0 && (
+          <div class="explorer__row" role="group" aria-label="Filtrer par programme">
+            {/* data-programme-filter drives the JS filter; data-programme receives the
+                --programme-color / --programme-ink vars from BaseLayout's global colour map. */}
+            {programmeFilters.map((programme) => (
+              <button
+                type="button"
+                class="explorer__chip explorer__chip--programme"
+                data-programme-filter={programme.slug}
+                data-programme={programme.slug}
+                aria-pressed="false"
+              >
+                {programme.nom}
+              </button>
+            ))}
+          </div>
+        )
+      }
+      {
+        thematiqueFilters.length > 0 && (
+          <div class="explorer__row" role="group" aria-label="Filtrer par thématique">
+            {thematiqueFilters.map((thematique) => (
+              <button
+                type="button"
+                class="explorer__chip explorer__chip--thematique"
+                data-thematique-filter={thematique.value}
+                data-thematique-programmes={programmesForThematique(thematique.value)}
+                aria-pressed="false"
+              >
+                {thematique.name}
+              </button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    <div class="explorer__tools" role="group" aria-label="Affichage et recherche">
+      <button type="button" class="explorer__tool" data-view-vignettes aria-pressed="true">
+        Affichage Vignettes
+      </button>
+      <button type="button" class="explorer__tool" data-view-index aria-pressed="false">
+        Affichage Liste
+      </button>
       <button
         type="button"
-        class="explorer__chip explorer__index-toggle"
-        data-view-toggle
-        aria-pressed="false"
+        class="explorer__tool"
+        data-search-toggle
+        aria-expanded="false"
+        aria-controls="projets-recherche"
       >
-        Index
+        Recherche
       </button>
+      <input
+        type="search"
+        id="projets-recherche"
+        class="explorer__search"
+        data-search-input
+        placeholder="Rechercher un projet…"
+        aria-label="Rechercher un projet"
+        hidden
+      />
     </div>
   </div>
 
-  <p class="explorer__empty" data-empty hidden>Aucun projet ne correspond à ces filtres.</p>
-
-  {/* Grid view — plan-masse / cover vignettes */}
-  <ul class="project-grid" data-view="grid">
-    {
-      projects.map((project) => (
-        <li
-          data-filterable
-          data-programme={project.programme?.slug ?? ''}
-          data-thematiques={project.thematiques.join(' ')}
-        >
-          <ProjectCard project={project} />
-        </li>
-      ))
-    }
-  </ul>
-
-  {/* Index view — table */}
-  <div class="explorer__index" data-view="index" hidden>
-    <table class="index-table">
-      <thead>
-        <tr>
-          <th scope="col">Nom du projet</th>
-          <th scope="col">Maîtrise d'ouvrage</th>
-          <th scope="col">Lieu</th>
-          <th scope="col">Programme</th>
-          <th scope="col">Statut</th>
-          <th scope="col"><span class="visually-hidden">Lien</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          projects.map((project) => (
-            <tr
-              data-filterable
-              data-programme={project.programme?.slug ?? ''}
-              data-thematiques={project.thematiques.join(' ')}
-            >
-              <th scope="row">
-                <a href={`/projets/${project.slug}`}>{project.titre}</a>
-              </th>
-              <td>{project.maitre_ouvrage}</td>
-              <td>{project.ville}</td>
-              <td>{project.description_programme}</td>
-              <td>{project.statut}</td>
-              <td class="index-table__link">
-                <a href={`/projets/${project.slug}`}>Voir le projet</a>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
+  <div class="explorer__views">
+    <p class="explorer__empty" data-empty hidden>Aucun projet ne correspond à ces filtres.</p>
+    <ProjectVignettes projects={projects} />
+    <ProjectIndexTable projects={projects} />
   </div>
 </div>
 
 <style>
   .explorer {
-    max-width: 72rem;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  /* Filters + tool row stay visible while the views scroll with the page. */
+  .explorer__sticky {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    background: var(--color-beige-10);
   }
   .explorer__filters {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    margin-bottom: var(--space-6);
   }
   .explorer__row {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
   }
-  .explorer__row--thematiques {
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-  .explorer__thematiques {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
 
   .explorer__chip {
-    padding: var(--space-1) var(--space-3);
+    flex: 1 1 9rem;
+    min-width: 8rem;
+    max-width: 14rem;
+    padding: var(--space-2) var(--space-3);
     border: var(--border);
     border-radius: var(--radius);
     background: var(--color-paper);
-    color: var(--color-ink);
+    color: var(--accent);
     font-size: 0.875rem;
+    text-align: left;
     cursor: pointer;
     transition:
       background var(--transition),
@@ -161,8 +161,11 @@ const thematiqueFilters = thematiques.filter((t) => usedThematiques.has(t.value)
   .explorer__chip:hover {
     border-color: var(--accent);
   }
+  .explorer__chip[hidden] {
+    display: none;
+  }
 
-  /* Programme chips carry their Storyblok colour; selected = filled + readable ink. */
+  /* Programme chips (row 1) carry their Storyblok colour; selected = filled + readable ink. */
   .explorer__chip--programme {
     border-color: var(--programme-color, var(--color-line));
   }
@@ -173,80 +176,71 @@ const thematiqueFilters = thematiques.filter((t) => usedThematiques.has(t.value)
     font-weight: 600;
   }
 
-  /* Thematique chips: beige tint when selected (not the Index toggle). */
-  .explorer__thematiques .explorer__chip[aria-pressed='true'] {
+  /* Thematique chips (row 2) are serif italic; selected = beige tint. */
+  .explorer__chip--thematique {
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+  .explorer__chip--thematique[aria-pressed='true'] {
     background: var(--color-beige);
     border-color: var(--accent);
+    color: var(--color-ink);
     font-weight: 600;
   }
 
-  .explorer__index-toggle {
+  /* Tool row — plain serif-italic text links; active view / open search = corail upright. */
+  .explorer__tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .explorer__tool {
+    border: 0;
+    background: none;
+    padding: var(--space-1) 0;
     font-family: var(--font-serif);
     font-style: italic;
-    border-color: var(--accent);
+    font-size: 0.9375rem;
     color: var(--accent);
+    cursor: pointer;
   }
-  .explorer__index-toggle[aria-pressed='true'] {
-    background: var(--accent);
-    color: var(--color-paper);
+  .explorer__tool[aria-pressed='true'],
+  .explorer__tool[aria-expanded='true'] {
+    color: var(--color-coral);
+    font-style: normal;
+  }
+  .explorer__search {
+    padding: var(--space-1) var(--space-3);
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    min-width: 12rem;
+  }
+  .explorer__search[hidden] {
+    display: none;
   }
 
+  .explorer__views {
+    min-height: 0;
+  }
   .explorer__empty {
     margin: var(--space-6) 0;
     color: var(--color-muted);
   }
-
-  [data-filterable][hidden] {
-    display: none;
-  }
-  /* Hide the inactive view — needed because .project-grid sets display:grid,
-     which would otherwise override the [hidden] attribute on the grid. */
-  [data-view][hidden] {
+  .explorer__empty[hidden] {
     display: none;
   }
 
-  /* Index table */
-  .explorer__index {
-    overflow-x: auto;
+  /* When a programme filter is active, the visible (matching) vignettes take its colour on the
+     square border + caption — each tile supplies its own --programme-color via its data-programme. */
+  .explorer[data-programme-active] :global(.project-card--vignette .project-card__cover) {
+    border-color: var(--programme-color, var(--accent));
   }
-  .index-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-  }
-  .index-table th,
-  .index-table td {
-    text-align: left;
-    padding: var(--space-2) var(--space-3);
-    border-bottom: var(--border);
-    vertical-align: top;
-  }
-  .index-table thead th {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
-    color: var(--color-muted);
-    white-space: nowrap;
-  }
-  .index-table tbody th {
-    font-weight: 600;
-  }
-  .index-table tbody tr {
-    transition: color var(--transition);
-  }
-  .index-table tbody tr:hover {
+  .explorer[data-programme-active] :global(.project-card--vignette .project-card__title) {
     color: var(--programme-color, var(--accent));
-  }
-  .index-table a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .index-table tbody th a:hover,
-  .index-table__link a:hover {
-    text-decoration: underline;
-  }
-  .index-table__link {
-    white-space: nowrap;
   }
 </style>
 

@@ -14,28 +14,24 @@ const thematiques = await getThematiques();
 ---
 
 <div class="project-list" {...storyblokEditable(blok)}>
-  <header class="project-list__header">
+  <header class="visually-hidden">
     <h1>{blok.titre}</h1>
     {blok.intro && <RichText doc={blok.intro} />}
   </header>
   <ProjectExplorer projects={projects} programmes={programmes} thematiques={thematiques} />
 </div>
 
-<!-- Baseline: the beige-10 backdrop + a scrollable frame. The full programme /
-     thématique filter, PM/VRAC grids and Index view are the Projets-page ticket. -->
+<!-- The Projets page: a beige-10 fullscreen frame that scrolls vertically. The explorer's filter
+     + tool rows stay pinned (sticky) while the Vignettes rail / Liste table scroll. The design puts
+     the title only in the nav, so the page heading is kept for a11y/SEO but visually hidden. -->
 <style>
   .project-list {
     height: 100%;
     overflow-y: auto;
-    padding: var(--space-6) var(--space-4) var(--space-8);
+    /* The Vignettes rail and the Liste table own their horizontal scroll; the page never does
+       (so the sticky filters can't be dragged sideways). */
+    overflow-x: hidden;
+    padding: var(--space-4) var(--space-4) var(--space-8);
     background: var(--color-beige-10);
-  }
-  .project-list__header {
-    max-width: 72rem;
-    margin: 0 auto var(--space-6);
-  }
-  .project-list__header h1 {
-    margin: 0 0 var(--space-2);
-    color: var(--accent);
   }
 </style>
