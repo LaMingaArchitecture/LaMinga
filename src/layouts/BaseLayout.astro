@@ -12,6 +12,17 @@ interface Props {
   noindex?: boolean;
   /** Slim contact footer bar (Projets + Atelier + Mentions). Default false (immersive). */
   footer?: boolean;
+  /**
+   * Overlaid transparent header floating over edge-to-edge media. Defaults to `!footer`; set
+   * explicitly to combine an immersive header WITH a persistent footer (Atelier scroll page).
+   */
+  immersive?: boolean;
+  /**
+   * Atelier's fullscreen scroll frame (rules in global.css, keyed on `body[data-immersive-scroll]`):
+   * a normal scrolling document on mobile with a pinned header; from 48rem landscape the viewport
+   * locks and the page's inner article scroll-snaps between fullscreen sections. Default false.
+   */
+  immersiveScroll?: boolean;
   /** Let the page scroll instead of locking to the viewport (Atelier + Mentions). Default false. */
   scroll?: boolean;
   /** Accent theme: 'coral' on the immersive home, 'violet' everywhere else. */
@@ -23,6 +34,8 @@ const {
   description = "Atelier d'architecture LaMinga.",
   noindex = false,
   footer = false,
+  immersive: immersiveProp,
+  immersiveScroll = false,
   scroll = false,
   accent = 'violet',
 } = Astro.props;
@@ -38,8 +51,9 @@ const programmes = await getProgrammes();
 // applies; buildProgrammeColorCss validates both interpolated values (slug whitelist + colorHex).
 const programmeColorCss = buildProgrammeColorCss(programmes);
 
-// The header floats over the hero on footer-less pages and sits as a solid bar otherwise.
-const immersive = !footer;
+// The header floats over the hero on footer-less pages and sits as a solid bar otherwise; the
+// Atelier opts into a floating header while keeping its footer, so allow an explicit override.
+const immersive = immersiveProp ?? !footer;
 const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
 ---
 
@@ -59,6 +73,7 @@ const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
     data-accent={accent}
     data-scroll={scroll ? '' : undefined}
     data-immersive={immersive ? '' : undefined}
+    data-immersive-scroll={immersiveScroll ? '' : undefined}
   >
     <Nav settings={settings} accent={accent} />
     <main id="contenu">

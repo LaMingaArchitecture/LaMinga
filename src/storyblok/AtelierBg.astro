@@ -1,0 +1,66 @@
+---
+/**
+ * AtelierBg — the full-bleed background layer for one Atelier section: the §1 intro video (via
+ * ResponsiveMedia) or a responsive photo (§2–4). Presentational (imported, not a registered blok).
+ * Overscanned so the parallax drift (atelier-scroll.ts) never exposes an edge; `data-atelier-bg`
+ * is the parallax hook (the script also toggles `will-change` on it only when parallax is active).
+ */
+import ResponsiveMedia from './ResponsiveMedia.astro';
+import { sbImage } from '../lib/image';
+import type { StoryblokAsset } from '../types/storyblok';
+
+interface Props {
+  image?: StoryblokAsset;
+  video?: StoryblokAsset;
+  poster?: StoryblokAsset;
+}
+const { image, video, poster } = Astro.props;
+
+// Responsive full-bleed sources (sizes=100vw): a phone pulls ~1000px, large screens up to 2200px,
+// instead of every device downloading one 2000px background.
+const src = image?.filename ? sbImage(image.filename, '1600x0') : undefined;
+const srcset = image?.filename
+  ? [
+      `${sbImage(image.filename, '1000x0')} 1000w`,
+      `${sbImage(image.filename, '1600x0')} 1600w`,
+      `${sbImage(image.filename, '2200x0')} 2200w`,
+    ].join(', ')
+  : undefined;
+---
+
+<div class="atelier__bg" data-atelier-bg>
+  {
+    video?.filename ? (
+      <ResponsiveMedia video={video} poster={poster} alt="" loading="eager" />
+    ) : (
+      src && <img src={src} srcset={srcset} sizes="100vw" alt={image?.alt ?? ''} loading="lazy" />
+    )
+  }
+</div>
+
+<style>
+  .atelier__bg {
+    position: absolute;
+    inset-inline: 0;
+    /* Overscan: keep in sync with the parallax FACTOR in atelier-scroll.ts (drift stays < 15%). */
+    top: -15%;
+    height: 130%;
+    z-index: 0;
+  }
+  /* :global — the §1 <video> comes from the child ResponsiveMedia component (no scope attr here);
+     the §2–4 <img> is in-template but covered too. */
+  .atelier__bg :global(img),
+  .atelier__bg :global(video),
+  .atelier__bg :global(picture) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  /* If reduced motion is toggled on mid-session, drop any parallax transform the script wrote. */
+  @media (prefers-reduced-motion: reduce) {
+    .atelier__bg {
+      transform: none !important;
+    }
+  }
+</style>
