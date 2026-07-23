@@ -1,0 +1,197 @@
+---
+/**
+ * ProjectInfoOverlay — the "+ infos" disclosure: three bleu-clair panels laid over the current
+ * visual (sheet + data table | descriptive text | engagements). Server-rendered and CSS-hidden
+ * (`hidden`) so every fact stays in the static HTML; the pill toggles `hidden` at runtime. Panels
+ * whose source fields are empty are omitted. Occupies the middle band, clearing the header and the
+ * bottom HUD (band bounds inherited from .project-hud via --band-*).
+ */
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import RichText from '../storyblok/RichText.astro';
+import type { ProjectBlok } from '../types/storyblok';
+
+interface Props {
+  id: string;
+  blok: ProjectBlok;
+  rows: Array<[string, string | undefined]>;
+  hidden?: boolean;
+}
+
+const { id, blok, rows, hidden = true } = Astro.props;
+const engagements = blok.engagements ?? [];
+---
+
+<section id={id} class="info-overlay" aria-label="Informations du projet" hidden={hidden}>
+  <div class="info-panel info-panel--sheet">
+    <p class="info-panel__title">{blok.titre}</p>
+    {blok.ville && <p class="info-panel__ville">{blok.ville}</p>}
+    {
+      blok.description_programme && (
+        <p class="info-panel__programme">
+          <span class="info-panel__programme-label">Programme</span> {blok.description_programme}
+        </p>
+      )
+    }
+    {
+      rows.length > 0 && (
+        <dl class="info-table">
+          {rows.map(([label, value]) => (
+            <div class="info-table__row">
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+  </div>
+
+  {
+    blok.texte && (
+      <div class="info-panel info-panel--texte">
+        <RichText doc={blok.texte} />
+      </div>
+    )
+  }
+
+  {
+    engagements.length > 0 && (
+      <ul class="info-panel info-panel--engagements">
+        {engagements.map((engagement) => (
+          <li>
+            <StoryblokComponent blok={engagement} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>
+
+<style>
+  /* Mobile: ONE cohesive bleu-clair sheet. It sizes to its content up to the band height, then
+     scrolls internally (body stays locked). The three panels read as sections of one card — split
+     by a hairline, never floating boxes with the photo showing through. */
+  .info-overlay {
+    position: absolute;
+    top: var(--band-top);
+    right: var(--band-x);
+    left: var(--band-x);
+    max-height: calc(100% - var(--band-top) - var(--band-bottom));
+    z-index: 2;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-5);
+    background: color-mix(in srgb, var(--couleur-bleu-clair) 94%, transparent);
+    border-radius: var(--radius);
+    color: var(--color-coral);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* Class display rules must not defeat the `hidden` toggle. */
+  .info-overlay[hidden] {
+    display: none;
+  }
+
+  .info-panel {
+    color: var(--color-coral);
+  }
+  .info-panel + .info-panel {
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: var(--border-w) solid color-mix(in srgb, var(--color-violet) 28%, transparent);
+  }
+
+  .info-panel__title {
+    margin: 0;
+    color: var(--color-coral);
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  .info-panel__ville {
+    margin: var(--space-1) 0 var(--space-3);
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-coral);
+  }
+  .info-panel__programme {
+    margin: 0 0 var(--space-4);
+    font-weight: 700;
+  }
+  .info-panel__programme-label {
+    text-transform: none;
+  }
+
+  .info-table {
+    margin: 0;
+    border: var(--border-w) solid var(--color-violet);
+  }
+  .info-table__row {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+  }
+  .info-table__row + .info-table__row {
+    border-top: var(--border-w) solid var(--color-violet);
+  }
+  .info-table__row dt {
+    padding: var(--space-2) var(--space-3);
+    border-right: var(--border-w) solid var(--color-violet);
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-violet);
+  }
+  .info-table__row dd {
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-coral);
+    overflow-wrap: anywhere;
+  }
+
+  .info-panel--texte :global(.richtext) {
+    color: var(--color-coral);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .info-panel--texte :global(.richtext > :first-child) {
+    margin-top: 0;
+  }
+
+  .info-panel--engagements {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 48rem) {
+    /* Desktop: three translucent panels again, but the cluster is vertically centered in the band
+       (align-content) so it sits lower than the header/nav and reads as balanced. */
+    .info-overlay {
+      bottom: var(--band-bottom);
+      max-height: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      /* `safe` falls back to top-alignment (scrollable) if a content-heavy sheet ever exceeds the
+         band, so it can never overflow into the header or the bottom controls. */
+      align-content: safe center;
+      align-items: start;
+      gap: var(--space-4);
+      padding: 0;
+      background: none;
+      border-radius: 0;
+      overflow-y: auto;
+    }
+    .info-panel {
+      background: color-mix(in srgb, var(--couleur-bleu-clair) 92%, transparent);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+    }
+    .info-panel + .info-panel {
+      margin-top: 0;
+      padding-top: var(--space-5);
+      border-top: 0;
+    }
+  }
+</style>

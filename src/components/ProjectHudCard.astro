@@ -1,0 +1,92 @@
+---
+/**
+ * ProjectHudCard — the persistent bleu-clair project card pinned to the bottom HUD on every slide.
+ * Mini-table: a title cell (the page's sole <h1>) beside "Ville" / "Programme" rows. Positioning is
+ * owned by the .project-hud bar in Project.astro; this component owns only the card's appearance.
+ * "Programme" = description_programme (the one-line description), not the programme relation.
+ */
+interface Props {
+  titre: string;
+  ville?: string;
+  programme?: string;
+}
+
+const { titre, ville, programme } = Astro.props;
+---
+
+<div class="hud-card">
+  <h1 class="hud-card__title">{titre}</h1>
+  {
+    (ville || programme) && (
+      <dl class="hud-card__data">
+        {ville && (
+          <div class="hud-card__row">
+            <dt>Ville</dt>
+            <dd>{ville}</dd>
+          </div>
+        )}
+        {programme && (
+          <div class="hud-card__row">
+            <dt>Programme</dt>
+            <dd class="hud-card__desc">{programme}</dd>
+          </div>
+        )}
+      </dl>
+    )
+  }
+</div>
+
+<style>
+  .hud-card {
+    pointer-events: auto;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    max-width: min(88vw, 34rem);
+    background: color-mix(in srgb, var(--couleur-bleu-clair) 92%, transparent);
+    border: var(--border-w) solid var(--color-violet);
+    border-radius: var(--radius);
+  }
+  .hud-card__title {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    border-right: var(--border-w) solid var(--color-violet);
+    color: var(--color-coral);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+  .hud-card__data {
+    margin: 0;
+    display: grid;
+  }
+  .hud-card__row {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: baseline;
+    padding: var(--space-2) var(--space-4);
+  }
+  .hud-card__row + .hud-card__row {
+    border-top: var(--border-w) solid var(--color-violet);
+  }
+  .hud-card__row dt {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-violet);
+  }
+  .hud-card__row dd {
+    margin: 0;
+    color: var(--color-coral);
+    font-size: 0.9375rem;
+  }
+  /* The programme description can be long — cap it to two lines on the compact card. */
+  .hud-card__desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

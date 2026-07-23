@@ -56,6 +56,13 @@ const enhance = (root: HTMLElement): void => {
     });
   };
 
+  // Reflect the active slide's `data-fc-clair` onto the root so overlaid controls/HUD (which read
+  // `--hud-ink`) flip light/dark per the editor's titre_clair flag. Home slides carry no such
+  // marker → root stays non-clair → no homepage change.
+  const syncClair = (activeSlide: HTMLElement): void => {
+    root.toggleAttribute('data-clair', activeSlide.hasAttribute('data-fc-clair'));
+  };
+
   // Keep `index` truthful for swipe/scroll and drive video playback off the same ≥0.6 gate.
   const io = new IntersectionObserver(
     (entries) => {
@@ -65,6 +72,7 @@ const enhance = (root: HTMLElement): void => {
         index = slides.indexOf(slide);
         render();
         syncVideos(slide);
+        syncClair(slide);
       });
     },
     { root: track, threshold: [0.6] },
@@ -73,6 +81,15 @@ const enhance = (root: HTMLElement): void => {
 
   prev?.addEventListener('click', () => goTo(index - 1));
   next?.addEventListener('click', () => goTo(index + 1));
+
+  // Recap/mosaic slide: any <button data-fc-goto="i"> jumps to slide i (delegated; the prev/next
+  // buttons carry no data-fc-goto, so they're unaffected). goTo clamps out-of-range targets.
+  root.addEventListener('click', (event) => {
+    const target = (event.target as HTMLElement).closest<HTMLElement>('[data-fc-goto]');
+    if (!target || !root.contains(target)) return;
+    const to = Number(target.dataset.fcGoto);
+    if (Number.isFinite(to)) goTo(to);
+  });
 
   root.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') {
@@ -88,6 +105,7 @@ const enhance = (root: HTMLElement): void => {
 
   root.classList.add('fc--enhanced');
   render();
+  syncClair(slides[index]);
 };
 
 document.querySelectorAll<HTMLElement>('[data-fc]').forEach(enhance);

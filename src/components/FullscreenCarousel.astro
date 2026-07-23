@@ -17,13 +17,27 @@ interface Props extends HTMLAttributes<'section'> {
   slideCount: number;
   /** Show the "X / N" counter (project page: true; home: false). */
   counter?: boolean;
+  /**
+   * Control layout: 'split' (home) = arrows mid-height at the edges, counter bottom-right;
+   * 'grouped' (project page) = chevrons flank the counter in one bottom-right ‹ X / N › cluster.
+   */
+  controls?: 'split' | 'grouped';
 }
 
-const { ariaLabel, slideCount, counter = false, class: className, ...attrs } = Astro.props;
+const {
+  ariaLabel,
+  slideCount,
+  counter = false,
+  controls = 'split',
+  class: className,
+  ...attrs
+} = Astro.props;
+// ‹ X / N › is meaningless without N, so the grouped cluster always shows the counter.
+const showCounter = counter || controls === 'grouped';
 ---
 
 <section
-  class:list={['fc', className]}
+  class:list={['fc', { 'fc--grouped': controls === 'grouped' }, className]}
   aria-roledescription="carrousel"
   aria-label={ariaLabel}
   data-fc
@@ -33,30 +47,41 @@ const { ariaLabel, slideCount, counter = false, class: className, ...attrs } = A
     <slot />
   </div>
 
-  <button
-    type="button"
-    class="fc__arrow fc__arrow--prev"
-    data-fc-prev
-    aria-label="Diapositive précédente"
-  >
-    <Chevron direction="left" size={40} />
-  </button>
-  <button
-    type="button"
-    class="fc__arrow fc__arrow--next"
-    data-fc-next
-    aria-label="Diapositive suivante"
-  >
-    <Chevron direction="right" size={40} />
-  </button>
+  {
+    /* Absolutely-positioned overlays (project card, pills, info/related bands) live here, inside the
+      positioned .fc but outside the track, so they never become slides (`track.children`). */
+  }
+  <slot name="overlays" />
 
   {
-    counter && (
-      <p class="fc__counter" data-fc-counter aria-hidden="true">
-        <span data-fc-current>1</span> / {slideCount}
-      </p>
-    )
+    /* Wrapper is `display:contents` in split mode (children keep their own absolute anchoring) and a
+      flex row bottom-right in grouped mode. Visual order prev → counter → next drives the cluster. */
   }
+  <div class="fc__controls">
+    <button
+      type="button"
+      class="fc__arrow fc__arrow--prev"
+      data-fc-prev
+      aria-label="Diapositive précédente"
+    >
+      <Chevron direction="left" size={40} />
+    </button>
+    {
+      showCounter && (
+        <p class="fc__counter" data-fc-counter aria-hidden="true">
+          <span data-fc-current>1</span> / {slideCount}
+        </p>
+      )
+    }
+    <button
+      type="button"
+      class="fc__arrow fc__arrow--next"
+      data-fc-next
+      aria-label="Diapositive suivante"
+    >
+      <Chevron direction="right" size={40} />
+    </button>
+  </div>
 
   {/* Slide changes announced here; the visual counter stays aria-hidden to avoid double-speak. */}
   <p class="visually-hidden" data-fc-live aria-live="polite" role="status"></p>
@@ -71,6 +96,12 @@ const { ariaLabel, slideCount, counter = false, class: className, ...attrs } = A
     position: relative;
     height: 100%;
     overflow: hidden;
+    /* Ink for controls/HUD text sitting directly over the photo. Flipped per active slide's
+       titre_clair by the script (`[data-clair]`); overlays with their own background ignore it. */
+    --hud-ink: var(--color-coral);
+  }
+  .fc[data-clair] {
+    --hud-ink: var(--color-paper);
   }
 
   .fc__track {
@@ -98,6 +129,12 @@ const { ariaLabel, slideCount, counter = false, class: className, ...attrs } = A
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  /* Split mode (home): the wrapper is transparent, so its children keep the absolute anchoring
+     below (mid-height arrows + bottom-right counter), pixel-identical to before the wrapper existed. */
+  .fc__controls {
+    display: contents;
   }
 
   /* Controls are absolute overlays gated on enhancement → no dead controls (no-JS), zero CLS. */
@@ -148,5 +185,40 @@ const { ariaLabel, slideCount, counter = false, class: className, ...attrs } = A
     color: var(--accent);
     font-variant-numeric: tabular-nums;
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
+  }
+
+  /* Grouped mode (project page): prev → counter → next as one bottom-right ‹ X / N › cluster.
+     The wrapper becomes the positioned box; its children flow inline. Ink flips per active slide
+     (--hud-ink); the drop-shadow keeps it legible over any photo. */
+  .fc--grouped .fc__controls {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .fc--grouped .fc__arrow,
+  .fc--grouped .fc__counter {
+    position: static;
+    inset: auto;
+    transform: none;
+    color: var(--hud-ink);
+  }
+  /* Compact cluster: thin chevrons hugging the "X / N", 44px-tall touch target, tight horizontally. */
+  .fc--grouped .fc__arrow {
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: 0 var(--space-1);
+  }
+  .fc--grouped .fc__counter {
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+  }
+  .fc--grouped .fc__arrow :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke-width: 1.5px;
   }
 </style>

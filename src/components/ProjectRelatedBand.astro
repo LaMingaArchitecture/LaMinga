@@ -1,0 +1,87 @@
+---
+/**
+ * ProjectRelatedBand — the "+ projets similaires" disclosure: a bleu-clair band over the current
+ * visual with a taupe "Sélection de projets en relation" label and a wrapping grid of related
+ * projects (plan-masse vignettes + "Titre – Ville", each linking to its page). Server-rendered and
+ * CSS-hidden (`hidden`); the caller only mounts it when there is at least one related project.
+ */
+import ProjectCard from './ProjectCard.astro';
+import type { ProjectSummary } from '../types/storyblok';
+
+interface Props {
+  id: string;
+  related: ProjectSummary[];
+  hidden?: boolean;
+}
+
+const { id, related, hidden = true } = Astro.props;
+---
+
+<section id={id} class="related-band" aria-label="Projets similaires" hidden={hidden}>
+  <p class="related-band__label">Sélection de projets en relation</p>
+  <ul class="related-band__grid">
+    {
+      related.map((project) => (
+        <li>
+          <ProjectCard project={project} variant="vignette" />
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .related-band {
+    position: absolute;
+    top: var(--band-top);
+    right: var(--band-x);
+    bottom: var(--band-bottom);
+    left: var(--band-x);
+    z-index: 2;
+    pointer-events: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    padding: var(--space-5);
+    background: color-mix(in srgb, var(--couleur-bleu-clair) 92%, transparent);
+    border-radius: var(--radius);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .related-band[hidden] {
+    display: none;
+  }
+  .related-band__label {
+    margin: 0;
+    padding: var(--space-4);
+    background: var(--color-beige);
+    border-radius: var(--radius);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.375rem;
+    line-height: 1.2;
+    color: var(--color-violet);
+  }
+  .related-band__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 48rem) {
+    .related-band {
+      grid-template-columns: auto 1fr;
+      align-items: start;
+    }
+    .related-band__label {
+      align-self: start;
+      max-width: 13rem;
+    }
+    .related-band__grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+</style>
