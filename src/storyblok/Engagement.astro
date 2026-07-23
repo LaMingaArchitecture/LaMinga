@@ -20,3 +20,29 @@ const { blok } = Astro.props as { blok: EngagementBlok };
   }
   <span class="engagement__label">{blok.libelle}</span>
 </div>
+
+<style>
+  /* One engagement row: the black line-art pictogram sits inside a white, violet-outlined circle
+     (the circle is CSS — the asset carries no ring), with a corail label to its right. */
+  .engagement {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .engagement__icon {
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    padding: var(--space-3);
+    box-sizing: border-box;
+    border: 2px solid var(--color-violet);
+    border-radius: 50%;
+    background: var(--color-paper);
+    object-fit: contain;
+  }
+  .engagement__label {
+    color: var(--color-coral);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+</style>

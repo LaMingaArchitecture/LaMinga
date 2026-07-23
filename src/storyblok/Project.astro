@@ -1,20 +1,23 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
-import RichText from './RichText.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { sbImage } from '../lib/image';
-import { getThematiques, resolveProgramme, resolveRelated } from '../lib/content';
+import FullscreenCarousel from '../components/FullscreenCarousel.astro';
+import ProjectHudCard from '../components/ProjectHudCard.astro';
+import ProjectInfoOverlay from '../components/ProjectInfoOverlay.astro';
+import ProjectRelatedBand from '../components/ProjectRelatedBand.astro';
+import ProjectRecapSlide from '../components/ProjectRecapSlide.astro';
+import { resolveRelated } from '../lib/content';
 import type { ProjectBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: ProjectBlok };
-const programme = resolveProgramme(blok);
 const related = resolveRelated(blok);
-// Map datasource values to human-readable names via the thematique datasource.
-const thematiqueEntries = await getThematiques();
-const thematiques = (blok.thematiques ?? []).map(
-  (value) => thematiqueEntries.find((entry) => entry.value === value)?.name ?? value,
-);
+const slides = blok.carrousel ?? [];
+// The recap mosaic is only worth a slide when there are ≥2 visuals; it counts in the "X / N".
+const showRecap = slides.length >= 2;
+const slideCount = slides.length + (showRecap ? 1 : 0);
+const hasRelated = related.length > 0;
+
+// Data-sheet rows (info overlay), empty fields dropped so no blank rows render.
 const data: Array<[string, string | undefined]> = [
   ["Maîtrise d'ouvrage", blok.maitre_ouvrage],
   ['Équipe', blok.equipe],
@@ -24,198 +27,207 @@ const data: Array<[string, string | undefined]> = [
   ['Divers', blok.divers],
 ];
 const rows = data.filter(([, value]) => Boolean(value));
+// The "+ infos" overlay only adds value beyond the card when there are extra facts to show.
+const infosHasContent =
+  rows.length > 0 || Boolean(blok.texte) || (blok.engagements?.length ?? 0) > 0;
 ---
 
-<article class="project" {...storyblokEditable(blok)}>
-  <header class="project__header">
-    <h1>{blok.titre}</h1>
-    {blok.ville && <p class="project__ville">{blok.ville}</p>}
-    {
-      programme && (
-        <p class="project__programme" data-programme={programme.slug}>
-          {programme.nom}
-        </p>
-      )
-    }
-    {blok.description_programme && <p class="project__desc">{blok.description_programme}</p>}
-    {
-      thematiques.length > 0 && (
-        <ul class="project__thematiques">
-          {thematiques.map((name) => (
-            <li>{name}</li>
-          ))}
-        </ul>
-      )
-    }
-  </header>
+<FullscreenCarousel
+  controls="grouped"
+  counter
+  ariaLabel={blok.titre}
+  slideCount={slideCount}
+  {...storyblokEditable(blok)}
+>
+  {slides.map((slide, i) => <StoryblokComponent blok={slide} first={i === 0} />)}
+  {showRecap && <ProjectRecapSlide slides={slides} />}
 
-  {
-    blok.carrousel && blok.carrousel.length > 0 && (
-      <div class="project__carrousel">
-        {blok.carrousel.map((slide) => (
-          <StoryblokComponent blok={slide} />
-        ))}
+  <div class="project-hud" data-project-overlays slot="overlays">
+    {infosHasContent && <ProjectInfoOverlay id="project-infos" blok={blok} rows={rows} />}
+    {hasRelated && <ProjectRelatedBand id="project-similaires" related={related} />}
+
+    <div class="project-hud__bar">
+      <div class="project-hud__pills">
+        {
+          infosHasContent && (
+            <button
+              type="button"
+              class="pill pill--infos"
+              aria-expanded="false"
+              aria-controls="project-infos"
+              data-overlay-pill="infos"
+            >
+              <span class="pill__badge" aria-hidden="true" /> infos
+            </button>
+          )
+        }
+        {
+          hasRelated && (
+            <button
+              type="button"
+              class="pill pill--similaires"
+              aria-expanded="false"
+              aria-controls="project-similaires"
+              data-overlay-pill="similaires"
+            >
+              <span class="pill__badge" aria-hidden="true" /> projets similaires
+            </button>
+          )
+        }
       </div>
-    )
-  }
+      <div class="project-hud__card">
+        <ProjectHudCard
+          titre={blok.titre}
+          ville={blok.ville}
+          programme={blok.description_programme}
+        />
+      </div>
+    </div>
+  </div>
+</FullscreenCarousel>
 
-  {blok.texte && <RichText doc={blok.texte} />}
+<script>
+  import '../scripts/project-overlays';
+</script>
 
-  {
-    rows.length > 0 && (
-      <dl class="project__data">
-        {rows.map(([label, value]) => (
-          <div class="project__data-row">
-            <dt>{label}</dt>
-            <dd>{value}</dd>
-          </div>
-        ))}
-      </dl>
-    )
-  }
-
-  {
-    blok.engagements && blok.engagements.length > 0 && (
-      <ul class="project__engagements">
-        {blok.engagements.map((engagement) => (
-          <li>
-            <StoryblokComponent blok={engagement} />
-          </li>
-        ))}
-      </ul>
-    )
-  }
-
-  {
-    blok.vignette_plan?.filename && (
-      <img
-        class="project__vignette"
-        src={sbImage(blok.vignette_plan.filename, '600x0')}
-        alt={blok.vignette_plan.alt ?? `Plan-masse — ${blok.titre}`}
-        loading="lazy"
-      />
-    )
-  }
-
-  {
-    related.length > 0 && (
-      <aside class="project__related">
-        <h2>Sélection de projets en relation</h2>
-        <ul class="project-grid">
-          {related.map((project) => (
-            <li>
-              <ProjectCard project={project} />
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )
-  }
-</article>
-
-<!-- Baseline: a readable article that scrolls inside the locked viewport and clears the
-     floating header. The immersive carousel + info-overlay experience is the project-page ticket. -->
 <style>
-  .project {
-    height: 100%;
-    overflow-y: auto;
-    padding: calc(var(--header-h-mobile) + var(--space-6)) var(--space-4) var(--space-8);
+  /* HUD layer over the carousel: full-bleed, click-through except on its interactive children.
+     --band-* bound the info/related overlays so they clear the floating header and the bottom bar. */
+  .project-hud {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    /* Bounds for the info/related overlays. The card is hidden while an overlay is open, so the
+       bottom only needs to clear the active pill + counter row. */
+    --band-top: calc(var(--header-h-mobile) + var(--space-3));
+    --band-bottom: 5.5rem;
+    --band-x: var(--space-4);
   }
-  .project > * {
-    max-width: 60rem;
-    margin-inline: auto;
+
+  /* Bottom bar: card centered above the pills row on mobile; pills · card · (counter) on desktop.
+     z-index keeps pills clickable above an open overlay; the carousel counter sits above all of it. */
+  .project-hud__bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+    pointer-events: none;
   }
-  .project__header h1 {
-    margin: 0;
-    color: var(--accent);
+  .project-hud__bar > * {
+    pointer-events: auto;
   }
-  .project__ville {
-    margin: var(--space-1) 0 0;
-    font-family: var(--font-serif);
-    font-style: italic;
-    color: var(--color-muted);
+
+  .project-hud__card {
+    order: 1;
+    align-self: center;
+    max-width: 100%;
   }
-  .project__programme {
-    display: inline-block;
-    margin: var(--space-3) 0 0;
-    padding: var(--space-1) var(--space-3);
-    border: var(--border-w) solid var(--programme-color, var(--accent));
-    border-radius: var(--radius);
-    color: var(--programme-color, var(--accent));
-    font-size: 0.875rem;
-  }
-  .project__desc {
-    margin: var(--space-3) 0 0;
-    font-weight: 600;
-  }
-  .project__thematiques {
-    list-style: none;
+  .project-hud__pills {
+    order: 2;
     display: flex;
     flex-wrap: wrap;
+    gap: var(--space-3);
+    /* Keep the pills clear of the bottom-right counter on narrow screens. */
+    padding-right: 4.5rem;
+    pointer-events: none;
+  }
+  .project-hud__pills > * {
+    pointer-events: auto;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
     gap: var(--space-2);
-    padding: 0;
-    margin: var(--space-3) 0 0;
+    min-height: 44px;
+    padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--hud-ink);
+    font: inherit;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
   }
-  .project__thematiques li {
-    padding: var(--space-1) var(--space-3);
-    border: var(--border);
-    border-radius: var(--radius);
-    font-size: 0.8125rem;
+  /* The +/− sign is drawn as two centered bars (pixel-perfect, unlike a text glyph); the vertical
+     bar collapses when the pill is expanded, so "+" becomes "−" purely from aria-expanded. */
+  .pill__badge {
+    position: relative;
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
   }
-  .project__carrousel {
-    display: grid;
-    gap: var(--space-4);
-    margin: var(--space-6) auto;
+  .pill__badge::before,
+  .pill__badge::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--color-paper);
+    border-radius: 1px;
+    transition: transform var(--transition);
   }
-  .project__carrousel :global(img),
-  .project__carrousel :global(video) {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius);
+  .pill__badge::before {
+    width: 0.8125rem;
+    height: 2px;
   }
-  .project__data {
-    margin: var(--space-6) auto;
+  .pill__badge::after {
+    width: 2px;
+    height: 0.8125rem;
   }
-  .project__data-row {
-    display: grid;
-    gap: var(--space-1);
-    padding: var(--space-2) 0;
-    border-bottom: var(--border);
+  .pill[aria-expanded='true'] .pill__badge::after {
+    transform: translate(-50%, -50%) scaleY(0);
   }
-  .project__data-row dt {
-    font-family: var(--font-serif);
-    font-style: italic;
-    color: var(--color-muted);
+  .pill--infos .pill__badge {
+    background: var(--color-coral);
   }
-  .project__data-row dd {
-    margin: 0;
+  .pill--similaires .pill__badge {
+    background: var(--couleur-bleu-clair);
   }
-  .project__engagements {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    padding: 0;
-    margin: var(--space-6) auto;
+
+  /* While an overlay is open, hide the persistent card and the other pill so nothing overlaps the
+     panels — only the active pill (now a "−") stays, as the close affordance. */
+  .project-hud[data-overlay-open] .project-hud__card {
+    display: none;
   }
-  .project__vignette {
-    max-width: 20rem;
-    margin: var(--space-6) auto;
-  }
-  .project__related {
-    margin-top: var(--space-8);
-  }
-  .project__related h2 {
-    color: var(--accent);
+  .project-hud[data-overlay-open] .pill[aria-expanded='false'] {
+    display: none;
   }
 
   @media (min-width: 48rem) {
-    .project {
-      padding-top: calc(var(--header-h) + var(--space-6));
+    .project-hud {
+      --band-top: calc(var(--header-h) + var(--space-6));
+      --band-bottom: 5.5rem;
+      --band-x: var(--space-6);
     }
-    .project__data-row {
-      grid-template-columns: 12rem 1fr;
+    /* pills → col 1, card → col 2 (centered); col 3 stays empty to reserve the counter's corner. */
+    .project-hud__bar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: end;
       gap: var(--space-4);
+      padding: var(--space-6);
+    }
+    .project-hud__card {
+      order: 0;
+      justify-self: center;
+    }
+    .project-hud__pills {
+      order: 0;
+      justify-self: start;
+      align-self: end;
+      padding-right: 0;
     }
   }
 </style>

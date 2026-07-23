@@ -3,12 +3,14 @@ import { storyblokEditable } from '@storyblok/astro';
 import ResponsiveMedia from './ResponsiveMedia.astro';
 import type { MediaSlideBlok } from '../types/storyblok';
 
-const { blok } = Astro.props as { blok: MediaSlideBlok };
+// `first` (the LCP slide) loads eagerly; the rest lazy-load. Forwarded via StoryblokComponent.
+const { blok, first = false } = Astro.props as { blok: MediaSlideBlok; first?: boolean };
 const alt = blok.image_paysage?.alt ?? blok.image_portrait?.alt ?? '';
 ---
 
 <figure
   class:list={['media-slide', { 'media-slide--clair': blok.titre_clair }]}
+  data-fc-clair={blok.titre_clair ? '' : undefined}
   {...storyblokEditable(blok)}
 >
   <ResponsiveMedia
@@ -17,5 +19,6 @@ const alt = blok.image_paysage?.alt ?? blok.image_portrait?.alt ?? '';
     video={blok.video}
     poster={blok.poster}
     alt={alt}
+    loading={first ? 'eager' : 'lazy'}
   />
 </figure>
