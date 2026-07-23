@@ -123,6 +123,10 @@ if (root) {
   };
 
   const apply = () => {
+    // Any filter/search/view change dismisses the floating hover preview: hiding the hovered row
+    // via display:none doesn't reliably fire mouseleave, so clear it explicitly here.
+    if (thumb) thumb.hidden = true;
+
     // Drop a selected thematique that isn't available in the selected programme.
     if (state.programme && state.thematique) {
       const btn = thematiqueButtons.find((b) => b.dataset.thematiqueFilter === state.thematique);
