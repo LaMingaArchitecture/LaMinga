@@ -196,10 +196,19 @@ const infosHasContent =
     background: var(--couleur-bleu-clair);
   }
 
-  /* While an overlay is open, hide the persistent card and the other pill so nothing overlaps the
-     panels — only the active pill (now a "−") stays, as the close affordance. */
+  /* While an overlay is open, take the persistent card and the other pill out of view so nothing
+     overlaps the panels — only the active pill (now a "−") stays, as the close affordance. The card
+     is hidden visually but kept in the a11y tree (sr-only, not display:none) so its <h1> — the page's
+     only heading — is never removed while an overlay is open. */
   .project-hud[data-overlay-open] .project-hud__card {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .project-hud[data-overlay-open] .pill[aria-expanded='false'] {
     display: none;
