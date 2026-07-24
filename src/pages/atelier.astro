@@ -1,12 +1,46 @@
 ---
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import { PUBLIC_SITE_URL } from 'astro:env/client';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentNotice from '../components/ContentNotice.astro';
 import { getAtelierPage } from '../lib/content';
+import { resolveSeo, firstSeo, richTextToPlain, absoluteImageUrl, personJsonLd } from '../lib/seo';
+import { lcpPreload, atelierHero } from '../lib/media';
 
 const blok = await getAtelierPage();
+
+const resolved = resolveSeo({
+  seo: firstSeo(blok?.seo),
+  title: 'Atelier — LaMinga',
+  description: richTextToPlain(blok?.texte_minga),
+  image: blok?.image ?? blok?.poster,
+});
+
+// One Person node per team member, worksFor → LaMinga (org by @id).
+const persons = (blok?.equipe ?? []).map((member) =>
+  personJsonLd(
+    member,
+    PUBLIC_SITE_URL,
+    absoluteImageUrl(member.photo?.filename, PUBLIC_SITE_URL, '600x600'),
+  ),
+);
+
+// Preload the FIRST rendered section's background. atelierHero mirrors AtelierPage's section gates,
+// so we never preload a section that doesn't render, nor a text-only manifeste (media undefined).
+const heroMedia = blok ? atelierHero(blok).media : undefined;
+const preload = heroMedia ? lcpPreload(heroMedia) : [];
 ---
 
-<BaseLayout title="Atelier — LaMinga" footer immersive immersiveScroll noindex={!blok}>
+<BaseLayout
+  title={resolved.title}
+  description={resolved.description}
+  ogImage={resolved.ogImage}
+  jsonLd={persons}
+  preload={preload}
+  footer
+  immersive
+  immersiveScroll
+  noindex={!blok}
+>
   {blok ? <StoryblokComponent blok={blok} /> : <ContentNotice />}
 </BaseLayout>

@@ -13,6 +13,15 @@ export function telHref(telephone?: string | null): string | undefined {
   return digits ? `tel:${digits}` : undefined;
 }
 
+/**
+ * Collapse all whitespace runs (newlines, tabs, repeated spaces) to a single space and trim.
+ * Returns undefined when the result is empty. Used to flatten multiline textarea fields (addresses)
+ * onto one line for JSON-LD / llms.txt so a stray line break can't break structured output.
+ */
+export function collapseWhitespace(value?: string | null): string | undefined {
+  return value?.replace(/\s+/g, ' ').trim() || undefined;
+}
+
 // http(s) / mailto / tel / same-origin (relative or #anchor) are the schemes allowed in richtext.
 // A single leading `/` is a same-origin path; `//host` or `/\host` are protocol-relative
 // (external) and must be rejected — hence the negative lookahead.

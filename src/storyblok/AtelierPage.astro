@@ -3,6 +3,7 @@ import { storyblokEditable } from '@storyblok/astro';
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import RichText from './RichText.astro';
 import AtelierBg from './AtelierBg.astro';
+import { atelierHero } from '../lib/media';
 import type { AtelierPageBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: AtelierPageBlok };
@@ -16,6 +17,9 @@ const clients: Array<[string, string | undefined]> = [
 const clientCols = clients.filter(([, value]) => Boolean(value));
 const equipe = blok.equipe ?? [];
 const hasManifeste = Boolean(blok.image?.filename || blok.texte_minga || blok.texte_construire);
+// The first rendered section owns the LCP → its background loads eagerly. atelierHero resolves the
+// same first section as the preload in atelier.astro (single source of truth for the LCP).
+const firstSection = atelierHero(blok).section;
 ---
 
 {
@@ -42,7 +46,9 @@ const hasManifeste = Boolean(blok.image?.filename || blok.texte_minga || blok.te
   {
     hasManifeste && (
       <section class="atelier__sec atelier__sec--manifeste" data-atelier-sec>
-        {blok.image?.filename && <AtelierBg image={blok.image} />}
+        {blok.image?.filename && (
+          <AtelierBg image={blok.image} eager={firstSection === 'manifeste'} />
+        )}
         <div class="atelier__panel atelier__panel--manifeste" data-atelier-panel>
           {blok.texte_minga && (
             <div class="atelier__block">
@@ -66,7 +72,9 @@ const hasManifeste = Boolean(blok.image?.filename || blok.texte_minga || blok.te
   {
     clientCols.length > 0 && (
       <section class="atelier__sec atelier__sec--clients" data-atelier-sec>
-        {blok.image_clients?.filename && <AtelierBg image={blok.image_clients} />}
+        {blok.image_clients?.filename && (
+          <AtelierBg image={blok.image_clients} eager={firstSection === 'clients'} />
+        )}
         <div class="atelier__panel atelier__panel--clients" data-atelier-panel>
           <h2 class="atelier__title">{blok.titre_clients ?? 'Des clients engagés'}</h2>
           <div class="atelier__clients-cols">
@@ -85,7 +93,9 @@ const hasManifeste = Boolean(blok.image?.filename || blok.texte_minga || blok.te
   {
     equipe.length > 0 && (
       <section class="atelier__sec atelier__sec--equipe" data-atelier-sec>
-        {blok.image_equipe?.filename && <AtelierBg image={blok.image_equipe} />}
+        {blok.image_equipe?.filename && (
+          <AtelierBg image={blok.image_equipe} eager={firstSection === 'equipe'} />
+        )}
         <div class="atelier__panel atelier__panel--equipe" data-atelier-panel>
           <h2 class="atelier__title">
             {blok.titre_equipe ?? 'LaMinga, une équipe soudée, des partenaires engagés'}

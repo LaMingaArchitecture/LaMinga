@@ -167,6 +167,36 @@ sont **proposés** — à valider).
   correspondent pas au rendu vectoriel des maquettes — **demander les versions SVG** à l'équipe
   marketing (le champ `engagement.icone` attend du SVG monochrome `currentColor`).
 
+## Référencement (SEO) & IA
+
+Chaque page a un **titre**, une **description** et une **image de partage** calculés
+automatiquement à partir du contenu. Pour les régler à la main, remplissez le bloc **SEO** (facultatif)
+présent sur les stories `home`, `projets`, `atelier` et chaque **projet** :
+
+| Champ             | Rôle                                                                         |
+| ----------------- | ---------------------------------------------------------------------------- |
+| `titre_seo`       | Titre affiché dans Google et les partages (défaut : dérivé du contenu).      |
+| `description_seo` | Description courte (~155 caractères) pour Google et les IA.                  |
+| `image_partage`   | Visuel de partage (défaut : photo de couverture / premier visuel du projet). |
+
+Laisser un champ vide = garder la valeur automatique. Le partage sur LinkedIn, WhatsApp ou Slack
+affiche le titre, la description et l'image ; une page sans visuel utilise l'image LaMinga par défaut.
+
+### Robots & moteurs de réponse IA (automatique)
+
+Le site génère à chaque build un `robots.txt` et un `llms.txt` (résumé de l'atelier destiné aux
+IA) — **aucune action éditeur**. Les robots des moteurs de réponse IA (OAI-SearchBot, ChatGPT-User,
+PerplexityBot, ClaudeBot) sont **autorisés** afin que LaMinga apparaisse dans les réponses d'IA.
+
+> **Décision LaMinga — robots d'entraînement :** GPTBot (OpenAI) et Google-Extended (Gemini) — qui
+> aspirent le contenu pour **entraîner** les modèles — sont **refusés** (`deny`). Cela n'affecte pas
+> la visibilité dans les réponses d'IA (assurée par les robots ci-dessus). Pour changer cette
+> politique, l'équipe technique bascule une seule constante (`TRAINING_CRAWLER_POLICY` dans
+> `src/pages/robots.txt.ts`).
+
+La preview (brouillon) reste **exclue de l'indexation** (robots `Disallow: /` + `noindex` + accès
+protégé).
+
 ## Publier = mettre en ligne
 
 La **publication d'une story** déclenche une régénération de la production (quelques minutes). Un

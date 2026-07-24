@@ -170,6 +170,22 @@ avec son fond propre. Champs média optionnels : une section au contenu vide est
 > `src/lib/content.ts` → `getSettings`, affichés par `Nav`/`Footer`). Inutile de les déclarer
 > dans la map `components`.
 
+### `seo` (bloc imbriqué — SEO / partages)
+
+Ajouté (champ `seo`, type _bloks_, **max 1**) sur `project`, `project_list`, `home_page` et
+`atelier_page`. Tous les champs sont **optionnels** — des valeurs par défaut sont dérivées du contenu
+(voir `src/lib/seo.ts`).
+
+| Champ             | Type          | Config                                               |
+| ----------------- | ------------- | ---------------------------------------------------- |
+| `titre_seo`       | text          | Titre Google / partages (défaut : dérivé du contenu) |
+| `description_seo` | textarea      | Description ~155 caractères                          |
+| `image_partage`   | asset (image) | Visuel Open Graph (défaut : couverture / 1er visuel) |
+
+> `seo` n'est **pas** rendu via `StoryblokComponent` (lu en frontmatter par les pages via
+> `firstSeo(blok.seo)`, `src/lib/seo.ts`). Comme `global_settings`/`social_link`, **inutile de le
+> déclarer dans la map `components`**. Champ _bloks_ ⇒ toujours un tableau : lire le premier élément.
+
 ## Relations (résolues côté app, sans N+1)
 
 Résolution groupée dans `src/lib/content.ts` via les constantes exportées :

@@ -3,10 +3,26 @@ import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentNotice from '../components/ContentNotice.astro';
 import { getHomePage } from '../lib/content';
+import { resolveSeo, firstSeo } from '../lib/seo';
+import { lcpPreload, slideMediaFields } from '../lib/media';
 
 const home = await getHomePage();
+const firstSlide = home?.carrousel?.[0];
+const resolved = resolveSeo({
+  seo: firstSeo(home?.seo),
+  title: "LaMinga — Atelier d'architecture",
+  image: firstSlide?.image_paysage ?? firstSlide?.image_portrait ?? firstSlide?.poster,
+});
+const preload = firstSlide ? lcpPreload(slideMediaFields(firstSlide)) : [];
 ---
 
-<BaseLayout title="LaMinga — Atelier d'architecture" accent="coral" noindex={!home}>
+<BaseLayout
+  title={resolved.title}
+  description={resolved.description}
+  ogImage={resolved.ogImage}
+  accent="coral"
+  noindex={!home}
+  preload={preload}
+>
   {home ? <StoryblokComponent blok={home} /> : <ContentNotice />}
 </BaseLayout>
