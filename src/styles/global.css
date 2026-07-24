@@ -68,6 +68,17 @@ body[data-scroll] {
   overflow: auto;
 }
 
+/* Mobile: the plain fixed-frame pages (Projets) scroll as one document so the contact footer flows
+   below the content instead of pinning to the viewport and eating vertical space. Desktop keeps the
+   fixed frame (the content owns the scroll and the footer pins). Immersive / data-scroll pages
+   already manage their own scroll, so they're excluded. */
+@media (max-width: 47.999rem) {
+  body:not([data-scroll]):not([data-immersive]):not([data-immersive-scroll]) {
+    height: auto;
+    overflow-y: auto;
+  }
+}
+
 body > header,
 body > footer {
   flex: 0 0 auto;
@@ -116,6 +127,14 @@ body[data-immersive-scroll]:not(.panel-open) {
 }
 body[data-immersive-scroll] > header {
   position: fixed;
+  transition: background var(--transition);
+}
+/* Mobile: once scrolled off the hero, the fixed transparent header gains a solid band so panel
+   content (notably the team-section title) never reads under the floating nav (atelier-scroll.ts
+   sets data-atelier-scrolled). The hero (top of page) keeps the transparent immersive header. */
+body[data-immersive-scroll][data-atelier-scrolled] > header {
+  background: var(--color-paper);
+  border-bottom: var(--border-rule);
 }
 @media (min-width: 48rem) and (orientation: landscape) {
   body[data-immersive-scroll] {
@@ -126,6 +145,11 @@ body[data-immersive-scroll] > header {
   }
   body[data-immersive-scroll] > header {
     position: absolute;
+  }
+  /* Desktop snap frame: sections already clear the absolute header via padding — keep it immersive. */
+  body[data-immersive-scroll][data-atelier-scrolled] > header {
+    background: transparent;
+    border-bottom: 0;
   }
 }
 
@@ -152,7 +176,8 @@ body[data-immersive-scroll] > header {
    border / box-shadow — the four edges are background gradients inset by --brand-box-gap. The base
    fill is the page paper; a *selected* fill (--brand-box-fill) is drawn as an extra layer inset by
    the same gap, so the white corners survive when active (set --brand-box-fill, never a background
-   shorthand, which would wipe the edges). Used on the nav menu buttons + Liste table cells. */
+   shorthand, which would wipe the edges). Used on the nav menu buttons, the Liste table cells, and
+   the Projets filter chips + search field (which also reset the native <button>/<input> chrome). */
 .brand-box {
   background-color: var(--color-paper);
   background-image:

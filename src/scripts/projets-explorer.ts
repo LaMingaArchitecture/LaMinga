@@ -17,8 +17,6 @@ const KEY = 'projets-explorer';
 const root = document.querySelector<HTMLElement>('[data-explorer]');
 
 if (root) {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   const programmeButtons = Array.from(
     root.querySelectorAll<HTMLButtonElement>('[data-programme-filter]'),
   );
@@ -40,11 +38,6 @@ if (root) {
     ? Array.from(indexView.querySelectorAll<HTMLElement>('[data-filterable]'))
     : [];
   const empty = root.querySelector<HTMLElement>('[data-empty]');
-
-  const rail = root.querySelector<HTMLElement>('[data-rail]');
-  const railControls = root.querySelector<HTMLElement>('[data-rail-controls]');
-  const railPrev = root.querySelector<HTMLButtonElement>('[data-rail-prev]');
-  const railNext = root.querySelector<HTMLButtonElement>('[data-rail-next]');
 
   const thumb = root.querySelector<HTMLImageElement>('[data-thumb-el]');
   const indexRows = Array.from(
@@ -113,15 +106,6 @@ if (root) {
     !state.programme ||
     (button.dataset.thematiqueProgrammes ?? '').split(' ').includes(state.programme);
 
-  const updateRail = () => {
-    if (!rail || !railControls) return;
-    const active = !!gridView && !gridView.hidden;
-    const max = rail.scrollWidth - rail.clientWidth;
-    railControls.hidden = !active || max <= 1;
-    if (railPrev) railPrev.disabled = rail.scrollLeft <= 0;
-    if (railNext) railNext.disabled = rail.scrollLeft >= max - 1;
-  };
-
   const apply = () => {
     // Any filter/search/view change dismisses the floating hover preview: hiding the hovered row
     // via display:none doesn't reliably fire mouseleave, so clear it explicitly here.
@@ -167,7 +151,6 @@ if (root) {
     const isEmpty = visible === 0;
     views.forEach((v) => (v.hidden = isEmpty || v.dataset.view !== state.view));
     if (empty) empty.hidden = !isEmpty;
-    updateRail();
   };
 
   programmeButtons.forEach((button) =>
@@ -215,17 +198,6 @@ if (root) {
     state.search = searchInput.value;
     apply();
   });
-
-  // Vignettes rail: chevrons scroll one viewport; disabled/hidden state follows the scroll position.
-  const railStep = () => (rail ? rail.clientWidth * 0.85 : 0);
-  railPrev?.addEventListener('click', () =>
-    rail?.scrollBy({ left: -railStep(), behavior: reduce ? 'auto' : 'smooth' }),
-  );
-  railNext?.addEventListener('click', () =>
-    rail?.scrollBy({ left: railStep(), behavior: reduce ? 'auto' : 'smooth' }),
-  );
-  rail?.addEventListener('scroll', updateRail, { passive: true });
-  window.addEventListener('resize', updateRail);
 
   // Liste hover: float the project's cover thumbnail beside the hovered row (one request per row).
   if (thumb && thumb.parentElement) {

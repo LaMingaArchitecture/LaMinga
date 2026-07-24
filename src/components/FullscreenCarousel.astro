@@ -4,8 +4,10 @@
  * Wraps already-rendered slides via <slot/> (home_slide now, media_slide later), so it owns the
  * scroll-snap track + slide sizing and neither slide type needs to know it's in a carousel.
  * Progressive enhancement: the CSS scroll-snap track works with no JS (native swipe/scroll);
- * `fullscreen-carousel.ts` layers arrows, keyboard nav, ARIA live announcements, lazy video, and
- * reveals the controls (.fc--enhanced) so there are no dead controls when JS is off.
+ * `fullscreen-carousel.ts` layers arrows, keyboard nav, ARIA live announcements, lazy video. The
+ * controls render at all times — the arrows ship `disabled` (dimmed) and the script enables them
+ * once ready — so they show a loading state instead of popping in after load (with no JS they stay
+ * disabled while native swipe still works).
  */
 import type { HTMLAttributes } from 'astro/types';
 import Chevron from './icons/Chevron.astro';
@@ -57,12 +59,18 @@ const showCounter = counter || controls === 'grouped';
     /* Wrapper is `display:contents` in split mode (children keep their own absolute anchoring) and a
       flex row bottom-right in grouped mode. Visual order prev → counter → next drives the cluster. */
   }
+  {
+    /* Rendered visible at all times (never popped in). Both arrows start `disabled` (dimmed) so the
+      carousel shows a loading state; the script enables/updates them per slide position once ready.
+      With no JS they simply stay disabled while the native scroll-snap swipe still works. */
+  }
   <div class="fc__controls">
     <button
       type="button"
       class="fc__arrow fc__arrow--prev"
       data-fc-prev
       aria-label="Diapositive précédente"
+      disabled
     >
       <Chevron direction="left" size={40} />
     </button>
@@ -78,6 +86,7 @@ const showCounter = counter || controls === 'grouped';
       class="fc__arrow fc__arrow--next"
       data-fc-next
       aria-label="Diapositive suivante"
+      disabled
     >
       <Chevron direction="right" size={40} />
     </button>
@@ -137,19 +146,13 @@ const showCounter = counter || controls === 'grouped';
     display: contents;
   }
 
-  /* Controls are absolute overlays gated on enhancement → no dead controls (no-JS), zero CLS. */
-  .fc__arrow,
+  /* Controls are absolute overlays shown at ALL times (the arrows ship `disabled`/dimmed and the
+     script enables them once ready), so they never pop in after load. Absolute → zero CLS. */
   .fc__counter {
-    display: none;
-  }
-  .fc--enhanced .fc__arrow {
-    display: grid;
-  }
-  .fc--enhanced .fc__counter {
     display: block;
   }
-
   .fc__arrow {
+    display: grid;
     position: absolute;
     top: 50%;
     z-index: 2;

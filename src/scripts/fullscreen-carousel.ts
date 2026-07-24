@@ -103,7 +103,8 @@ const enhance = (root: HTMLElement): void => {
 
   if (reduce.matches) track.querySelectorAll('video').forEach((video) => video.pause());
 
-  root.classList.add('fc--enhanced');
+  // Controls ship visible-but-disabled (see FullscreenCarousel.astro); render() now flips them live
+  // — enabling `next` and updating the counter — so they transition from loading to interactive.
   render();
   syncClair(slides[index]);
 };

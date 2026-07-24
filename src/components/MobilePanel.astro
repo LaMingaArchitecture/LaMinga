@@ -55,8 +55,16 @@ const tel = telHref(settings?.telephone);
     </div>
 
     <nav class="mobile-nav__links" aria-label="Navigation">
-      <a href="/atelier" aria-current={activeSection === 'atelier' ? 'page' : undefined}>Atelier</a>
-      <a href="/projets" aria-current={activeSection === 'projets' ? 'page' : undefined}>Projets</a>
+      <a
+        class="brand-box"
+        href="/atelier"
+        aria-current={activeSection === 'atelier' ? 'page' : undefined}>Atelier</a
+      >
+      <a
+        class="brand-box"
+        href="/projets"
+        aria-current={activeSection === 'projets' ? 'page' : undefined}>Projets</a
+      >
     </nav>
 
     <div class="mobile-nav__contact">
@@ -189,17 +197,18 @@ const tel = telHref(settings?.telephone);
     flex-direction: column;
     gap: var(--space-2);
   }
+  /* Same .brand-box open-corner outline as the desktop nav buttons. Drive the active fill through
+     --brand-box-fill (a gradient layer), never a `background` shorthand which would wipe the edges. */
   .mobile-nav__links a {
     display: block;
     padding: var(--space-3);
-    border: var(--border-w) solid var(--accent);
-    border-radius: var(--radius);
     color: var(--accent);
     font-size: 1.0625rem;
     text-decoration: none;
+    transition: color var(--transition);
   }
   .mobile-nav__links a[aria-current='page'] {
-    background: var(--color-beige);
+    --brand-box-fill: var(--color-beige);
     color: var(--color-ink);
     font-weight: 600;
   }

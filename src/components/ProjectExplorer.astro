@@ -47,7 +47,7 @@ const programmesForThematique = (value: string) =>
             {programmeFilters.map((programme) => (
               <button
                 type="button"
-                class="explorer__chip explorer__chip--programme"
+                class="explorer__chip explorer__chip--programme brand-box"
                 data-programme-filter={programme.slug}
                 data-programme={programme.slug}
                 aria-pressed="false"
@@ -64,7 +64,7 @@ const programmesForThematique = (value: string) =>
             {thematiqueFilters.map((thematique) => (
               <button
                 type="button"
-                class="explorer__chip explorer__chip--thematique"
+                class="explorer__chip explorer__chip--thematique brand-box"
                 data-thematique-filter={thematique.value}
                 data-thematique-programmes={programmesForThematique(thematique.value)}
                 aria-pressed="false"
@@ -96,7 +96,7 @@ const programmesForThematique = (value: string) =>
       <input
         type="search"
         id="projets-recherche"
-        class="explorer__search"
+        class="explorer__search brand-box"
         data-search-input
         placeholder="Rechercher un projet…"
         aria-label="Rechercher un projet"
@@ -130,6 +130,13 @@ const programmesForThematique = (value: string) =>
     padding-block: var(--space-2);
     background: var(--color-beige-10);
   }
+  /* Mobile: the whole document scrolls (footer flows away), so the filters anchor to the page and
+     must clear the pinned header instead of sticking at the very top. */
+  @media (max-width: 47.999rem) {
+    .explorer__sticky {
+      top: var(--header-h-mobile);
+    }
+  }
   .explorer__filters {
     display: flex;
     flex-direction: column;
@@ -141,59 +148,66 @@ const programmesForThematique = (value: string) =>
     gap: var(--space-2);
   }
 
+  /* Chips use the .brand-box open-corner outline (same architectural look as the Liste table cells
+     + nav buttons). State is driven by --brand-box-line (outline) and --brand-box-fill (selected
+     fill) — never a `background`/`border` shorthand, which would wipe the edge gradients. */
   .explorer__chip {
     flex: 1 1 9rem;
     min-width: 8rem;
     max-width: 14rem;
+    min-height: 2.75rem; /* ≥44px touch target */
     padding: var(--space-2) var(--space-3);
-    border: var(--border);
-    border-radius: var(--radius);
-    background: var(--color-paper);
+    /* Reset the native <button> chrome (a 2px outset border + appearance) so ONLY the .brand-box
+       open-corner gradients show — otherwise the default border paints over the corner gaps. */
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
     color: var(--accent);
     font-size: 0.875rem;
     text-align: left;
     cursor: pointer;
-    transition:
-      background var(--transition),
-      border-color var(--transition),
-      color var(--transition);
+    transition: color var(--transition);
   }
   .explorer__chip:hover {
-    border-color: var(--accent);
+    --brand-box-line: var(--accent);
   }
   .explorer__chip[hidden] {
     display: none;
   }
 
-  /* Programme chips (row 1) carry their Storyblok colour; selected = filled + readable ink. */
+  /* Programme chips (row 1) carry their Storyblok colour on the outline; selected = filled + ink. */
   .explorer__chip--programme {
-    border-color: var(--programme-color, var(--color-line));
+    --brand-box-line: var(--programme-color, var(--color-line));
   }
   .explorer__chip--programme[aria-pressed='true'] {
-    background: var(--programme-color, var(--accent));
+    --brand-box-line: var(--programme-color, var(--accent));
+    --brand-box-fill: var(--programme-color, var(--accent));
     color: var(--programme-ink, var(--color-paper));
-    border-color: var(--programme-color, var(--accent));
     font-weight: 600;
   }
 
-  /* Thematique chips (row 2) are serif italic; selected = beige tint. */
+  /* Thematique chips (row 2) are serif italic; selected = beige tint fill. */
   .explorer__chip--thematique {
+    --brand-box-line: var(--color-line);
     font-family: var(--font-serif);
     font-style: italic;
   }
   .explorer__chip--thematique[aria-pressed='true'] {
-    background: var(--color-beige);
-    border-color: var(--accent);
+    --brand-box-line: var(--accent);
+    --brand-box-fill: var(--color-beige);
     color: var(--color-ink);
     font-weight: 600;
   }
 
-  /* Tool row — plain serif-italic text links; active view / open search = corail upright. */
+  /* Tool row — plain serif-italic text links; active view / open search = corail upright. Reserve
+     the search field's height at all times (align-items:center keeps the links centred) so revealing
+     the input never grows the row / sticky bar and shifts the grid ("clipping" jump). */
   .explorer__tools {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-4);
+    min-height: 2.75rem;
   }
   .explorer__tool {
     border: 0;
@@ -210,14 +224,29 @@ const programmesForThematique = (value: string) =>
     color: var(--color-coral);
     font-style: normal;
   }
+  /* Search field shares the .brand-box open-corner outline (like the filter chips + nav buttons).
+     Reset the native <input> chrome so only the brand-box gradients show. The open-corner edge is
+     the focus affordance here: grey (--color-line) at rest → aubergine (--accent) on focus, and the
+     default focus ring is suppressed so the colour change alone signals focus (per design). */
   .explorer__search {
-    padding: var(--space-1) var(--space-3);
-    border: var(--border);
-    border-radius: var(--radius);
-    background: var(--color-paper);
+    --brand-box-line: var(--color-line);
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-3);
     color: var(--color-ink);
     font-size: 0.875rem;
     min-width: 12rem;
+    transition: none;
+  }
+  .explorer__search::placeholder {
+    color: var(--color-muted);
+  }
+  .explorer__search:focus,
+  .explorer__search:focus-visible {
+    --brand-box-line: var(--accent);
+    outline: none;
   }
   .explorer__search[hidden] {
     display: none;

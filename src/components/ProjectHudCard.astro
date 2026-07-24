@@ -37,13 +37,15 @@ const { titre, ville, programme } = Astro.props;
 </div>
 
 <style>
+  /* Deep navy card so the coral title/values clear WCAG AA (light bleu-clair failed on corail);
+     labels flip to paper (--panel-ink), hairlines to --panel-line. See tokens.css. */
   .hud-card {
     pointer-events: auto;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
-    max-width: min(88vw, 34rem);
-    background: color-mix(in srgb, var(--couleur-bleu-clair) 92%, transparent);
-    border: var(--border-w) solid var(--color-violet);
+    max-width: min(92vw, 34rem);
+    background: var(--panel-bg);
+    border: var(--border-w) solid var(--panel-line);
     border-radius: var(--radius);
   }
   .hud-card__title {
@@ -52,7 +54,7 @@ const { titre, ville, programme } = Astro.props;
     align-items: center;
     margin: 0;
     padding: var(--space-3) var(--space-4);
-    border-right: var(--border-w) solid var(--color-violet);
+    border-right: var(--border-w) solid var(--panel-line);
     color: var(--color-coral);
     font-family: var(--font-sans);
     font-weight: 700;
@@ -62,20 +64,23 @@ const { titre, ville, programme } = Astro.props;
     margin: 0;
     display: grid;
   }
+  /* Narrower label column than before so the value keeps enough room to wrap on word boundaries on
+     mobile (avoids mid-word clamps like "Restru… / de…"). min-content floor lets the widest label
+     ("Programme" in the wide didone italic) size itself so it never clips, capped at 5.5rem. */
   .hud-card__row {
     display: grid;
-    grid-template-columns: 7.5rem minmax(0, 1fr);
+    grid-template-columns: minmax(min-content, 5.5rem) minmax(0, 1fr);
     gap: var(--space-3);
     align-items: baseline;
     padding: var(--space-2) var(--space-4);
   }
   .hud-card__row + .hud-card__row {
-    border-top: var(--border-w) solid var(--color-violet);
+    border-top: var(--border-w) solid var(--panel-line);
   }
   .hud-card__row dt {
     font-family: var(--font-serif);
     font-style: italic;
-    color: var(--color-violet);
+    color: var(--panel-ink);
   }
   .hud-card__row dd {
     margin: 0;

@@ -34,4 +34,14 @@ const thematiques = await getThematiques();
     padding: var(--space-4) var(--space-4) var(--space-8);
     background: var(--color-beige-10);
   }
+
+  /* Mobile: don't create an internal scroll container — let the whole document scroll so the footer
+     flows below (see the body rule in global.css). The sticky filters then anchor to the document
+     scroll, offset below the pinned header (ProjectExplorer.astro). */
+  @media (max-width: 47.999rem) {
+    .project-list {
+      height: auto;
+      overflow: visible;
+    }
+  }
 </style>
