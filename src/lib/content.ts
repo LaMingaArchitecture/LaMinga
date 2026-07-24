@@ -256,7 +256,7 @@ function toProgramme(blok: ProjectBlok): ProgrammeSummary | undefined {
 }
 
 /** Cover photo for the VRAC grid / Index hover: the explicit field, else the first carousel image. */
-function coverPhoto(blok: ProjectBlok): StoryblokAsset | undefined {
+export function coverPhoto(blok: ProjectBlok): StoryblokAsset | undefined {
   if (blok.photo_couverture?.filename) return blok.photo_couverture;
   const first = blok.carrousel?.find(
     (slide) => slide.image_paysage?.filename || slide.image_portrait?.filename,
@@ -295,10 +295,16 @@ export function resolveRelated(blok: ProjectBlok): ProjectSummary[] {
     .map((story) => toSummary(story.content as ProjectBlok, story.slug));
 }
 
+// Cache the published project list for the whole SSG build (static during a build) — this is the
+// heaviest fetch (per_page:100 + resolve_relations) and is shared by getStaticPaths, the Projets
+// grid, and llms.txt. Never cache in draft/preview: the SSR editor must reflect live edits per request.
+let projectStoriesCache: Promise<ISbStoryData[]> | undefined;
+
 // Single list fetch with the programme + linked-project relations resolved, shared by
 // the grid and the static-path generation (no per-project N+1).
 function getProjectStories(): Promise<ISbStoryData[]> {
-  return tolerateNotFound(
+  if (storyblokVersion === 'published' && projectStoriesCache) return projectStoriesCache;
+  const result = tolerateNotFound(
     async () => {
       const api = getStoryblokApi();
       const { data } = await api.get('cdn/stories', {
@@ -313,6 +319,8 @@ function getProjectStories(): Promise<ISbStoryData[]> {
     [],
     `aucune story sous "projets/" (${storyblokVersion}) — grille vide`,
   );
+  if (storyblokVersion === 'published') projectStoriesCache = result;
+  return result;
 }
 
 export async function getProjectSummaries(): Promise<ProjectSummary[]> {

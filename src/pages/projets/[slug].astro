@@ -1,8 +1,18 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import { PUBLIC_SITE_URL } from 'astro:env/client';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllProjects } from '../../lib/content';
+import {
+  resolveSeo,
+  projectSeoInput,
+  canonicalUrl,
+  absoluteImageUrl,
+  breadcrumbJsonLd,
+  creativeWorkJsonLd,
+} from '../../lib/seo';
+import { lcpPreload, slideMediaFields } from '../../lib/media';
 import type { ProjectBlok } from '../../types/storyblok';
 
 export const getStaticPaths = (async () => {
@@ -11,13 +21,33 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { blok } = Astro.props as { blok: ProjectBlok };
-// Meaningful title + meta derived from the project (titre + ville), per the design spec.
-const title = `${blok.titre}${blok.ville ? ` — ${blok.ville}` : ''} — LaMinga`;
-const description =
-  blok.description_programme ??
-  `${blok.titre}${blok.ville ? `, ${blok.ville}` : ''} — projet de l'atelier d'architecture LaMinga.`;
+
+// Title/description/cover with editor overrides + fallbacks (centralized in seo.ts).
+const resolved = resolveSeo(projectSeoInput(blok));
+// pageUrl mirrors BaseLayout's canonical (Astro.url.pathname) so canonical/og:url/JSON-LD agree.
+const pageUrl = canonicalUrl(Astro.url.pathname, PUBLIC_SITE_URL);
+const imageUrl = absoluteImageUrl(resolved.ogImage, PUBLIC_SITE_URL);
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: 'Accueil', url: canonicalUrl('/', PUBLIC_SITE_URL) },
+    { name: 'Projets', url: canonicalUrl('/projets/', PUBLIC_SITE_URL) },
+    { name: blok.titre, url: pageUrl },
+  ]),
+  creativeWorkJsonLd(blok, pageUrl, imageUrl, PUBLIC_SITE_URL),
+];
+
+// LCP is the first carousel slide (not photo_couverture, which is the share/grid fallback).
+const firstSlide = blok.carrousel?.[0];
+const preload = firstSlide ? lcpPreload(slideMediaFields(firstSlide)) : [];
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout
+  title={resolved.title}
+  description={resolved.description}
+  ogImage={resolved.ogImage}
+  ogType="article"
+  jsonLd={jsonLd}
+  preload={preload}
+>
   <StoryblokComponent blok={blok} />
 </BaseLayout>

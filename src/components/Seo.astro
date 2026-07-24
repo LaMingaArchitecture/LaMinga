@@ -1,0 +1,62 @@
+---
+/**
+ * Seo — renders the SEO surface of the <head>: title, meta description, canonical, Open Graph,
+ * Twitter Card and JSON-LD. Fed resolved values by BaseLayout; pure presentation (no fetching).
+ * og:image is absolutized here so the storyblok host / branded default resolve consistently.
+ */
+import { PUBLIC_SITE_URL } from 'astro:env/client';
+import { absoluteImageUrl, serializeJsonLd } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  noindex?: boolean;
+  /** Raw filename (Storyblok host) or site-relative default; absolutized below. */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  siteName?: string;
+  /** Already-merged, undefined-filtered JSON-LD nodes (Organization + page-specific). */
+  jsonLd?: object[];
+}
+
+const {
+  title,
+  description,
+  canonical,
+  noindex = false,
+  ogImage,
+  ogType = 'website',
+  siteName = 'LaMinga',
+  jsonLd = [],
+} = Astro.props;
+
+const ogImageUrl = absoluteImageUrl(ogImage, PUBLIC_SITE_URL);
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<link rel="canonical" href={canonical} />
+
+{/* Open Graph (LinkedIn, WhatsApp, Slack, Facebook) */}
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+
+{/* Twitter / X */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+{/* Structured data — is:inline keeps Astro from bundling/altering the JSON. */}
+{
+  jsonLd.map((node) => (
+    <script type="application/ld+json" is:inline set:html={serializeJsonLd(node)} />
+  ))
+}

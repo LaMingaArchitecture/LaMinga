@@ -1,15 +1,29 @@
 ---
 import '../styles/global.css';
 import { PUBLIC_SITE_URL } from 'astro:env/client';
+import { STORYBLOK_VERSION } from 'astro:env/server';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import Seo from '../components/Seo.astro';
 import { getSettings, getProgrammes, buildProgrammeColorCss } from '../lib/content';
+import { professionalServiceJsonLd } from '../lib/seo';
+import type { PreloadImage } from '../lib/media';
 
 interface Props {
   title?: string;
   description?: string;
   /** Set on placeholder pages so missing-content pages aren't indexed as live. */
   noindex?: boolean;
+  /** Social share image — raw Storyblok filename or site-relative default. */
+  ogImage?: string;
+  /** Open Graph type: 'article' for project pages, 'website' elsewhere. */
+  ogType?: 'website' | 'article';
+  /** Canonical override (defaults to the current pathname on PUBLIC_SITE_URL). */
+  canonical?: string;
+  /** Page-specific JSON-LD nodes appended after the site-wide Organization node. */
+  jsonLd?: object[];
+  /** LCP image(s) to preload in <head> (see src/lib/media.ts `lcpPreload`). */
+  preload?: PreloadImage[];
   /** Slim contact footer bar (Projets + Atelier + Mentions). Default false (immersive). */
   footer?: boolean;
   /**
@@ -33,6 +47,11 @@ const {
   title = 'LaMinga',
   description = "Atelier d'architecture LaMinga.",
   noindex = false,
+  ogImage,
+  ogType = 'website',
+  canonical: canonicalProp,
+  jsonLd = [],
+  preload = [],
   footer = false,
   immersive: immersiveProp,
   immersiveScroll = false,
@@ -54,7 +73,34 @@ const programmeColorCss = buildProgrammeColorCss(programmes);
 // The header floats over the hero on footer-less pages and sits as a solid bar otherwise; the
 // Atelier opts into a floating header while keeping its footer, so allow an explicit override.
 const immersive = immersiveProp ?? !footer;
-const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
+const canonicalHref = canonicalProp ?? new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
+
+// Preview builds (draft) must never be indexed — layered on top of Basic-Auth + robots Disallow.
+const forceNoindex = STORYBLOK_VERSION === 'draft';
+
+// One site-wide Organization node on every page (drops cleanly when settings are absent); any
+// page-specific nodes append after it. Cross-referenced by CreativeWork/Person via @id.
+const orgJsonLd = professionalServiceJsonLd(settings, PUBLIC_SITE_URL);
+const allJsonLd = [orgJsonLd, ...jsonLd].filter((node): node is object => Boolean(node));
+
+// Warm only the origin(s) the LCP preload actually uses; fall back to the primary asset host for
+// pages with no LCP preload that still load Storyblok imagery. No crossorigin — an `<img>` fetch is
+// not CORS, so a non-CORS preconnect is the one the browser reuses.
+const preconnectOrigins = preload.length
+  ? [
+      ...new Set(
+        preload
+          .map((p) => {
+            try {
+              return new URL(p.href).origin;
+            } catch {
+              return null;
+            }
+          })
+          .filter((origin): origin is string => origin !== null),
+      ),
+    ]
+  : ['https://a.storyblok.com'];
 ---
 
 <!doctype html>
@@ -62,10 +108,31 @@ const canonical = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex" />}
-    <link rel="canonical" href={canonical} />
+    <Seo
+      title={title}
+      description={description}
+      canonical={canonicalHref}
+      noindex={noindex || forceNoindex}
+      ogImage={ogImage}
+      ogType={ogType}
+      siteName={settings?.nom_atelier ?? 'LaMinga'}
+      jsonLd={allJsonLd}
+    />
+    {/* Warm the Storyblok image origin(s) the LCP uses before the hero fetch. */}
+    {preconnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
+    {
+      preload.map((p) => (
+        <link
+          rel="preload"
+          as="image"
+          fetchpriority="high"
+          href={p.href}
+          imagesrcset={p.srcset}
+          imagesizes={p.sizes}
+          media={p.media}
+        />
+      ))
+    }
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {programmeColorCss && <style is:global set:html={programmeColorCss} />}
   </head>

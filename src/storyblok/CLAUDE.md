@@ -52,3 +52,10 @@ autoplay loop playsinline>` + `<track kind="captions" />` (a11y lint). Hôtes au
 
 Lus par `getSettings()` et affichés par `Nav`/`Footer` (pas de `StoryblokComponent`) — ne pas
 les ajouter à la map `components`.
+
+## `seo`
+
+Bloc imbriqué (`titre_seo` / `description_seo` / `image_partage`, champ `seo` _bloks_ max 1 sur
+`project` / `project_list` / `home_page` / `atelier_page`). Lu en frontmatter via `firstSeo(blok.seo)`
+(`src/lib/seo.ts`), **jamais** via `StoryblokComponent` — comme `global_settings`, **ne pas** l'ajouter
+à la map `components`. Champ _bloks_ ⇒ toujours un tableau (lire `[0]`).

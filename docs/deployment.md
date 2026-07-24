@@ -18,7 +18,8 @@ le code de `main`, avec le contenu `draft` — aucune branche `preview` à maint
 > ⚠️ Le site B construit `main` comme contexte **production** : son `CONTEXT` Netlify vaut
 > `production`. Tout ce qui distingue les deux sites passe donc par **`STORYBLOK_VERSION`** (et non
 > par `CONTEXT`) — c'est le commutateur unique utilisé par `astro.config.mjs`,
-> `scripts/generate-headers.mjs` et l'edge function `preview-auth`.
+> `scripts/generate-headers.mjs`, les endpoints `src/pages/robots.txt.ts` / `src/pages/llms.txt.ts`
+> (variantes prod vs preview « noindex ») et l'edge function `preview-auth`.
 
 ## 1. Variables d'environnement (UI Netlify, par site)
 

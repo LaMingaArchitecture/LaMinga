@@ -6,26 +6,22 @@
  * is the parallax hook (the script also toggles `will-change` on it only when parallax is active).
  */
 import ResponsiveMedia from './ResponsiveMedia.astro';
-import { sbImage } from '../lib/image';
+import { sbImageW, sbSrcset, SIZES_FULLSCREEN, HERO_IMG_WIDTH } from '../lib/image';
 import type { StoryblokAsset } from '../types/storyblok';
 
 interface Props {
   image?: StoryblokAsset;
   video?: StoryblokAsset;
   poster?: StoryblokAsset;
+  /** The first section's background is the page LCP → load eagerly + high priority. */
+  eager?: boolean;
 }
-const { image, video, poster } = Astro.props;
+const { image, video, poster, eager = false } = Astro.props;
 
-// Responsive full-bleed sources (sizes=100vw): a phone pulls ~1000px, large screens up to 2200px,
-// instead of every device downloading one 2000px background.
-const src = image?.filename ? sbImage(image.filename, '1600x0') : undefined;
-const srcset = image?.filename
-  ? [
-      `${sbImage(image.filename, '1000x0')} 1000w`,
-      `${sbImage(image.filename, '1600x0')} 1600w`,
-      `${sbImage(image.filename, '2200x0')} 2200w`,
-    ].join(', ')
-  : undefined;
+// Responsive full-bleed sources on the shared width ladder (sizes=100vw), so the atelier photo and
+// its preload link (src/lib/media.ts / BaseLayout) resolve to identical URLs — no double-download.
+const src = image?.filename ? sbImageW(image.filename, HERO_IMG_WIDTH) : undefined;
+const srcset = image?.filename ? sbSrcset(image.filename) : undefined;
 ---
 
 <div class="atelier__bg" data-atelier-bg>
@@ -33,7 +29,17 @@ const srcset = image?.filename
     video?.filename ? (
       <ResponsiveMedia video={video} poster={poster} alt="" loading="eager" />
     ) : (
-      src && <img src={src} srcset={srcset} sizes="100vw" alt={image?.alt ?? ''} loading="lazy" />
+      src && (
+        <img
+          src={src}
+          srcset={srcset}
+          sizes={SIZES_FULLSCREEN}
+          alt={image?.alt ?? ''}
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : undefined}
+          decoding="async"
+        />
+      )
     )
   }
 </div>

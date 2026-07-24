@@ -20,6 +20,23 @@ export type StoryblokColor = string | { color?: string; plugin?: string };
 /** Relation field: the resolved story when `resolve_relations` ran, else the uuid string. */
 export type SbRelation = ISbStoryData | string;
 
+/**
+ * Editor-controlled SEO overrides (all optional — sensible fallbacks apply, see src/lib/seo.ts).
+ * Modelled as a Storyblok Blocks field capped at 1 on the page bloks below, so it deserializes as
+ * `SeoBlok[]` — always read the first entry (`firstSeo(blok.seo)`). Data-only: read in frontmatter,
+ * never passed to `<StoryblokComponent>`, so NOT registered in astro.config.mjs `components`
+ * (same carve-out as `global_settings`/`social_link`).
+ */
+export interface SeoBlok extends SbBlokData {
+  component: 'seo';
+  /** Titre de la page (Google / partages). Défaut : dérivé du contenu. */
+  titre_seo?: string;
+  /** Description courte (~155 caractères) pour Google et les IA. */
+  description_seo?: string;
+  /** Visuel de partage (Open Graph). Défaut : photo de couverture / premier visuel. */
+  image_partage?: StoryblokAsset;
+}
+
 export interface TeamMemberBlok extends SbBlokData {
   component: 'team_member';
   nom: string;
@@ -96,12 +113,16 @@ export interface ProjectBlok extends SbBlokData {
   photo_couverture?: StoryblokAsset;
   /** Relations to other `project` stories. */
   projets_lies?: SbRelation[];
+  /** Editor SEO overrides (Blocks field, max 1). Read via `firstSeo(blok.seo)`. */
+  seo?: SeoBlok[];
 }
 
 export interface ProjectListBlok extends SbBlokData {
   component: 'project_list';
   titre: string;
   intro?: RichText;
+  /** Editor SEO overrides (Blocks field, max 1). Read via `firstSeo(blok.seo)`. */
+  seo?: SeoBlok[];
 }
 
 export interface AtelierPageBlok extends SbBlokData {
@@ -124,11 +145,15 @@ export interface AtelierPageBlok extends SbBlokData {
   clients_moa?: string;
   titre_equipe?: string;
   equipe?: TeamMemberBlok[];
+  /** Editor SEO overrides (Blocks field, max 1). Read via `firstSeo(blok.seo)`. */
+  seo?: SeoBlok[];
 }
 
 export interface HomePageBlok extends SbBlokData {
   component: 'home_page';
   carrousel?: HomeSlideBlok[];
+  /** Editor SEO overrides (Blocks field, max 1). Read via `firstSeo(blok.seo)`. */
+  seo?: SeoBlok[];
 }
 
 export interface GlobalSettings extends SbBlokData {
