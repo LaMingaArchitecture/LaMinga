@@ -319,7 +319,15 @@ function getProjectStories(): Promise<ISbStoryData[]> {
     [],
     `aucune story sous "projets/" (${storyblokVersion}) — grille vide`,
   );
-  if (storyblokVersion === 'published') projectStoriesCache = result;
+  if (storyblokVersion === 'published') {
+    projectStoriesCache = result;
+    // Only 404s are swallowed (→ []); a non-404 failure (network/401/5xx) rejects and must fail the
+    // build. Drop the rejected promise from the cache so a transient error can't be replayed to every
+    // later caller as a permanent failure.
+    result.catch(() => {
+      if (projectStoriesCache === result) projectStoriesCache = undefined;
+    });
+  }
   return result;
 }
 
