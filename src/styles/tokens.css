@@ -52,6 +52,11 @@
   --couleur-olive: #bbbd2b;
   --couleur-turquoise: #11a3c2;
   --couleur-bleu-clair: #bbd5fd;
+  /* Deep blue derived from bleu-clair for panels that carry coral text: corail #ff6c4f is below
+     WCAG AA on the light bleu-clair (~1.9:1), and a *mid* blue would only lower it further, so the
+     text-bearing panels darken to this navy — corail then clears AA (~4.6:1) and body text flips
+     to paper (--panel-ink). Kept in the blue family per the charte. */
+  --couleur-bleu-nuit: #1f3053;
   --couleur-taupe-clair: #d0b8b0;
   --couleur-rose: #fec9d7;
   --couleur-gris: #c6c6c6;
@@ -63,6 +68,13 @@
   --color-violet: var(--couleur-violet-aubergine);
   --color-coral: var(--couleur-corail);
   --color-beige: var(--couleur-taupe-clair); /* active-button tint + thématique tint */
+  /* Deep panel behind coral text (atelier panels + project HUD card). --panel-ink = light body
+     text on it; --panel-line = hairline separators. OPAQUE on purpose: these panels sit over
+     full-bleed photos/video with no scrim, so any translucency would let a bright backdrop lift the
+     effective luminance and drop corail below AA — solid navy keeps corail at 4.68:1 regardless. */
+  --panel-bg: var(--couleur-bleu-nuit);
+  --panel-ink: var(--couleur-beige-clair);
+  --panel-line: color-mix(in srgb, var(--couleur-beige-clair) 42%, transparent);
   --color-beige-10: #f5f1eb; /* Projets/Index bg (#d0b8b0 @10% over beige clair) */
   --color-line: #d8d0cc; /* thin borders for the boxed-cell aesthetic */
   --color-muted: #626262; /* secondary text — ≥4.5:1 on paper (WCAG AA) */

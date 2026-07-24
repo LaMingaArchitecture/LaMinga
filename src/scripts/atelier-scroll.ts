@@ -126,6 +126,24 @@ const setupParallax = (root: HTMLElement, sections: HTMLElement[]): void => {
   onScroll();
 };
 
+// Mobile only: flip the fixed transparent header to a solid band once scrolled off the hero, so
+// panel content (esp. the team title) never reads under the floating nav. On the desktop snap frame
+// the header is absolute and sections clear it via padding, so the CSS ignores this flag there.
+const setupHeaderState = (root: HTMLElement): void => {
+  let scrolled: boolean | undefined;
+  const update = (): void => {
+    const y = window.scrollY || document.documentElement.scrollTop || root.scrollTop || 0;
+    const next = y > window.innerHeight * 0.6;
+    if (next === scrolled) return; // only touch the DOM when the state actually flips
+    scrolled = next;
+    document.body.toggleAttribute('data-atelier-scrolled', next);
+  };
+  window.addEventListener('scroll', update, { passive: true });
+  root.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+};
+
 const enhance = (root: HTMLElement): void => {
   const sections = Array.from(root.querySelectorAll<HTMLElement>('[data-atelier-sec]'));
   if (sections.length === 0) return;
@@ -134,6 +152,7 @@ const enhance = (root: HTMLElement): void => {
   setupReveal(sections);
   setupVideo(root, sections);
   setupParallax(root, sections);
+  setupHeaderState(root);
 };
 
 document.querySelectorAll<HTMLElement>('[data-atelier]').forEach(enhance);

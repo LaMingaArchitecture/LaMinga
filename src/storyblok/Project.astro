@@ -216,7 +216,10 @@ const infosHasContent =
 
   @media (min-width: 48rem) {
     .project-hud {
-      --band-top: calc(var(--header-h) + var(--space-6));
+      /* The desktop header's left zone is two *stacked* outlined buttons (Atelier / Projets), so it
+         renders taller than --header-h; budget for that real height plus a gap so the info/related
+         bands clear the floating transparent nav instead of tucking under it. */
+      --band-top: calc(var(--header-h) + var(--space-8) + var(--space-6));
       --band-bottom: 5.5rem;
       --band-x: var(--space-6);
     }

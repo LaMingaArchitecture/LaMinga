@@ -68,7 +68,7 @@ const engagements = blok.engagements ?? [];
 </section>
 
 <style>
-  /* Mobile: ONE cohesive bleu-clair sheet. It sizes to its content up to the band height, then
+  /* Mobile: ONE cohesive deep-navy sheet. It sizes to its content up to the band height, then
      scrolls internally (body stays locked). The three panels read as sections of one card — split
      by a hairline, never floating boxes with the photo showing through. */
   .info-overlay {
@@ -82,7 +82,9 @@ const engagements = blok.engagements ?? [];
     display: flex;
     flex-direction: column;
     padding: var(--space-5);
-    background: color-mix(in srgb, var(--couleur-bleu-clair) 94%, transparent);
+    /* Deep navy panel so the coral facts/description clear WCAG AA (matches the HUD card + atelier;
+       the light bleu-clair failed on corail). Labels flip to paper via --panel-ink below. */
+    background: var(--panel-bg);
     border-radius: var(--radius);
     color: var(--color-coral);
     overflow-y: auto;
@@ -99,7 +101,7 @@ const engagements = blok.engagements ?? [];
   .info-panel + .info-panel {
     margin-top: var(--space-5);
     padding-top: var(--space-5);
-    border-top: var(--border-w) solid color-mix(in srgb, var(--color-violet) 28%, transparent);
+    border-top: var(--border-w) solid var(--panel-line);
   }
 
   .info-panel__title {
@@ -124,21 +126,21 @@ const engagements = blok.engagements ?? [];
 
   .info-table {
     margin: 0;
-    border: var(--border-w) solid var(--color-violet);
+    border: var(--border-w) solid var(--panel-line);
   }
   .info-table__row {
     display: grid;
     grid-template-columns: 9rem minmax(0, 1fr);
   }
   .info-table__row + .info-table__row {
-    border-top: var(--border-w) solid var(--color-violet);
+    border-top: var(--border-w) solid var(--panel-line);
   }
   .info-table__row dt {
     padding: var(--space-2) var(--space-3);
-    border-right: var(--border-w) solid var(--color-violet);
+    border-right: var(--border-w) solid var(--panel-line);
     font-family: var(--font-serif);
     font-style: italic;
-    color: var(--color-violet);
+    color: var(--panel-ink);
   }
   .info-table__row dd {
     margin: 0;
@@ -166,7 +168,7 @@ const engagements = blok.engagements ?? [];
   }
 
   @media (min-width: 48rem) {
-    /* Desktop: three translucent panels again, but the cluster is vertically centered in the band
+    /* Desktop: three deep-navy panels again, but the cluster is vertically centered in the band
        (align-content) so it sits lower than the header/nav and reads as balanced. */
     .info-overlay {
       bottom: var(--band-bottom);
@@ -184,7 +186,7 @@ const engagements = blok.engagements ?? [];
       overflow-y: auto;
     }
     .info-panel {
-      background: color-mix(in srgb, var(--couleur-bleu-clair) 92%, transparent);
+      background: var(--panel-bg);
       border-radius: var(--radius);
       padding: var(--space-5);
     }

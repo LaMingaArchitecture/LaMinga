@@ -43,10 +43,16 @@ const { id, related, hidden = true } = Astro.props;
     grid-template-columns: 1fr;
     gap: var(--space-5);
     padding: var(--space-5);
-    background: color-mix(in srgb, var(--couleur-bleu-clair) 92%, transparent);
+    /* Deep navy band to match the HUD card + info overlay; the light plan-masse vignettes pop on it
+       and the card captions flip to paper (rule below). */
+    background: var(--panel-bg);
     border-radius: var(--radius);
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+  /* Card captions are --accent (violet) by default — unreadable on the navy band, so lift them. */
+  .related-band :global(.project-card--vignette .project-card__title) {
+    color: var(--panel-ink);
   }
   .related-band[hidden] {
     display: none;

@@ -129,13 +129,15 @@ const firstSection = atelierHero(blok).section;
     padding: calc(var(--header-h-mobile) + var(--space-5)) var(--space-4) var(--space-5);
   }
 
-  /* ---- Translucent bleu-clair panel (recipe shared with the project overlays). ---------------- */
+  /* ---- Deep-navy panel (recipe shared with the project overlays). ----------------------------- */
+  /* Coral headings clear WCAG AA on this navy (the old light bleu-clair failed on corail); body text
+     is paper (--panel-ink). See --panel-bg in tokens.css. */
   .atelier__panel {
     position: relative;
     z-index: 1;
     margin-inline: auto;
-    color: var(--color-ink);
-    background: color-mix(in srgb, var(--couleur-bleu-clair) 92%, transparent);
+    color: var(--panel-ink);
+    background: var(--panel-bg);
     border-radius: var(--radius);
     padding: var(--space-6);
   }
@@ -179,7 +181,7 @@ const firstSection = atelierHero(blok).section;
   }
   .atelier__clients-list {
     margin: 0;
-    color: var(--color-ink);
+    color: var(--panel-ink);
     font-weight: 600;
     line-height: 1.7;
   }
