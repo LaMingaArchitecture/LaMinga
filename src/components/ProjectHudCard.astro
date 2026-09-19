@@ -37,8 +37,9 @@ const { titre, ville, programme } = Astro.props;
 </div>
 
 <style>
-  /* Deep navy card so the coral title/values clear WCAG AA (light bleu-clair failed on corail);
-     labels flip to paper (--panel-ink), hairlines to --panel-line. See tokens.css. */
+  /* Charte V3 cartouche: bleu clair ground, aubergine labels and hairlines. The project name stays
+     corail as a display title; the values are running text and take --panel-ink (aubergine, 4.79:1)
+     — corail would be 1.87:1 there, below AA and below the 3:1 large-text floor. */
   .hud-card {
     pointer-events: auto;
     display: grid;
@@ -56,6 +57,7 @@ const { titre, ville, programme } = Astro.props;
     padding: var(--space-3) var(--space-4);
     border-right: var(--border-w) solid var(--panel-line);
     color: var(--color-coral);
+    /* 700 is the non-colour cue that carries the title when corail alone cannot. */
     font-family: var(--font-sans);
     font-weight: 700;
     font-size: 1.25rem;
@@ -84,7 +86,7 @@ const { titre, ville, programme } = Astro.props;
   }
   .hud-card__row dd {
     margin: 0;
-    color: var(--color-coral);
+    color: var(--panel-ink);
     font-size: 0.9375rem;
   }
   /* The programme description can be long — cap it to two lines on the compact card. */

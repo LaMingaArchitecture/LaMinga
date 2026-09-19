@@ -129,9 +129,10 @@ const firstSection = atelierHero(blok).section;
     padding: calc(var(--header-h-mobile) + var(--space-5)) var(--space-4) var(--space-5);
   }
 
-  /* ---- Deep-navy panel (recipe shared with the project overlays). ----------------------------- */
-  /* Coral headings clear WCAG AA on this navy (the old light bleu-clair failed on corail); body text
-     is paper (--panel-ink). See --panel-bg in tokens.css. */
+  /* ---- Bleu-clair panel (recipe shared with the project overlays). ---------------------------- */
+  /* Body text is aubergine (--panel-ink, 4.79:1); the section headings stay corail as display type,
+     doubled by the serif italic + size shift. The V3 boards draw these panels translucent — kept
+     opaque here so contrast does not become a function of the editor's photo. See tokens.css. */
   .atelier__panel {
     position: relative;
     z-index: 1;

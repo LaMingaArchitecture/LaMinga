@@ -126,9 +126,6 @@ if (root) {
     });
     viewVignettes?.setAttribute('aria-pressed', String(state.view === 'grid'));
     viewIndex?.setAttribute('aria-pressed', String(state.view === 'index'));
-    // Colour the matching vignettes only while a programme is selected.
-    root.toggleAttribute('data-programme-active', !!state.programme);
-
     const query = normalizeSearch(state.search);
     const matches = (item: HTMLElement): boolean =>
       (!state.programme || item.dataset.programme === state.programme) &&

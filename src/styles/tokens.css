@@ -8,15 +8,17 @@
 
    PALETTE (charte name — hex — role)
      Beige clair       #f9f7f2  page background
-     Rouge corail      #ff6c4f  brand corail: home accent (logo/social/links/arrows) + programme
-                                Patrimoine fill. Charte value per client (below WCAG AA on light).
-     Violet aubergine  #7e4080  inner-page accent: nav, logo, table text, captions
+     Rouge corail      #ff6c4f  brand corail: logotype, home accent (social/links/arrows) and
+                                *display titles only*. Below WCAG AA on every light ground in the
+                                palette (1.87:1 on bleu clair, 2.61:1 on beige, ~2.19:1 over photos),
+                                so it never carries running text — see the note under TYPOGRAPHY.
+     Violet aubergine  #7e4080  inner-page accent + all panel ink and hairlines
      Violet nuit       #32255b  primary dark text
      Violet vif        #a785ff  secondary violet; programme Activité (proposed)
      Vert citron       #d5ee6e  programme Équipement
      Olive             #bbbd2b  programme Aménagement (proposed)
      Turquoise         #11a3c2  programme Logement
-     Bleu clair        #bbd5fd  translucent info panels
+     Bleu clair        #bbd5fd  panels: project HUD, info pop-up, related band, atelier
      Taupe clair       #d0b8b0  active nav tint, thématique selection, Projets bg @10%
      Rose              #fec9d7  programme Programmation (proposed)
      Gris              #c6c6c6  neutral
@@ -85,11 +87,6 @@
   --couleur-olive: #bbbd2b;
   --couleur-turquoise: #11a3c2;
   --couleur-bleu-clair: #bbd5fd;
-  /* Deep blue derived from bleu-clair for panels that carry coral text: corail #ff6c4f is below
-     WCAG AA on the light bleu-clair (~1.9:1), and a *mid* blue would only lower it further, so the
-     text-bearing panels darken to this navy — corail then clears AA (~4.6:1) and body text flips
-     to paper (--panel-ink). Kept in the blue family per the charte. */
-  --couleur-bleu-nuit: #1f3053;
   --couleur-taupe-clair: #d0b8b0;
   --couleur-rose: #fec9d7;
   --couleur-gris: #c6c6c6;
@@ -101,14 +98,15 @@
   --color-violet: var(--couleur-violet-aubergine);
   --color-coral: var(--couleur-corail);
   --color-beige: var(--couleur-taupe-clair); /* active-button tint + thématique tint */
-  /* Deep panel behind coral text (atelier panels + project HUD card). --panel-ink = light body
-     text on it; --panel-line = hairline separators. OPAQUE on purpose: these panels sit over
-     full-bleed photos/video with no scrim, so any translucency would let a bright backdrop lift the
-     effective luminance and drop corail below AA — solid navy keeps corail at 4.68:1 regardless. */
-  --panel-bg: var(--couleur-bleu-nuit);
-  --panel-ink: var(--couleur-beige-clair);
-  --panel-line: color-mix(in srgb, var(--couleur-beige-clair) 42%, transparent);
-  --color-beige-10: #f5f1eb; /* Projets/Index bg (#d0b8b0 @10% over beige clair) */
+  /* Charte V3 panel (project HUD card, info pop-up, related band, atelier panels): bleu clair with
+     aubergine ink and hairlines — measured off the V3 boards, where labels and body copy are
+     aubergine and only display titles are corail. Aubergine on bleu clair is 4.79:1 (AA).
+     OPAQUE on purpose: these panels sit over full-bleed photos/video with no scrim, so a
+     translucent panel would make every contrast ratio a function of the editor's photo — the V3
+     atelier boards do draw them translucent, which is deliberately not adopted here. */
+  --panel-bg: var(--couleur-bleu-clair);
+  --panel-ink: var(--couleur-violet-aubergine);
+  --panel-line: var(--couleur-violet-aubergine);
   --color-line: #d8d0cc; /* thin borders for the boxed-cell aesthetic */
   --color-muted: #626262; /* secondary text — ≥4.5:1 on paper (WCAG AA) */
   --color-scrim: color-mix(in srgb, var(--couleur-violet-nuit) 55%, transparent); /* overlays */

@@ -21,7 +21,7 @@ const thematiques = await getThematiques();
   <ProjectExplorer projects={projects} programmes={programmes} thematiques={thematiques} />
 </div>
 
-<!-- The Projets page: a beige-10 fullscreen frame that scrolls vertically. The explorer's filter
+<!-- The Projets page: a plain beige fullscreen frame that scrolls vertically. The explorer's filter
      + tool rows stay pinned (sticky) while the Vignettes rail / Liste table scroll. The design puts
      the title only in the nav, so the page heading is kept for a11y/SEO but visually hidden. -->
 <style>
@@ -32,7 +32,7 @@ const thematiques = await getThematiques();
        (so the sticky filters can't be dragged sideways). */
     overflow-x: hidden;
     padding: var(--space-4) var(--space-4) var(--space-8);
-    background: var(--color-beige-10);
+    background: var(--color-paper);
   }
 
   /* Mobile: don't create an internal scroll container — let the whole document scroll so the footer

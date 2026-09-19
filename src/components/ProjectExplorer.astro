@@ -42,14 +42,11 @@ const programmesForThematique = (value: string) =>
       {
         programmeFilters.length > 0 && (
           <div class="explorer__row" role="group" aria-label="Filtrer par programme">
-            {/* data-programme-filter drives the JS filter; data-programme receives the
-                --programme-color / --programme-ink vars from BaseLayout's global colour map. */}
             {programmeFilters.map((programme) => (
               <button
                 type="button"
                 class="explorer__chip explorer__chip--programme brand-box"
                 data-programme-filter={programme.slug}
-                data-programme={programme.slug}
                 aria-pressed="false"
               >
                 {programme.nom}
@@ -128,7 +125,7 @@ const programmesForThematique = (value: string) =>
     flex-direction: column;
     gap: var(--space-3);
     padding-block: var(--space-2);
-    background: var(--color-beige-10);
+    background: var(--color-paper);
   }
   /* Mobile: the whole document scrolls (footer flows away), so the filters anchor to the page and
      must clear the pinned header instead of sticking at the very top. */
@@ -175,18 +172,20 @@ const programmesForThematique = (value: string) =>
     display: none;
   }
 
-  /* Programme chips (row 1) carry their Storyblok colour on the outline; selected = filled + ink. */
+  /* Programme chips (row 1): one flat corail fill when selected, the same for every programme —
+     the V3 boards abandoned the per-programme colour. The label is violet nuit (4.84:1 on corail);
+     the aubergine the boards draw would be 2.56:1. `font-weight: 600` is the non-colour cue. */
   .explorer__chip--programme {
-    --brand-box-line: var(--programme-color, var(--color-line));
+    --brand-box-line: var(--color-line);
   }
   .explorer__chip--programme[aria-pressed='true'] {
-    --brand-box-line: var(--programme-color, var(--accent));
-    --brand-box-fill: var(--programme-color, var(--accent));
-    color: var(--programme-ink, var(--color-paper));
+    --brand-box-line: var(--color-coral);
+    --brand-box-fill: var(--color-coral);
+    color: var(--color-ink);
     font-weight: 600;
   }
 
-  /* Thematique chips (row 2) are serif italic; selected = beige tint fill. */
+  /* Thematique chips (row 2) are serif italic; selected = rose fill per the V3 boards. */
   .explorer__chip--thematique {
     --brand-box-line: var(--color-line);
     font-family: var(--font-serif);
@@ -194,8 +193,8 @@ const programmesForThematique = (value: string) =>
   }
   .explorer__chip--thematique[aria-pressed='true'] {
     --brand-box-line: var(--accent);
-    --brand-box-fill: var(--color-beige);
-    color: var(--color-ink);
+    --brand-box-fill: var(--couleur-rose);
+    color: var(--accent);
     font-weight: 600;
   }
 
@@ -261,15 +260,6 @@ const programmesForThematique = (value: string) =>
   }
   .explorer__empty[hidden] {
     display: none;
-  }
-
-  /* When a programme filter is active, the visible (matching) vignettes take its colour on the
-     square border + caption — each tile supplies its own --programme-color via its data-programme. */
-  .explorer[data-programme-active] :global(.project-card--vignette .project-card__cover) {
-    border-color: var(--programme-color, var(--accent));
-  }
-  .explorer[data-programme-active] :global(.project-card--vignette .project-card__title) {
-    color: var(--programme-color, var(--accent));
   }
 </style>
 

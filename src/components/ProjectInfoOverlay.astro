@@ -82,11 +82,10 @@ const engagements = blok.engagements ?? [];
     display: flex;
     flex-direction: column;
     padding: var(--space-5);
-    /* Deep navy panel so the coral facts/description clear WCAG AA (matches the HUD card + atelier;
-       the light bleu-clair failed on corail). Labels flip to paper via --panel-ink below. */
+    /* Mobile: the three panels merge into one bleu-clair sheet (matches the HUD card + atelier). */
     background: var(--panel-bg);
     border-radius: var(--radius);
-    color: var(--color-coral);
+    color: var(--panel-ink);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -95,8 +94,11 @@ const engagements = blok.engagements ?? [];
     display: none;
   }
 
+  /* Running text takes aubergine (--panel-ink, 4.79:1 on bleu clair). Only .info-panel__title
+     stays corail — at 1.87:1 corail is below AA *and* below the 3:1 large-text floor, so it can
+     never carry the description, the spec table or the engagement labels. */
   .info-panel {
-    color: var(--color-coral);
+    color: var(--panel-ink);
   }
   .info-panel + .info-panel {
     margin-top: var(--space-5);
@@ -114,7 +116,7 @@ const engagements = blok.engagements ?? [];
     margin: var(--space-1) 0 var(--space-3);
     font-family: var(--font-serif);
     font-style: italic;
-    color: var(--color-coral);
+    color: var(--panel-ink);
   }
   .info-panel__programme {
     margin: 0 0 var(--space-4);
@@ -145,14 +147,13 @@ const engagements = blok.engagements ?? [];
   .info-table__row dd {
     margin: 0;
     padding: var(--space-2) var(--space-3);
-    color: var(--color-coral);
+    color: var(--panel-ink);
     overflow-wrap: anywhere;
   }
 
   .info-panel--texte :global(.richtext) {
-    color: var(--color-coral);
-    font-weight: 700;
-    line-height: 1.35;
+    color: var(--panel-ink);
+    line-height: 1.55;
   }
   .info-panel--texte :global(.richtext > :first-child) {
     margin-top: 0;
@@ -168,7 +169,7 @@ const engagements = blok.engagements ?? [];
   }
 
   @media (min-width: 48rem) {
-    /* Desktop: three deep-navy panels again, but the cluster is vertically centered in the band
+    /* Desktop: three bleu-clair panels again, but the cluster is vertically centered in the band
        (align-content) so it sits lower than the header/nav and reads as balanced. */
     .info-overlay {
       bottom: var(--band-bottom);
