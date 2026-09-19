@@ -118,6 +118,17 @@ const preconnectOrigins = preload.length
       siteName={settings?.nom_atelier ?? 'LaMinga'}
       jsonLd={allJsonLd}
     />
+    {
+      /* Sora carries every body string, so discovering it only after the CSS parses would cost a
+    visible swap. Preloaded ahead of the LCP image: it is 33 KB and same-origin, the image is not. */
+    }
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/sora-latin-variable.woff2"
+      crossorigin
+    />
     {/* Warm the Storyblok image origin(s) the LCP uses before the hero fetch. */}
     {preconnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
     {

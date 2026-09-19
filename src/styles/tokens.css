@@ -1,7 +1,7 @@
 /* ============================================================================
    LaMinga — charte graphique / design tokens (single source of truth).
 
-   Source: LaMinga_Palette chromatique_01.pdf + LaMinga Templates V2.pdf.
+   Source: LaMinga_Charte graphique_EXE.pdf + templatesSW LaMinga V3 (27 boards).
    Every colour, font, spacing and border on the site comes from a token below —
    no component may hardcode a hex or font-family. Editors set programme colours
    in Storyblok (rendered via the [data-programme] map in BaseLayout).
@@ -22,17 +22,50 @@
      Gris              #c6c6c6  neutral
      Jaune fluo        #ffff00  annotation only (not used in UI)
 
-   TYPOGRAPHY
-     Helvetica (system stack)      UI, titles, body — the .ttc is not embedded.
+   TYPOGRAPHY (charte V3 § 3.1)
+     Sora (principale)             UI, titles, body. Self-hosted variable face (wght 100–800, latin
+                                   subset). The V3 deck uses Light 300 / Regular 400 / SemiBold 600 /
+                                   Bold 700 — hence variable rather than statics.
      Self Modern italic (serif)    accent labels: filter row 2, "Titre – Ville" captions,
-                                   table headers, footer labels. Self Modern is a *trial* font;
-                                   pending a confirmed licence we self-host the OFL didone
+                                   table headers, footer labels. The delivered face is a *trial*
+                                   (all rights reserved) AND only carries 93 glyphs — î ô ç œ « » … €
+                                   are all absent, so « Maîtrise d'ouvrage » cannot render at all.
+                                   Pending a purchased licence we self-host the OFL didone
                                    Playfair Display Italic as a stand-in (font-display: swap).
+     Roboto                        prescribed by the charte for running text, but absent from all 27
+                                   V3 boards — body copy there is Sora. Decision: Sora.
    ============================================================================ */
 
-/* Self-hosted OFL stand-in for Self Modern italic (subset: Latin + French). Self-hosted only —
-   the strict prod CSP allows `font-src 'self'`, no external font CDN. Swap this face for the
-   licensed Self Modern woff2 once confirmed; the --font-serif stack does not change. */
+/* Sora — the charte's primary face. Self-hosted only: the strict prod CSP allows `font-src 'self'`,
+   no external font CDN. One variable file (33 KB) covers the four weights the deck uses, against
+   ~60 KB as statics. Licence: public/fonts/OFL-Sora.txt (OFL 1.1, no Reserved Font Name). */
+@font-face {
+  font-family: 'Sora';
+  src: url('/fonts/sora-latin-variable.woff2') format('woff2-variations');
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-matched fallback for Sora, so the `swap` never reflows the page (CLS budget < 0.1). Derived
+   from Sora (upem 1000: x-height 534, ascender 970, descender 290) against Arial (x-height 0.5186em):
+   size-adjust = 534/1000 ÷ 0.5186; the ascent/descent overrides are divided by that same factor
+   because size-adjust rescales them in turn. */
+@font-face {
+  font-family: 'Sora Fallback';
+  src: local('Helvetica Neue'), local('Arial'), local('Liberation Sans');
+  size-adjust: 103%;
+  ascent-override: 94.2%;
+  descent-override: 28.2%;
+  line-gap-override: 0%;
+}
+
+/* Self-hosted OFL stand-in for Self Modern italic (subset: Latin + French). Swap this face for the
+   licensed Self Modern woff2 once purchased; the --font-serif stack does not change.
+   Licence: public/fonts/OFL-PlayfairDisplay.txt. */
 @font-face {
   font-family: 'Playfair Display';
   src: url('/fonts/playfair-italic.woff2') format('woff2');
@@ -84,7 +117,7 @@
   --accent: var(--color-violet);
 
   /* ---- Typography ------------------------------------------------------ */
-  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans: 'Sora', 'Sora Fallback', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-serif: 'Playfair Display', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
   /* ---- Shape & spacing ------------------------------------------------- */
