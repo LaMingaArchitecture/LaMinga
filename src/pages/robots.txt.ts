@@ -10,7 +10,7 @@ export const prerender = true;
  * Policy for PURE TRAINING crawlers (corpus ingestion, not live answer retrieval). Flip this one
  * constant to switch the stance for GPTBot (OpenAI training) and Google-Extended (Gemini/Vertex
  * training). 'deny' keeps LaMinga's text out of training corpora while STILL allowing the
- * answer-engine retrieval bots below. Confirmed LaMinga decision — see docs/back-office.md.
+ * answer-engine retrieval bots below. Confirmed LaMinga decision — see docs/guide-marketing.md.
  */
 const TRAINING_CRAWLER_POLICY: 'allow' | 'deny' = 'deny';
 
@@ -36,7 +36,7 @@ Allow: /
 # AI answer-engine crawlers (live retrieval for AI answers) — explicitly allowed.
 ${answerEngines}
 
-# Pure training crawlers — policy: ${TRAINING_CRAWLER_POLICY} (see docs/back-office.md).
+# Pure training crawlers — policy: ${TRAINING_CRAWLER_POLICY} (see docs/guide-marketing.md).
 ${training}
 
 Sitemap: ${sitemap}
