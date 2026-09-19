@@ -218,10 +218,14 @@ const programmesForThematique = (value: string) =>
     color: var(--accent);
     cursor: pointer;
   }
+  /* Active view / open search: violet nuit upright + 600. The V3 boards draw this corail, but
+     corail on beige is 2.61:1 — below AA and below the 3:1 large-text floor — so the active state
+     takes violet nuit (12.64:1) and keeps the italic → upright flip as its non-colour cue. */
   .explorer__tool[aria-pressed='true'],
   .explorer__tool[aria-expanded='true'] {
-    color: var(--color-coral);
+    color: var(--color-ink);
     font-style: normal;
+    font-weight: 600;
   }
   /* Search field shares the .brand-box open-corner outline (like the filter chips + nav buttons).
      Reset the native <input> chrome so only the brand-box gradients show. The open-corner edge is

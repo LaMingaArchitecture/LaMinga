@@ -4,7 +4,7 @@ Source de vérité du schéma. Créé dans l'espace via le **serveur MCP Storybl
 techniques sont en `snake_case`** et correspondent exactement aux clés de `components` dans
 `astro.config.mjs` et aux discriminants `component` des types (`src/types/storyblok.ts`).
 
-Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga Templates V1**.
+Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga Templates V3**.
 
 ## Datasource
 
@@ -17,9 +17,12 @@ Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga 
 
 ## Classification à deux niveaux
 
-- **Programme** = catégorie unique par projet, **avec sa couleur** (1ʳᵉ ligne de filtres). Les 6
-  programmes sont des stories `programme` : Logement, Équipement, Patrimoine, Activité, Aménagement,
-  Programmation.
+- **Programme** = catégorie unique par projet (1ʳᵉ ligne de filtres), story `programme`. La charte
+  V3 a **supprimé la couleur par programme** : les planches peignent toutes les chips sélectionnées
+  du même corail et retirent la bordure colorée des vignettes. Le champ `couleur` n'est donc plus
+  lu par le code.
+  > Taxonomie V3 à appliquer côté Storyblok (8 programmes) : Habitat social, Multi-sites,
+  > Programmation, Enseignement, Vitivinicole, Équipement, Commerce, Restauration.
 - **Thématiques** = plusieurs par projet, depuis la datasource `thematique` (2ᵉ ligne de filtres).
 
 ## Contrat d'URL de la page Projets
@@ -42,10 +45,12 @@ reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté
 
 ### `programme` (content type — stories sous `programmes/`)
 
-| Champ     | Type Storyblok               | Config                                          |
-| --------- | ---------------------------- | ----------------------------------------------- |
-| `nom`     | text                         | requis                                          |
-| `couleur` | custom `native-color-picker` | couleur du programme (filtre, bordures, survol) |
+| Champ | Type Storyblok | Config |
+| ----- | -------------- | ------ |
+| `nom` | text           | requis |
+
+> Le champ `couleur` (`native-color-picker`) existe encore dans le schéma mais **n'est plus lu** —
+> à retirer du content type. La charte V3 abandonne la couleur par programme.
 
 ### `media_slide` (bloc imbriqué — slide du carrousel projet)
 
@@ -211,7 +216,7 @@ repli pour d'autres réseaux.
 | `home`                | `home_page`       | accueil (`/`)                                  |
 | `projets` (startpage) | `project_list`    | page Projets (`/projets`)                      |
 | `projets/<slug>`      | `project`         | fiches projet (≥ 2 pour tester `projets_lies`) |
-| `programmes/<slug>`   | `programme`       | 6 programmes (couleur chacun)                  |
+| `programmes/<slug>`   | `programme`       | les programmes (filtres de la page Projets)    |
 | `atelier`             | `atelier_page`    | page Atelier (`/atelier`)                      |
 | `config`              | `global_settings` | réglages globaux                               |
 
