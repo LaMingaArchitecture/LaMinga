@@ -2,23 +2,17 @@
 import SocialLinks from './SocialLinks.astro';
 import MobilePanel from './MobilePanel.astro';
 import type { GlobalSettings } from '../types/storyblok';
+import { LOGO_SRC } from '../lib/brand';
 
 interface Props {
   settings: GlobalSettings | null;
-  /** Page accent: 'coral' on the immersive home (repo corail logo), 'violet' elsewhere. */
-  accent?: 'coral' | 'violet';
 }
 
-const { settings, accent = 'violet' } = Astro.props;
+// The page accent still themes the nav labels and social marks, but it arrives through
+// `body[data-accent]` (BaseLayout) as a CSS variable — the logotype no longer varies with it.
+const { settings } = Astro.props;
 const social = settings?.reseaux_sociaux ?? [];
 const nomAtelier = settings?.nom_atelier ?? 'LaMinga';
-// Logo per the charte: the corail variant ships in the repo for the immersive home header; the
-// violet variant is editor-managed in Storyblok (global_settings.logo), with a repo violet
-// fallback (also for an empty/whitespace Storyblok value — `??` alone won't catch `''`). Rendered
-// from the raw filename/path (the image service would rasterize the SVG).
-const storyblokLogo = settings?.logo?.filename?.trim();
-const logo =
-  accent === 'coral' ? '/logo/logo-corail.svg' : storyblokLogo || '/logo/logo-violet.svg';
 
 // Active section from the current path — a project detail belongs to the Projets section.
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -57,7 +51,7 @@ const activeSection: 'projets' | 'atelier' | null =
     </div>
 
     <a href="/" class="nav__logo" aria-label={`${nomAtelier} — accueil`}>
-      <img class="nav__logo-img" src={logo} alt={nomAtelier} />
+      <img class="nav__logo-img" src={LOGO_SRC} alt={nomAtelier} />
     </a>
 
     <div class="nav__right">

@@ -440,16 +440,18 @@ composants — pour un changement **global**, l'équipe technique modifie ce seu
 
 ### Où vivent les assets
 
-| Asset                        | Emplacement                                                            |
-| ---------------------------- | ---------------------------------------------------------------------- |
-| Logo **violet** (pages int.) | **Storyblok** `config.logo` (modifiable par l'éditeur)                 |
-| Logo **corail** (home)       | **dépôt** (`public/logo/logo-corail.svg`) — variante de marque fixe    |
-| Icônes **Insta / LinkedIn**  | **dépôt** (composants `currentColor`, se colorent seuls corail/violet) |
-| Flèches (chevrons)           | **dépôt** (composant `Chevron.astro`)                                  |
-| Police serif                 | **dépôt** auto-hébergée (`public/fonts/`)                              |
-| Icônes engagement            | **Storyblok** `engagement.icone`                                       |
+| Asset                       | Emplacement                                                            |
+| --------------------------- | ---------------------------------------------------------------------- |
+| **Logotype**                | **dépôt** (`public/logo/logo-laminga.svg`)                             |
+| Icônes **Insta / LinkedIn** | **dépôt** (composants `currentColor`, se colorent seuls corail/violet) |
+| Flèches (chevrons)          | **dépôt** (composant `Chevron.astro`)                                  |
+| Polices                     | **dépôt** auto-hébergées (`public/fonts/`)                             |
+| Icônes engagement           | **Storyblok** `engagement.icone`                                       |
 
-> Les SVG **logo** (corail/violet) et le **favicon** du dépôt portent les couleurs de la charte
+> **Le logotype n'est plus modifiable depuis Storyblok.** La charte V3 ne prévoit qu'un seul
+> traitement pour le web (paysage, aplat, corail + rose) et sa règle 1.4 interdit d'en altérer les
+> couleurs, le cadrage ou les proportions : le fichier vit donc dans le dépôt, et le champ
+> `config.logo` n'est plus lu. Le SVG du logo et le **favicon** portent les couleurs de la charte
 > **en dur** : à mettre à jour côté technique si la palette change.
 
 ### Changer une couleur de programme (sans déploiement)

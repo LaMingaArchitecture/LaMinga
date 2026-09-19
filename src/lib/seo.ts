@@ -7,6 +7,7 @@
 import { renderRichText } from '@storyblok/astro';
 import { coverPhoto } from './content';
 import { sbImage } from './image';
+import { LOGO_SRC } from './brand';
 import { collapseWhitespace, isHttpUrl } from './url';
 import type {
   GlobalSettings,
@@ -216,7 +217,7 @@ export function professionalServiceJsonLd(
     url: siteHome(siteUrl),
     email: settings.email?.trim() || undefined,
     telephone: settings.telephone?.trim() || undefined,
-    logo: settings.logo?.filename || undefined,
+    logo: new URL(LOGO_SRC, siteUrl).href,
     image: new URL(SITE_DEFAULT_OG_IMAGE, siteUrl).href,
     address: addresses,
     sameAs,
