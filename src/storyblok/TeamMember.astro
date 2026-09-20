@@ -34,9 +34,7 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
     flex-direction: column;
     gap: var(--space-3);
   }
-  /* Black-and-white via CSS so colour uploads still render greyscale; coral frame from the design.
-     Name and role are running text on the bleu-clair panel, so they take --panel-ink (aubergine,
-     4.79:1); corail at this size would be 1.87:1. The V3 board draws them corail — not adopted. */
+  /* Black-and-white via CSS so colour uploads still render greyscale; coral frame from the design. */
   .team-member__photo {
     width: 100%;
     /* height:auto lets aspect-ratio drive the square; without it the width/height attrs (CLS hints)
@@ -52,6 +50,8 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
     flex-direction: column;
     gap: 2px;
   }
+  /* The board draws name and role corail; not adopted — at this size they are running text, which
+     corail cannot carry on a light panel (see tokens.css). */
   .team-member__name {
     color: var(--panel-ink);
     font-weight: 700;

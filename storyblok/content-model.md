@@ -152,9 +152,11 @@ avec son fond propre. Champs média optionnels : une section au contenu vide est
 
 ### `global_settings` (content type — singleton, story `config`)
 
+> Le champ `logo` existe encore dans le content type mais **n'est plus lu** — à retirer. La charte
+> V3 n'a qu'un seul traitement du logotype, servi depuis le dépôt (`src/lib/brand.ts`).
+
 | Champ              | Type     | Config                  |
 | ------------------ | -------- | ----------------------- |
-| `logo`             | asset    | SVG (rendu brut)        |
 | `nom_atelier`      | text     | « LaMinga atelier… »    |
 | `email`            | text     |                         |
 | `telephone`        | text     |                         |

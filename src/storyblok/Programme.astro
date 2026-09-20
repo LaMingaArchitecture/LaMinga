@@ -2,10 +2,7 @@
 import { storyblokEditable } from '@storyblok/astro';
 import type { ProgrammeBlok } from '../types/storyblok';
 
-// Programme is a content type used mainly as a relation target (nom + couleur read via
-// resolve_relations). This standalone render is a minimal chip for completeness; per-programme
-// colour is applied where the story slug is known (grid, project detail, explorer chips) — the
-// slug isn't available in this standalone blok, so the chip uses the page accent.
+// Programme is a relation target; this standalone render is a minimal chip for the Visual Editor.
 const { blok } = Astro.props as { blok: ProgrammeBlok };
 ---
 

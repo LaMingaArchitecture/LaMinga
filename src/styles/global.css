@@ -90,9 +90,9 @@ main#contenu {
 }
 
 /* The charte V3 boards put the nav block at the same top-left coordinates on every page type, so
-   the header always floats: it never reserves a band and never draws a rule under itself. Only the
-   logotype has to be cleared by the content (--nav-clear); the Projets/Atelier cartouches hang
-   below it into column 1, which the page content leaves free. */
+   the header always floats and never reserves a band. Content clears the logotype (--nav-clear);
+   the Projets/Atelier cartouches hang below it into column 1, which the page content leaves free.
+   The one header that still draws a rule is the scrolled Atelier on mobile (see below). */
 body > header {
   position: absolute;
   inset: 0 0 auto 0;
@@ -109,9 +109,8 @@ body:not([data-immersive]):not([data-immersive-scroll]) > main {
 }
 /* Where the *document* scrolls under the floating header (every page on mobile, plus Mentions
    légales / 404 at any width), the header needs an opaque paper ground or content would track
-   across the logotype. It is beige-on-beige, so no band is visible — unlike the V2 header, which
-   drew a rule. Pages whose content owns its own scroll container (Projets from 48rem) start below
-   the logotype already, so they stay transparent. */
+   across the logotype; beige-on-beige, so no band is visible. Pages whose content owns its own
+   scroll container (Projets from 48rem) start below the logotype already and stay transparent. */
 body[data-scroll]:not([data-immersive]):not([data-immersive-scroll]) > header {
   background: var(--color-paper);
 }
@@ -120,14 +119,9 @@ body[data-scroll]:not([data-immersive]):not([data-immersive-scroll]) > header {
     background: var(--color-paper);
   }
 }
-/* Prose pages have no empty column 1, so they clear the cartouches as well as the logotype. */
+/* Prose pages have no empty column 1, so they clear the whole brand block, not just the logotype. */
 body[data-scroll]:not([data-immersive]):not([data-immersive-scroll]) > main {
-  padding-top: calc(var(--nav-clear) + var(--space-4));
-}
-@media (min-width: 48rem) {
-  body[data-scroll]:not([data-immersive]):not([data-immersive-scroll]) > main {
-    padding-top: calc(var(--nav-clear) + 6rem);
-  }
+  padding-top: calc(var(--nav-brand-h) + var(--space-4));
 }
 
 /* Freeze background scroll while the mobile drawer is open. */

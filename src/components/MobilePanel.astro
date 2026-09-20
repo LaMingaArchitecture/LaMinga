@@ -89,8 +89,9 @@ const tel = telHref(settings?.telephone);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    /* Sets the mobile header's height, which --nav-clear reserves for it (tokens.css). */
+    width: var(--nav-burger-h);
+    height: var(--nav-burger-h);
     border: var(--border-w) solid var(--accent);
     border-radius: var(--radius);
     background: color-mix(in srgb, var(--color-paper) 85%, transparent);
@@ -183,8 +184,9 @@ const tel = telHref(settings?.telephone);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    /* Sets the mobile header's height, which --nav-clear reserves for it (tokens.css). */
+    width: var(--nav-burger-h);
+    height: var(--nav-burger-h);
     margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-2)) 0 0;
     padding: 0;
     background: none;

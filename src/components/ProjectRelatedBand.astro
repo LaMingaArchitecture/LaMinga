@@ -60,9 +60,8 @@ const { id, related, hidden = true } = Astro.props;
     border-radius: var(--radius);
     font-family: var(--font-serif);
     font-style: italic;
-    /* 1.5rem, not 1.375: aubergine on taupe is 3.81:1, which clears WCAG's large-text threshold
-       (3:1) but not the normal-text one (4.5:1) — 24px is where "large" starts. The V3 board draws
-       this label large and aubergine, so sizing up keeps the drawn colour and passes. */
+    /* 24px is where WCAG's large-text threshold starts, and aubergine on taupe is 3.81:1 — enough
+       at 3:1, not at the 4.5:1 normal-text bar. Sizing up keeps the board's colour and passes. */
     font-size: 1.5rem;
     line-height: 1.2;
     color: var(--color-violet);

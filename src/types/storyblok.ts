@@ -14,8 +14,6 @@ export interface StoryblokAsset {
   copyright?: string;
 }
 
-/** Native color-picker returns an object; a plain hex text field returns a string. */
-
 /** Relation field: the resolved story when `resolve_relations` ran, else the uuid string. */
 export type SbRelation = ISbStoryData | string;
 
@@ -156,8 +154,6 @@ export interface HomePageBlok extends SbBlokData {
 
 export interface GlobalSettings extends SbBlokData {
   component: 'global_settings';
-  /** SVG logo — rendered from the raw filename, not the image service. */
-  logo?: StoryblokAsset;
   nom_atelier?: string;
   email?: string;
   telephone?: string;

@@ -357,11 +357,10 @@ Changer un **nom**, puis **Publier** la story, se reflète sur tout le site apr�
 
 ### 5.6 — Réglages globaux (`global_settings`)
 
-Story **`config`** (logo, contact, réseaux — s'affichent dans la navigation et le pied de page).
+Story **`config`** (contact, réseaux — s'affichent dans la navigation et le pied de page).
 
 | Champ                | Sert à…                          |
 | -------------------- | -------------------------------- |
-| **Logo**             | le logo (**SVG** — voir §4.3)    |
 | **Nom de l'atelier** | ex. « LaMinga atelier… »         |
 | **E-mail**           | l'adresse de contact             |
 | **Téléphone**        | le téléphone                     |

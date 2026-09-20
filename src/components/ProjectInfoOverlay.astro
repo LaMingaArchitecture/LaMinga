@@ -94,9 +94,8 @@ const engagements = blok.engagements ?? [];
     display: none;
   }
 
-  /* Running text takes aubergine (--panel-ink, 4.79:1 on bleu clair). Only .info-panel__title
-     stays corail — at 1.87:1 corail is below AA *and* below the 3:1 large-text floor, so it can
-     never carry the description, the spec table or the engagement labels. */
+  /* Only .info-panel__title stays corail; the description, the spec table and the engagement
+     labels are running text and take --panel-ink (see tokens.css). */
   .info-panel {
     color: var(--panel-ink);
   }

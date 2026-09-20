@@ -16,7 +16,14 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const WIDTH = 1200;
 const HEIGHT = 630;
-const PAPER = '#f9f7f2'; // --couleur-beige-clair
+// The OG image is only ever seen off-site, so a stale brand ground would drift unnoticed. Read the
+// hex out of the token file instead of restating it, and fail loudly if the token is ever renamed.
+const tokens = readFileSync(resolve(root, 'src/styles/tokens.css'), 'utf8');
+const paperMatch = tokens.match(/--couleur-beige-clair:\s*(#[0-9a-f]{3,8});/i);
+if (!paperMatch) {
+  throw new Error('[og] --couleur-beige-clair not found in src/styles/tokens.css');
+}
+const PAPER = paperMatch[1];
 const LOGO_WIDTH = 560;
 
 const logoSvg = readFileSync(resolve(root, 'public/logo/logo-laminga.svg'));

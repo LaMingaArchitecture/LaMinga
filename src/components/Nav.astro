@@ -8,8 +8,6 @@ interface Props {
   settings: GlobalSettings | null;
 }
 
-// The page accent still themes the nav labels and social marks, but it arrives through
-// `body[data-accent]` (BaseLayout) as a CSS variable — the logotype no longer varies with it.
 const { settings } = Astro.props;
 const social = settings?.reseaux_sociaux ?? [];
 const nomAtelier = settings?.nom_atelier ?? 'LaMinga';
@@ -72,7 +70,7 @@ const activeSection: 'projets' | 'atelier' | null =
     grid-template-columns: 1fr auto;
     align-items: start;
     gap: var(--space-4);
-    padding: var(--space-2) var(--page-x);
+    padding: var(--nav-pad-y) var(--page-x);
   }
 
   .nav__brand {
@@ -93,7 +91,7 @@ const activeSection: 'projets' | 'atelier' | null =
   }
   .nav__logo-img {
     display: block;
-    height: 2.25rem;
+    height: var(--nav-logo-h);
     width: auto;
   }
 
@@ -121,7 +119,10 @@ const activeSection: 'projets' | 'atelier' | null =
   /* Box outline comes from the .brand-box utility (open-corner edges). Set background-color (not the
      background shorthand) so hover/active fills don't wipe the edge gradients. */
   .nav__btn {
-    display: block;
+    /* min-height, not padding alone: --nav-brand-h reserves exactly two of these. */
+    display: flex;
+    align-items: center;
+    min-height: var(--nav-cartouche-h);
     padding: var(--space-1) var(--space-3);
     color: var(--accent);
     font-size: 0.9375rem;
@@ -140,13 +141,10 @@ const activeSection: 'projets' | 'atelier' | null =
     font-weight: 600;
   }
 
-  /* Tablet and up: the brand column takes over from the burger. It is not pinned to the grid column
-     yet — between 48 and 64rem the filter chips still wrap freely, so a rigid column would squeeze
-     them; the logotype sizes itself and the cartouches match its width. */
+  /* Tablet and up: the cartouches take over from the burger, and the logotype fills the brand
+     column — so the column width alone drives its height, which is what --nav-clear reads to place
+     the content below it (tokens.css). */
   @media (min-width: 48rem) {
-    .nav {
-      padding-block: var(--space-3);
-    }
     .nav__buttons {
       display: flex;
     }
@@ -157,8 +155,6 @@ const activeSection: 'projets' | 'atelier' | null =
     .nav__right :global(.nav__social) {
       display: flex;
     }
-    /* The logotype fills the brand column from tablet up, so the column width alone drives its
-       height — that is what --nav-clear reads to place the content below it. */
     .nav__brand {
       width: var(--nav-brand-w);
     }
@@ -168,9 +164,6 @@ const activeSection: 'projets' | 'atelier' | null =
     }
   }
 
-  /* Desktop: the brand column locks to column 1 of the shared 6-column grid (tokens.css), so the
-     cartouches line up with the Projets filter chips in columns 2-6. The logotype fills the column
-     rather than carrying a fixed height, which is how the boards size it. */
   @media (min-width: 64rem) {
     .nav__btn {
       font-size: 1.125rem;

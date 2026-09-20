@@ -194,7 +194,7 @@ const programmesForThematique = (value: string) =>
   }
   .explorer__chip--thematique[aria-pressed='true'] {
     --brand-box-line: var(--accent);
-    --brand-box-fill: var(--couleur-rose);
+    --brand-box-fill: var(--color-thematique-fill);
     color: var(--accent);
     font-weight: 600;
   }
@@ -266,11 +266,8 @@ const programmesForThematique = (value: string) =>
   .explorer__empty[hidden] {
     display: none;
   }
-  /* Desktop: the filter block starts at column 2 of the shared 6-column grid, leaving column 1 to
-     the nav cartouches that hang out of the floating header — this is what puts « Projets » level
-     with the first chip row on the V3 board. The views below span all six columns. */
-  /* Tablet up: the filter block clears the brand column so the cartouches, which hang out of the
-     floating header into column 1, never overlap the chips. Row 1 sits level with « Projets »:
+  /* Tablet up: the filter block clears the brand column, so the cartouches hanging out of the
+     floating header into column 1 never overlap the chips. Row 1 sits level with « Projets »:
      both begin at the logotype's bottom edge, which is where <main> starts (--nav-clear). */
   @media (min-width: 48rem) {
     .explorer__sticky {

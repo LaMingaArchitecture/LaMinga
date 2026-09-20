@@ -38,8 +38,8 @@ const { titre, ville, programme } = Astro.props;
 
 <style>
   /* Charte V3 cartouche: bleu clair ground, aubergine labels and hairlines. The project name stays
-     corail as a display title; the values are running text and take --panel-ink (aubergine, 4.79:1)
-     — corail would be 1.87:1 there, below AA and below the 3:1 large-text floor. */
+     corail as a display title; the values are running text and take --panel-ink, which corail
+     cannot carry on a light panel (see tokens.css). */
   .hud-card {
     pointer-events: auto;
     display: grid;

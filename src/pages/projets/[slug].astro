@@ -3,6 +3,7 @@ import type { GetStaticPaths } from 'astro';
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import { PUBLIC_SITE_URL } from 'astro:env/client';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { chromeFor } from '../../lib/layout';
 import { getAllProjects } from '../../lib/content';
 import {
   resolveSeo,
@@ -48,6 +49,7 @@ const preload = firstSlide ? lcpPreload(slideMediaFields(firstSlide)) : [];
   ogType="article"
   jsonLd={jsonLd}
   preload={preload}
+  {...chromeFor('project')}
 >
   <StoryblokComponent blok={blok} />
 </BaseLayout>

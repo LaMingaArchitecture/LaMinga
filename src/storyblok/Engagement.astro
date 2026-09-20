@@ -22,12 +22,10 @@ const { blok } = Astro.props as { blok: EngagementBlok };
 </div>
 
 <style>
-  /* One engagement row: the line-art pictogram sits inside a paper-filled, aubergine-outlined
-     circle (the circle is CSS — the asset carries no ring), with the label to its right.
-     The label is running text, so it takes --panel-ink (aubergine); corail would be 1.87:1.
-     NOTE: the pictograms currently uploaded in Storyblok are JPEGs, so they carry their own opaque
-     white ground and cannot be recoloured — the V3 boards draw them as corail line art on a
-     transparent ground. Replacing them is an editor/agency task. */
+  /* One engagement row: the pictogram sits inside a paper-filled, aubergine-outlined circle (the
+     circle is CSS — the asset carries no ring), with the label to its right. The ring needs its own
+     ground because an uploaded raster pictogram brings an opaque one of its own and cannot be
+     recoloured; see docs/guide-marketing.md for the SVG the boards assume. */
   .engagement {
     display: flex;
     align-items: center;

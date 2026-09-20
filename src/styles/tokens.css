@@ -3,39 +3,31 @@
 
    Source: LaMinga_Charte graphique_EXE.pdf + templatesSW LaMinga V3 (27 boards).
    Every colour, font, spacing and border on the site comes from a token below —
-   no component may hardcode a hex or font-family. Editors set programme colours
-   in Storyblok (rendered via the [data-programme] map in BaseLayout).
+   no component may hardcode a hex or font-family. The charte V3 retired the per-programme colour:
+   every selected filter chip takes the same corail fill.
 
    PALETTE (charte name — hex — role)
      Beige clair       #f9f7f2  page background
-     Rouge corail      #ff6c4f  brand corail: logotype, home accent (social/links/arrows) and
-                                *display titles only*. Below WCAG AA on every light ground in the
-                                palette (1.87:1 on bleu clair, 2.61:1 on beige, ~2.19:1 over photos),
-                                so it never carries running text — see the note under TYPOGRAPHY.
+     Rouge corail      #ff6c4f  logotype, home accent (social/links/arrows), display titles only.
+                                Below AA on every light ground here — 1.87:1 on bleu clair, 2.61:1
+                                on beige, ~2.19:1 over photos — so it never carries running text.
      Violet aubergine  #7e4080  inner-page accent + all panel ink and hairlines
-     Violet nuit       #32255b  primary dark text
-     Violet vif        #a785ff  secondary violet; programme Activité (proposed)
-     Vert citron       #d5ee6e  programme Équipement
-     Olive             #bbbd2b  programme Aménagement (proposed)
-     Turquoise         #11a3c2  programme Logement
+     Violet nuit       #32255b  primary dark text; label on a selected (corail) chip
      Bleu clair        #bbd5fd  panels: project HUD, info pop-up, related band, atelier
-     Taupe clair       #d0b8b0  active nav tint, thématique selection, Projets bg @10%
-     Rose              #fec9d7  programme Programmation (proposed)
+     Taupe clair       #d0b8b0  active nav tint + related-band label ground
+     Rose              #fec9d7  selected thématique chip fill
      Gris              #c6c6c6  neutral
-     Jaune fluo        #ffff00  annotation only (not used in UI)
+     Violet vif / Vert citron / Olive / Turquoise / Jaune fluo — in the charte, unused by the UI.
 
    TYPOGRAPHY (charte V3 § 3.1)
-     Sora (principale)             UI, titles, body. Self-hosted variable face (wght 100–800, latin
-                                   subset). The V3 deck uses Light 300 / Regular 400 / SemiBold 600 /
-                                   Bold 700 — hence variable rather than statics.
-     Self Modern italic (serif)    accent labels: filter row 2, "Titre – Ville" captions,
-                                   table headers, footer labels. The delivered face is a *trial*
-                                   (all rights reserved) AND only carries 93 glyphs — î ô ç œ « » … €
-                                   are all absent, so « Maîtrise d'ouvrage » cannot render at all.
-                                   Pending a purchased licence we self-host the OFL didone
-                                   Playfair Display Italic as a stand-in (font-display: swap).
-     Roboto                        prescribed by the charte for running text, but absent from all 27
-                                   V3 boards — body copy there is Sora. Decision: Sora.
+     Sora            UI, titles, body. Self-hosted variable face (wght 100–800, latin subset); the
+                     boards use Light 300 / Regular 400 / SemiBold 600 / Bold 700, hence variable.
+     Self Modern     accent labels (filter row 2, "Titre – Ville" captions, table headers, footer).
+     italic          The delivered face is a *trial*, and carries only 93 glyphs — î ô ç œ « » … €
+                     are absent, so « Maîtrise d'ouvrage » cannot render. Until a licence is bought
+                     we self-host OFL Playfair Display Italic as a stand-in.
+     Roboto          prescribed by the charte for running text but absent from all 27 boards, where
+                     body copy is Sora — hence not loaded.
    ============================================================================ */
 
 /* Sora — the charte's primary face. Self-hosted only: the strict prod CSP allows `font-src 'self'`,
@@ -97,7 +89,8 @@
   --color-ink: var(--couleur-violet-nuit);
   --color-violet: var(--couleur-violet-aubergine);
   --color-coral: var(--couleur-corail);
-  --color-beige: var(--couleur-taupe-clair); /* active-button tint + thématique tint */
+  --color-beige: var(--couleur-taupe-clair); /* active-button tint + related-band label ground */
+  --color-thematique-fill: var(--couleur-rose); /* selected thématique chip */
   /* Charte V3 panel (project HUD card, info pop-up, related band, atelier panels): bleu clair with
      aubergine ink and hairlines — measured off the V3 boards, where labels and body copy are
      aubergine and only display titles are corail. Aubergine on bleu clair is 4.79:1 (AA).
@@ -143,31 +136,27 @@
   /* ---- Page grid (charte V3) -------------------------------------------
      The boards lay the whole site on 6 columns: the brand block (logotype + the Projets/Atelier
      cartouches) owns column 1, the Projets filter chips own columns 2-6, and the footer cells span
-     all six. Measured off the V3 header board (3560px wide): 2.7% side margin, 14.4% column,
-     2.0% gutter. --grid-col is relative to its container's *content* box, so any container that
-     carries --page-x as its inline padding resolves to the same column width — that is what keeps
-     the nav cartouches and the filter chips on one grid. */
+     all six. Measured off the V3 header board: 2.7% side margin, 14.4% column, 2.0% gutter.
+     --grid-col is viewport-based rather than container-based so that the header (out of flow) and
+     the Projets filters (in flow) resolve the same column width. */
   --page-x: clamp(1rem, 2.7vw, 2.5rem);
   --grid-gap: clamp(0.5rem, 1.95vw, 1.75rem);
-  --grid-col: calc((100% - 5 * var(--grid-gap)) / 6);
-  /* Viewport-absolute twin of --grid-col, for rules that live outside a --page-x container (the
-     clearance below). Differs from --grid-col by at most a scrollbar width. */
-  --grid-col-abs: calc((100vw - 2 * var(--page-x) - 5 * var(--grid-gap)) / 6);
-  /* Vertical room the page content must leave for the overlaid logotype — i.e. the logotype's
-     bottom edge, so content starts exactly where the Projets/Atelier cartouches do. The cartouches
-     themselves hang below it into column 1, which the Projets filters leave empty by starting at
-     column 2. 3.3305 is the logotype's intrinsic aspect ratio (141.73 / 42.52). */
-  /* Width of the brand column (logotype + the Projets/Atelier cartouches). One token, consumed by
-     both the header and the Projets filter indent, so the two can never drift apart. `auto` on
-     mobile, where the logotype sizes itself and the cartouches are replaced by the burger. */
-  --nav-brand-w: auto;
-  /* Mobile has no cartouches hanging below the logotype, so content clears the whole header band
-     (padding + logotype + padding) rather than just the logotype's bottom edge. */
-  --nav-clear: calc(2 * var(--space-2) + 2.25rem);
-  /* Full height of the brand block = logotype + the cartouches hanging below it. Content that
-     spans column 1 (atelier panels, the carousel recap, the project info bands) clears this;
-     content that leaves column 1 free (the Projets filters) only clears --nav-clear. On mobile
-     there are no cartouches, so the two are the same. */
+  --grid-col: calc((100vw - 2 * var(--page-x) - 5 * var(--grid-gap)) / 6);
+
+  /* ---- Nav metrics -----------------------------------------------------
+     The header is out of flow, so nothing in the page reacts to its size: these tokens ARE the
+     contract, and Nav.astro / MobilePanel.astro consume them rather than restating the numbers.
+     Changing a value here moves the header and the content that clears it together. */
+  --nav-pad-y: var(--space-2);
+  --nav-logo-h: 2.25rem;
+  --nav-burger-h: 2.75rem; /* also the 44px touch floor, and the tallest thing in the mobile band */
+  --nav-logo-ratio: 3.33325; /* public/logo/logo-laminga.svg viewBox 141.73 / 42.52 */
+  --nav-brand-w: 10rem; /* brand column: the header and the Projets filter indent share it */
+  --nav-cartouche-h: 2.75rem; /* min-height on .nav__btn, so --nav-brand-h stays true if type grows */
+  /* Room page content must leave for the header — on mobile the whole band, set by the burger. */
+  --nav-clear: calc(2 * var(--nav-pad-y) + var(--nav-burger-h));
+  /* Logotype + the cartouches below it. Content spanning column 1 (atelier panels, carousel recap,
+     project bands) clears this; content leaving column 1 free (the filters) clears --nav-clear. */
   --nav-brand-h: var(--nav-clear);
 
   /* ---- Frame ----------------------------------------------------------- */
@@ -181,19 +170,19 @@
 
 @media (min-width: 48rem) {
   :root {
-    /* Tablet: a fixed brand column. Locking it to the 6-column grid this early would squeeze the
-       filter chips to ~7rem, which their labels cannot take. */
-    --nav-brand-w: 10rem;
-    /* The logotype fills the brand column, so its height — and therefore where the cartouches and
-       the first filter row begin — follows from the column width and the mark's 3.3305 ratio. */
-    --nav-clear: calc(var(--space-3) + var(--nav-brand-w) / 3.3305);
-    --nav-brand-h: calc(var(--nav-clear) + 6rem);
+    --nav-pad-y: var(--space-3);
+    /* The burger is gone and the logotype fills the brand column, so the clearance becomes the
+       logotype's bottom edge — which is exactly where the cartouches, and the first filter row,
+       begin. The cartouches then hang below it into column 1. */
+    --nav-clear: calc(var(--nav-pad-y) + var(--nav-brand-w) / var(--nav-logo-ratio));
+    --nav-brand-h: calc(var(--nav-clear) + 2 * var(--nav-cartouche-h));
   }
 }
 @media (min-width: 64rem) {
   :root {
-    /* Desktop: the brand column *is* column 1 of the page grid. */
-    --nav-brand-w: var(--grid-col-abs);
+    /* Desktop: the brand column *is* column 1 of the page grid. Below this the column stays fixed —
+       one sixth of an 834px viewport is ~7rem, which the filter chip labels cannot take. */
+    --nav-brand-w: var(--grid-col);
   }
 }
 

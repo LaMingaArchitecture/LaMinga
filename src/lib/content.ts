@@ -131,7 +131,7 @@ export function getThematiques(): Promise<ThematiqueEntry[]> {
 }
 
 // Cache the published programme stories for the whole SSG build (static during a build) —
-// getProgrammes feeds the site-wide programme→colour map (BaseLayout) and the Projets explorer
+// getProgrammes feeds the Projets explorer filter chips.
 // filter chips. Never cache in draft/preview: the SSR editor must reflect live edits per request.
 let programmesCache: Promise<ProgrammeLink[]> | undefined;
 
@@ -171,7 +171,7 @@ export function isResolved(rel: unknown): rel is ISbStoryData {
   return typeof rel === 'object' && rel !== null && 'content' in rel;
 }
 
-/** Programme label + colour from a project's resolved `programme` relation. */
+/** Programme label + slug from a project's resolved `programme` relation. */
 function toProgramme(blok: ProjectBlok): ProgrammeSummary | undefined {
   const rel = blok.programme;
   if (isResolved(rel)) {

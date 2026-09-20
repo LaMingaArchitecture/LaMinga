@@ -85,9 +85,8 @@ const cover = visual?.filename ? sbImage(visual.filename, isVignette ? '600x600'
     color: var(--color-muted);
   }
 
-  /* Vignette variant — square plan-masse tile for the Projets rail. Borderless in every state:
-     the V3 boards drop the per-programme border ("on enlève la bordure de couleur"), and a pixel
-     check of boards 07/08 finds no tile border at all, filtered or not. */
+  /* Vignette variant — square plan-masse tile for the Projets rail, borderless in every state:
+     the charte V3 dropped the per-programme border. */
   .project-card--vignette {
     border: 0;
     background: transparent;

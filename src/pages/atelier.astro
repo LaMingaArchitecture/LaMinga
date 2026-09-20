@@ -2,6 +2,7 @@
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import { PUBLIC_SITE_URL } from 'astro:env/client';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { chromeFor } from '../lib/layout';
 import ContentNotice from '../components/ContentNotice.astro';
 import { getAtelierPage } from '../lib/content';
 import { resolveSeo, firstSeo, richTextToPlain, absoluteImageUrl, personJsonLd } from '../lib/seo';
@@ -37,10 +38,8 @@ const preload = heroMedia ? lcpPreload(heroMedia) : [];
   ogImage={resolved.ogImage}
   jsonLd={persons}
   preload={preload}
-  footer
-  immersive
-  immersiveScroll
   noindex={!blok}
+  {...chromeFor('atelier_page')}
 >
   {blok ? <StoryblokComponent blok={blok} /> : <ContentNotice />}
 </BaseLayout>
