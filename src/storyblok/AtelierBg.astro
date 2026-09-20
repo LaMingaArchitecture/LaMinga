@@ -22,6 +22,10 @@ const { image, video, poster, eager = false } = Astro.props;
 // its preload link (src/lib/media.ts / BaseLayout) resolve to identical URLs — no double-download.
 const src = image?.filename ? sbImageW(image.filename, HERO_IMG_WIDTH) : undefined;
 const srcset = image?.filename ? sbSrcset(image.filename) : undefined;
+
+// Transparent 1×1: a valid `src` for the deferred backgrounds, so nothing is fetched until
+// atelier-scroll hands over the real source. Allowed by the CSP (`img-src 'self' data:`).
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 ---
 
 <div class="atelier__bg" data-atelier-bg>
@@ -29,17 +33,42 @@ const srcset = image?.filename ? sbSrcset(image.filename) : undefined;
     video?.filename ? (
       <ResponsiveMedia video={video} poster={poster} alt="" loading="eager" />
     ) : (
-      src && (
+      src &&
+      (eager ? (
         <img
           src={src}
           srcset={srcset}
           sizes={SIZES_FULLSCREEN}
           alt={image?.alt ?? ''}
-          loading={eager ? 'eager' : 'lazy'}
-          fetchpriority={eager ? 'high' : undefined}
+          loading="eager"
+          fetchpriority="high"
           decoding="async"
         />
-      )
+      ) : (
+        <Fragment>
+          {/* Deferred until after the LCP — see the note on setupLazyBg in atelier-scroll.ts. The
+              section clips its overscan (`.atelier__sec { overflow: hidden }`), so none of this
+              image is on screen while the hero paints, even though its box crosses the fold. */}
+          <img
+            data-src={src}
+            data-srcset={srcset}
+            src={BLANK}
+            sizes={SIZES_FULLSCREEN}
+            alt={image?.alt ?? ''}
+            decoding="async"
+          />
+          <noscript>
+            <img
+              src={src}
+              srcset={srcset}
+              sizes={SIZES_FULLSCREEN}
+              alt={image?.alt ?? ''}
+              loading="lazy"
+              decoding="async"
+            />
+          </noscript>
+        </Fragment>
+      ))
     )
   }
 </div>
