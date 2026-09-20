@@ -43,12 +43,7 @@ const tel = telHref(settings?.telephone);
       <span class="mobile-nav__title">{settings?.nom_atelier ?? 'LaMinga'}</span>
       <button type="button" class="mobile-nav__close">
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
-          <path
-            d="M6 6l12 12M18 6L6 18"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"></path>
+          <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2"></path>
         </svg>
         <span class="visually-hidden">Fermer le menu</span>
       </button>
@@ -93,7 +88,6 @@ const tel = telHref(settings?.telephone);
     width: var(--nav-burger-h);
     height: var(--nav-burger-h);
     border: var(--border-w) solid var(--accent);
-    border-radius: var(--radius);
     background: color-mix(in srgb, var(--color-paper) 85%, transparent);
     cursor: pointer;
   }
@@ -105,7 +99,6 @@ const tel = telHref(settings?.telephone);
     width: 1.25rem;
     height: 2px;
     background: var(--accent);
-    border-radius: 2px;
   }
   .mobile-nav__burger-bars {
     position: relative;

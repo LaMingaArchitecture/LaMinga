@@ -46,7 +46,6 @@ const { id, related, hidden = true } = Astro.props;
     /* Bleu clair band to match the HUD card + info overlay, per the V3 board. Captions keep the
        page --accent (aubergine, 4.79:1 here) — no override needed. */
     background: var(--panel-bg);
-    border-radius: var(--radius);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -57,7 +56,6 @@ const { id, related, hidden = true } = Astro.props;
     margin: 0;
     padding: var(--space-4);
     background: var(--color-beige);
-    border-radius: var(--radius);
     font-family: var(--font-serif);
     font-style: italic;
     /* 24px is where WCAG's large-text threshold starts, and aubergine on taupe is 3.81:1 — enough

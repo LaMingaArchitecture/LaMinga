@@ -112,8 +112,10 @@
   --font-sans: 'Sora', 'Sora Fallback', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-serif: 'Playfair Display', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
-  /* ---- Shape & spacing ------------------------------------------------- */
-  --radius: 6px;
+  /* ---- Shape & spacing -------------------------------------------------
+     No corner radius anywhere: the charte is an architectural-drawing language and every box is
+     square. The only curves in the UI are deliberate circles — the corail +/− disc and the
+     engagement ring — which are drawn with `border-radius: 50%`, not with a softening radius. */
   --border-w: 1px;
   --border: var(--border-w) solid var(--color-line);
   /* Structural separators between header / content / footer — visible, accent-tinted. */

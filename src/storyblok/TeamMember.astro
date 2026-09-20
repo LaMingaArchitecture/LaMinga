@@ -10,14 +10,16 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
 <figure class="team-member" {...storyblokEditable(blok)}>
   {
     blok.photo?.filename && (
-      <img
-        class="team-member__photo"
-        src={sbImage(blok.photo.filename, '500x500')}
-        alt={blok.photo.alt ?? blok.nom}
-        width="500"
-        height="500"
-        loading="lazy"
-      />
+      <div class="team-member__frame brand-box">
+        <img
+          class="team-member__photo"
+          src={sbImage(blok.photo.filename, '500x500')}
+          alt={blok.photo.alt ?? blok.nom}
+          width="500"
+          height="500"
+          loading="lazy"
+        />
+      </div>
     )
   }
   <figcaption class="team-member__caption">
@@ -34,15 +36,24 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
     flex-direction: column;
     gap: var(--space-3);
   }
-  /* Black-and-white via CSS so colour uploads still render greyscale; coral frame from the design. */
+  /* The board frames each portrait in the corail cartouche — an open-corner rule standing clear of
+     the photo, not a border hugging it. Measured off the V3 planche: the inset is ~7% of the frame
+     width (≈12px at the 11rem column here), and the panel colour shows through, so the .brand-box
+     paper ground is cleared. */
+  .team-member__frame {
+    --brand-box-line: var(--color-coral);
+    background-color: transparent;
+    padding: var(--space-3);
+  }
+  /* Black-and-white via CSS so colour uploads still render greyscale. */
   .team-member__photo {
+    display: block;
     width: 100%;
     /* height:auto lets aspect-ratio drive the square; without it the width/height attrs (CLS hints)
        set an explicit height that combines with width:100% and distorts the crop. */
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: cover;
-    border: 2px solid var(--color-coral);
     filter: grayscale(100%);
   }
   .team-member__caption {

@@ -3,7 +3,7 @@
  * Chevron — outlined path (currentColor), the site-wide "précédent"/"suivant" control.
  * Replaces the delivered Fleche G/D assets, which shipped as live Helvetica "‹"/"›" <text> glyphs
  * and broke wherever Helvetica was unavailable; redrawn here as font-independent stroked paths.
- * Delivered for the carousel/scroller page tickets — not yet wired into the shell.
+ * Terminals are butt/miter, not round: the charte has no softened corners (see tokens.css).
  */
 interface Props {
   direction?: 'left' | 'right';
@@ -23,8 +23,6 @@ const d = direction === 'left' ? 'M15 5 8 12l7 7' : 'm9 5 7 7-7 7';
   fill="none"
   stroke="currentColor"
   stroke-width="2"
-  stroke-linecap="round"
-  stroke-linejoin="round"
   aria-hidden="true"
   focusable="false"
 >

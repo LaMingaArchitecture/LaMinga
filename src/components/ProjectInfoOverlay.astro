@@ -84,7 +84,6 @@ const engagements = blok.engagements ?? [];
     padding: var(--space-5);
     /* Mobile: the three panels merge into one bleu-clair sheet (matches the HUD card + atelier). */
     background: var(--panel-bg);
-    border-radius: var(--radius);
     color: var(--panel-ink);
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -182,12 +181,10 @@ const engagements = blok.engagements ?? [];
       gap: var(--space-4);
       padding: 0;
       background: none;
-      border-radius: 0;
       overflow-y: auto;
     }
     .info-panel {
       background: var(--panel-bg);
-      border-radius: var(--radius);
       padding: var(--space-5);
     }
     .info-panel + .info-panel {

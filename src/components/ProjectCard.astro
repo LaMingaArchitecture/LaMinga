@@ -49,7 +49,6 @@ const cover = visual?.filename ? sbImage(visual.filename, isVignette ? '600x600'
     flex-direction: column;
     background: var(--color-paper);
     border: var(--border-w) solid var(--color-line);
-    border-radius: var(--radius);
     overflow: hidden;
     text-decoration: none;
     color: var(--color-ink);
@@ -90,7 +89,6 @@ const cover = visual?.filename ? sbImage(visual.filename, isVignette ? '600x600'
   .project-card--vignette {
     border: 0;
     background: transparent;
-    border-radius: 0;
   }
   .project-card--vignette:hover {
     transform: none;
