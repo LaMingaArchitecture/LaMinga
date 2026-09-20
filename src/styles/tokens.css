@@ -16,8 +16,9 @@
      Bleu clair        #bbd5fd  panels: project HUD, info pop-up, related band, atelier
      Taupe clair       #d0b8b0  active nav tint + related-band label ground
      Rose              #fec9d7  selected thématique chip fill
-     Gris              #c6c6c6  neutral
-     Violet vif / Vert citron / Olive / Turquoise / Jaune fluo — in the charte, unused by the UI.
+     Gris / Violet vif / Vert citron / Olive / Turquoise / Jaune fluo — in the charte, unused by
+                              the UI. The hairline grey drawn on screen is --color-line #d8d0cc, a
+                              warm neutral off the charte, kept because it reads on beige.
 
    TYPOGRAPHY (charte V3 § 3.1)
      Sora            UI, titles, body. Self-hosted variable face (wght 100–800, latin subset); the
@@ -115,7 +116,6 @@
   --radius: 6px;
   --border-w: 1px;
   --border: var(--border-w) solid var(--color-line);
-  --border-accent: var(--border-w) solid var(--accent);
   /* Structural separators between header / content / footer — visible, accent-tinted. */
   --border-rule: var(--border-w) solid color-mix(in srgb, var(--accent) 32%, transparent);
   /* Brand boxed element: a thin accent outline whose four edges stop just short of the corners,

@@ -37,7 +37,12 @@ a {
   color: inherit;
 }
 
-button {
+/* Form controls do not inherit type by default, so without this the search field renders in the
+   UA's Arial — the one control that would escape the charte's Sora. */
+button,
+input,
+select,
+textarea {
   font: inherit;
   color: inherit;
 }

@@ -163,11 +163,15 @@ const hasActions = Astro.slots.has('actions');
     color: var(--panel-ink);
     font-size: 0.9375rem;
   }
-  /* The programme description can be long — cap it to two lines on the compact card. */
+  /* The programme description can be long — cap it to two lines on the compact card. French compound
+     words ("Restructuration") outrun the narrow value column on a 390px screen, and `overflow:hidden`
+     would clip one mid-glyph instead of wrapping it, so hyphenate (html lang="fr") and allow a break. */
   .hud-card__desc {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    hyphens: auto;
+    overflow-wrap: break-word;
   }
 </style>
