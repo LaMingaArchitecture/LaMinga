@@ -198,9 +198,9 @@ body[data-immersive-scroll][data-atelier-scrolled] > header {
    edge strokes that stop short of the corners, so the corners stay open (never linked). No real
    border / box-shadow — the four edges are background gradients inset by --brand-box-gap. The base
    fill is the page paper; a *selected* fill (--brand-box-fill) is drawn as an extra layer inset by
-   the same gap, so the white corners survive when active (set --brand-box-fill, never a background
-   shorthand, which would wipe the edges). Used on the nav menu buttons, the Liste table cells, and
-   the Projets filter chips + search field (which also reset the native <button>/<input> chrome). */
+   the same gap, so the white corners survive when active. Contract for consumers: set
+   --brand-box-line / --brand-box-fill / background-color, never a `background` or `border`
+   shorthand — either wipes the edge gradients. */
 .brand-box {
   background-color: var(--color-paper);
   background-image:

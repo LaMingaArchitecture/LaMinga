@@ -50,10 +50,8 @@ const hasActions = Astro.slots.has('actions');
 <style>
   /* Charte V3 cartouche: bleu clair ground, aubergine labels and hairlines. The project name stays
      corail as a display title; the values are running text and take --panel-ink, which corail
-     cannot carry on a light panel (see tokens.css). */
-  /* Outer frame = the same open-corner cartouche as the nav buttons, chips and footer cells
-     (.brand-box, global.css). background-color overrides the utility's paper default; the four edge
-     gradients it paints are what leave the corners open. */
+     cannot carry on a light panel (see tokens.css). background-color, not the shorthand — it would
+     wipe .brand-box's edge gradients. */
   .hud-card {
     pointer-events: auto;
     display: grid;
@@ -66,13 +64,13 @@ const hasActions = Astro.slots.has('actions');
      junction as well as every corner, so each one stops --brand-box-gap short of the frame. */
   .hud-card__title,
   .hud-card__row + .hud-card__row,
-  .hud-card__col > .hud-card__actions,
+  .hud-card__data + .hud-card__actions,
   .hud-card__actions > :global(* + *) {
     position: relative;
   }
   .hud-card__title::after,
   .hud-card__row + .hud-card__row::before,
-  .hud-card__col > .hud-card__actions::before,
+  .hud-card__data + .hud-card__actions::before,
   .hud-card__actions > :global(* + *)::before {
     content: '';
     position: absolute;
@@ -88,13 +86,39 @@ const hasActions = Astro.slots.has('actions');
   /* Horizontal: between data rows, above the actions row, and — while the action cells are stacked
      on mobile — between them too. */
   .hud-card__row + .hud-card__row::before,
-  .hud-card__col > .hud-card__actions::before,
+  .hud-card__data + .hud-card__actions::before,
   .hud-card__actions > :global(* + *)::before {
     top: 0;
     left: var(--brand-box-gap);
     right: var(--brand-box-gap);
     height: var(--brand-box-w);
   }
+  /* Open state. The hook belongs to Project.astro's .project-hud, but every class it acts on is
+     this component's, so the rules live here and only the ancestor is :global — renaming an
+     internal cannot silently break the open state from another file. The card keeps its box: the
+     <h1> is the page's only heading, so it is clipped rather than display:none and stays in the
+     a11y tree. `background: none` also clears the .brand-box edge gradients, and the two dividers
+     are killed by name — a blanket `*::before` would wipe the bars drawing the badge's "−". */
+  :global(.project-hud[data-overlay-open]) .hud-card {
+    background: none;
+  }
+  :global(.project-hud[data-overlay-open]) .hud-card__actions::before,
+  :global(.project-hud[data-overlay-open]) .hud-card__actions > :global(* + *)::before {
+    display: none;
+  }
+  :global(.project-hud[data-overlay-open]) .hud-card__title,
+  :global(.project-hud[data-overlay-open]) .hud-card__data {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .hud-card__title {
     align-self: stretch;
     display: flex;

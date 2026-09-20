@@ -113,20 +113,23 @@
   --font-serif: 'Playfair Display', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
   /* ---- Shape & spacing -------------------------------------------------
-     No corner radius anywhere: the charte is an architectural-drawing language and every box is
-     square. The only curves in the UI are deliberate circles — the corail +/− disc and the
-     engagement ring — which are drawn with `border-radius: 50%`, not with a softening radius. */
+     No corner radius on any box the charte draws: it is an architectural-drawing language and every
+     frame is square. The only curves the UI draws are deliberate circles — the corail +/− disc and
+     the engagement ring — written `border-radius: 50%`. Third-party brand marks (the social icons)
+     keep their own trademarked geometry and are out of scope for this rule. */
   --border-w: 1px;
   --border: var(--border-w) solid var(--color-line);
+  /* Minimum touch target. One unit, in rem, so the hit area scales with the user's base font. */
+  --touch-min: 2.75rem;
   /* Structural separators between header / content / footer — visible, accent-tinted. */
   --border-rule: var(--border-w) solid color-mix(in srgb, var(--accent) 32%, transparent);
   /* Brand boxed element: a thin accent outline whose four edges stop just short of the corners,
      leaving them open (architectural-sketch look). Drawn as four edge strokes — see .brand-box in
-     global.css. When selected, the fill is inset by the same gap so the corners stay open.
-     Applied to the nav menu buttons + Liste table cells. */
+     global.css. When selected, the fill is inset by the same gap so the corners stay open. */
   --brand-box-gap: 3px;
   --brand-box-w: 1px;
   --brand-box-line: var(--accent);
+  --brand-box-fill-hover: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;

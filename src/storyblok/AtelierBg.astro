@@ -26,6 +26,11 @@ const srcset = image?.filename ? sbSrcset(image.filename) : undefined;
 // Transparent 1×1: a valid `src` for the deferred backgrounds, so nothing is fetched until
 // atelier-scroll hands over the real source. Allowed by the CSP (`img-src 'self' data:`).
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+// Shared by the eager / deferred / no-JS branches so the three cannot drift apart. `alt` stays an
+// explicit attribute on each tag — inside a spread, eslint-plugin-jsx-a11y cannot see it.
+const alt = image?.alt ?? '';
+const imgAttrs = { sizes: SIZES_FULLSCREEN, decoding: 'async' as const };
 ---
 
 <div class="atelier__bg" data-atelier-bg>
@@ -38,34 +43,23 @@ const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAA
         <img
           src={src}
           srcset={srcset}
-          sizes={SIZES_FULLSCREEN}
-          alt={image?.alt ?? ''}
+          alt={alt}
           loading="eager"
           fetchpriority="high"
-          decoding="async"
+          {...imgAttrs}
         />
       ) : (
         <Fragment>
           {/* Deferred until after the LCP — see the note on setupLazyBg in atelier-scroll.ts. The
               section clips its overscan (`.atelier__sec { overflow: hidden }`), so none of this
-              image is on screen while the hero paints, even though its box crosses the fold. */}
-          <img
-            data-src={src}
-            data-srcset={srcset}
-            src={BLANK}
-            sizes={SIZES_FULLSCREEN}
-            alt={image?.alt ?? ''}
-            decoding="async"
-          />
+              image is on screen while the hero paints, even though its box crosses the fold.
+              No `loading`: the src is a data: URI, so there is nothing for it to defer. */}
+          <img data-src={src} data-srcset={srcset} src={BLANK} alt={alt} {...imgAttrs} />
+          {/* No-JS path. Relies on the layer's children being absolutely positioned: this paints
+              over the placeholder instead of being laid out below it, where the section would
+              clip it away entirely. */}
           <noscript>
-            <img
-              src={src}
-              srcset={srcset}
-              sizes={SIZES_FULLSCREEN}
-              alt={image?.alt ?? ''}
-              loading="lazy"
-              decoding="async"
-            />
+            <img src={src} srcset={srcset} alt={alt} loading="lazy" {...imgAttrs} />
           </noscript>
         </Fragment>
       ))
@@ -83,10 +77,15 @@ const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAA
     z-index: 0;
   }
   /* :global — the §1 <video> comes from the child ResponsiveMedia component (no scope attr here);
-     the §2–4 <img> is in-template but covered too. */
+     the §2–4 <img> is in-template but covered too.
+     Absolute, not in flow: a deferred section ships two images (the placeholder and the <noscript>
+     copy) and they have to stack. In flow the second one lays out a full layer-height below the
+     first and the section clips it away, so the no-JS page would have no background at all. */
   .atelier__bg :global(img),
   .atelier__bg :global(video),
   .atelier__bg :global(picture) {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;

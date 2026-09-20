@@ -37,8 +37,8 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
         </a>
       )
     }
-    {addrAnglet && <span class="site-footer__cell brand-box">{addrAnglet}</span>}
-    {addrParis && <span class="site-footer__cell brand-box">{addrParis}</span>}
+    {addrAnglet && <span class="site-footer__cell brand-box site-footer__addr">{addrAnglet}</span>}
+    {addrParis && <span class="site-footer__cell brand-box site-footer__addr">{addrParis}</span>}
   </div>
 
   <a class="site-footer__cell brand-box site-footer__mentions" href="/mentions-legales">
@@ -73,16 +73,20 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
   .site-footer__cell {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
     color: var(--color-ink);
     text-decoration: none;
     line-height: 1.25;
     white-space: nowrap;
   }
+  /* An address is the one cell whose content the editor can make arbitrarily long, and it is
+     already wider than a 375px screen — so it is the one cell allowed to wrap. */
+  .site-footer__addr {
+    white-space: normal;
+  }
   /* Same hover as the nav cartouches: the outline is already --accent, so the affordance is a fill. */
   a.site-footer__cell:hover {
-    --brand-box-fill: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
+    --brand-box-fill: var(--brand-box-fill-hover);
   }
 
   .site-footer__name {

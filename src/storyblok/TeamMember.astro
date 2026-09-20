@@ -37,9 +37,8 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
     gap: var(--space-3);
   }
   /* The board frames each portrait in the corail cartouche — an open-corner rule standing clear of
-     the photo, not a border hugging it. Measured off the V3 planche: the inset is ~7% of the frame
-     width (≈12px at the 11rem column here), and the panel colour shows through, so the .brand-box
-     paper ground is cleared. */
+     the photo, not a border hugging it. The panel colour shows through, so the .brand-box paper
+     ground is cleared rather than inherited. */
   .team-member__frame {
     --brand-box-line: var(--color-coral);
     background-color: transparent;

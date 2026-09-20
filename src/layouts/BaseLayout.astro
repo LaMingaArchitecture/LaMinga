@@ -125,7 +125,7 @@ const preconnectOrigins = preload.length
       /* The logotype is site chrome: it sits above the fold on every page but is only discovered
     once the header markup parses, and an <img> starts at low priority until layout. Without this it
     lands after the stylesheets and the hero, so the header draws its cartouches first and the
-    logotype drops in afterwards. 7 KB compressed, and cached for every subsequent page. */
+    logotype drops in afterwards. Cached for every subsequent page. */
     }
     <link rel="preload" as="image" type="image/svg+xml" href={LOGO_SRC} fetchpriority="high" />
     {/* Warm the Storyblok image origin(s) the LCP uses before the hero fetch. */}

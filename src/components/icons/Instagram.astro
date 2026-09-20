@@ -4,6 +4,9 @@
  * badge/plate). Paints with `currentColor` (= the page --accent: corail on the home header, violet
  * elsewhere), so it themes with no per-page asset swap. Rendered inline (not <img>) so currentColor
  * resolves against the surrounding link colour.
+ *
+ * The rounded square and the round stroke terminals are Instagram's trademarked geometry, so they
+ * are deliberately exempt from the charte's no-rounded-corners rule (tokens.css). Do not square them.
  */
 interface Props {
   size?: number | string;
