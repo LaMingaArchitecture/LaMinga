@@ -6,6 +6,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Seo from '../components/Seo.astro';
 import { getSettings } from '../lib/content';
+import { LOGO_SRC } from '../lib/brand';
 import { professionalServiceJsonLd } from '../lib/seo';
 import type { PreloadImage } from '../lib/media';
 
@@ -120,6 +121,13 @@ const preconnectOrigins = preload.length
       href="/fonts/sora-latin-variable.woff2"
       crossorigin
     />
+    {
+      /* The logotype is site chrome: it sits above the fold on every page but is only discovered
+    once the header markup parses, and an <img> starts at low priority until layout. Without this it
+    lands after the stylesheets and the hero, so the header draws its cartouches first and the
+    logotype drops in afterwards. 7 KB compressed, and cached for every subsequent page. */
+    }
+    <link rel="preload" as="image" type="image/svg+xml" href={LOGO_SRC} fetchpriority="high" />
     {/* Warm the Storyblok image origin(s) the LCP uses before the hero fetch. */}
     {preconnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
     {

@@ -30,7 +30,11 @@ const activeSection: 'projets' | 'atelier' | null =
     }
     <div class="nav__brand">
       <a href="/" class="nav__logo" aria-label={`${nomAtelier} — accueil`}>
-        <img class="nav__logo-img" src={LOGO_SRC} alt={nomAtelier} />
+        {
+          /* High priority + the <head> preload: the logotype is above the fold on every page, and at
+          the default image priority it is fetched behind the stylesheets and the hero. */
+        }
+        <img class="nav__logo-img" src={LOGO_SRC} alt={nomAtelier} fetchpriority="high" />
       </a>
       <ul class="nav__buttons">
         <li>
@@ -89,10 +93,15 @@ const activeSection: 'projets' | 'atelier' | null =
     text-decoration: none;
     line-height: 1;
   }
+  /* The ratio is what reserves the logotype's box before the SVG arrives. Without it the sizing is
+     `auto` in one dimension at every breakpoint (height here, width from 48rem), so the <img> is
+     zero-sized until the file lands and the logotype pops in after the rest of the header — and the
+     header's height changes under the page. Same viewBox ratio --nav-clear is built on. */
   .nav__logo-img {
     display: block;
     height: var(--nav-logo-h);
     width: auto;
+    aspect-ratio: var(--nav-logo-ratio);
   }
 
   .nav__right {
