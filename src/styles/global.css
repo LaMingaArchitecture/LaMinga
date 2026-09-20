@@ -89,24 +89,48 @@ main#contenu {
   min-height: 0;
 }
 
-/* Immersive pages (home, project detail): the header floats over an edge-to-edge
-   hero. Non-immersive pages (Projets, Atelier, Mentions): the header is a solid
-   band that sticks to the top and reserves its own space above the content. */
-body[data-immersive] > header {
+/* The charte V3 boards put the nav block at the same top-left coordinates on every page type, so
+   the header always floats: it never reserves a band and never draws a rule under itself. Only the
+   logotype has to be cleared by the content (--nav-clear); the Projets/Atelier cartouches hang
+   below it into column 1, which the page content leaves free. */
+body > header {
   position: absolute;
   inset: 0 0 auto 0;
   z-index: var(--z-header);
   background: transparent;
 }
-body:not([data-immersive]) > header {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-header);
+/* Non-immersive pages own a scroll container, so the header must not scroll away with it. */
+body:not([data-immersive]):not([data-immersive-scroll]) > header {
+  position: fixed;
+}
+/* Content clears the logotype; the cartouches overhang into the empty column 1. */
+body:not([data-immersive]):not([data-immersive-scroll]) > main {
+  padding-top: var(--nav-clear);
+}
+/* Where the *document* scrolls under the floating header (every page on mobile, plus Mentions
+   légales / 404 at any width), the header needs an opaque paper ground or content would track
+   across the logotype. It is beige-on-beige, so no band is visible — unlike the V2 header, which
+   drew a rule. Pages whose content owns its own scroll container (Projets from 48rem) start below
+   the logotype already, so they stay transparent. */
+body[data-scroll]:not([data-immersive]):not([data-immersive-scroll]) > header {
   background: var(--color-paper);
-  border-bottom: var(--border-rule);
+}
+@media (max-width: 47.999rem) {
+  body:not([data-immersive]):not([data-immersive-scroll]) > header {
+    background: var(--color-paper);
+  }
+}
+/* Prose pages have no empty column 1, so they clear the cartouches as well as the logotype. */
+body[data-scroll]:not([data-immersive]):not([data-immersive-scroll]) > main {
+  padding-top: calc(var(--nav-clear) + var(--space-4));
+}
+@media (min-width: 48rem) {
+  body[data-scroll]:not([data-immersive]):not([data-immersive-scroll]) > main {
+    padding-top: calc(var(--nav-clear) + 6rem);
+  }
 }
 
-/* Freeze background scroll while the mobile lateral panel is open. */
+/* Freeze background scroll while the mobile drawer is open. */
 body.panel-open {
   overflow: hidden;
 }

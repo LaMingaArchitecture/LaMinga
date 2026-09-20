@@ -100,7 +100,7 @@ const infosHasContent =
     pointer-events: none;
     /* Bounds for the info/related overlays. The card is hidden while an overlay is open, so the
        bottom only needs to clear the active pill + counter row. */
-    --band-top: calc(var(--header-h-mobile) + var(--space-3));
+    --band-top: calc(var(--nav-clear) + var(--space-3));
     --band-bottom: 5.5rem;
     --band-x: var(--space-4);
   }
@@ -216,10 +216,10 @@ const infosHasContent =
 
   @media (min-width: 48rem) {
     .project-hud {
-      /* The desktop header's left zone is two *stacked* outlined buttons (Atelier / Projets), so it
-         renders taller than --header-h; budget for that real height plus a gap so the info/related
-         bands clear the floating transparent nav instead of tucking under it. */
-      --band-top: calc(var(--header-h) + var(--space-8) + var(--space-6));
+      /* The brand block is the logotype (--nav-clear lands on its bottom edge) plus the two stacked
+         cartouches hanging below it, so the bands have to clear roughly 6rem more than the logotype
+         alone — otherwise the info/related panels tuck under the floating nav in column 1. */
+      --band-top: var(--nav-brand-h);
       --band-bottom: 5.5rem;
       --band-x: var(--space-6);
     }

@@ -57,13 +57,13 @@ const tel = telHref(settings?.telephone);
     <nav class="mobile-nav__links" aria-label="Navigation">
       <a
         class="brand-box"
-        href="/atelier"
-        aria-current={activeSection === 'atelier' ? 'page' : undefined}>Atelier</a
+        href="/projets"
+        aria-current={activeSection === 'projets' ? 'page' : undefined}>Projets</a
       >
       <a
         class="brand-box"
-        href="/projets"
-        aria-current={activeSection === 'projets' ? 'page' : undefined}>Projets</a
+        href="/atelier"
+        aria-current={activeSection === 'atelier' ? 'page' : undefined}>Atelier</a
       >
     </nav>
 
@@ -123,7 +123,8 @@ const tel = telHref(settings?.telephone);
     outline-offset: 2px;
   }
 
-  /* Scrim + panel — fixed, so they escape the header box. */
+  /* Scrim + panel — fixed, so they escape the header box. The drawer enters from the right,
+     the edge the burger now sits on (the logotype owns the top-left corner). */
   .mobile-nav__scrim {
     position: fixed;
     inset: 0;
@@ -138,7 +139,7 @@ const tel = telHref(settings?.telephone);
   }
   .mobile-nav__panel {
     position: fixed;
-    inset: 0 auto 0 0;
+    inset: 0 0 0 auto;
     z-index: var(--z-panel);
     width: min(86vw, 22rem);
     padding: var(--space-6) var(--space-5) calc(var(--space-6) + env(safe-area-inset-bottom));
@@ -146,9 +147,9 @@ const tel = telHref(settings?.telephone);
     flex-direction: column;
     gap: var(--space-6);
     background: var(--color-paper);
-    border-right: var(--border);
+    border-left: var(--border);
     overflow-y: auto;
-    transform: translateX(-100%);
+    transform: translateX(100%);
     /* Hidden when closed so its links leave the tab order (no-JS safe); the delayed
        visibility keeps the panel on screen while it slides out. */
     visibility: hidden;

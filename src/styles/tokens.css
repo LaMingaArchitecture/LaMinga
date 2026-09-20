@@ -140,15 +140,61 @@
   --space-6: 1.5rem;
   --space-8: 2rem;
 
+  /* ---- Page grid (charte V3) -------------------------------------------
+     The boards lay the whole site on 6 columns: the brand block (logotype + the Projets/Atelier
+     cartouches) owns column 1, the Projets filter chips own columns 2-6, and the footer cells span
+     all six. Measured off the V3 header board (3560px wide): 2.7% side margin, 14.4% column,
+     2.0% gutter. --grid-col is relative to its container's *content* box, so any container that
+     carries --page-x as its inline padding resolves to the same column width — that is what keeps
+     the nav cartouches and the filter chips on one grid. */
+  --page-x: clamp(1rem, 2.7vw, 2.5rem);
+  --grid-gap: clamp(0.5rem, 1.95vw, 1.75rem);
+  --grid-col: calc((100% - 5 * var(--grid-gap)) / 6);
+  /* Viewport-absolute twin of --grid-col, for rules that live outside a --page-x container (the
+     clearance below). Differs from --grid-col by at most a scrollbar width. */
+  --grid-col-abs: calc((100vw - 2 * var(--page-x) - 5 * var(--grid-gap)) / 6);
+  /* Vertical room the page content must leave for the overlaid logotype — i.e. the logotype's
+     bottom edge, so content starts exactly where the Projets/Atelier cartouches do. The cartouches
+     themselves hang below it into column 1, which the Projets filters leave empty by starting at
+     column 2. 3.3305 is the logotype's intrinsic aspect ratio (141.73 / 42.52). */
+  /* Width of the brand column (logotype + the Projets/Atelier cartouches). One token, consumed by
+     both the header and the Projets filter indent, so the two can never drift apart. `auto` on
+     mobile, where the logotype sizes itself and the cartouches are replaced by the burger. */
+  --nav-brand-w: auto;
+  /* Mobile has no cartouches hanging below the logotype, so content clears the whole header band
+     (padding + logotype + padding) rather than just the logotype's bottom edge. */
+  --nav-clear: calc(2 * var(--space-2) + 2.25rem);
+  /* Full height of the brand block = logotype + the cartouches hanging below it. Content that
+     spans column 1 (atelier panels, the carousel recap, the project info bands) clears this;
+     content that leaves column 1 free (the Projets filters) only clears --nav-clear. On mobile
+     there are no cartouches, so the two are the same. */
+  --nav-brand-h: var(--nav-clear);
+
   /* ---- Frame ----------------------------------------------------------- */
-  --header-h: 4.75rem;
-  --header-h-mobile: 3.75rem;
   --transition: 200ms ease;
 
   /* ---- z-index scale --------------------------------------------------- */
   --z-header: 100;
   --z-scrim: 200;
   --z-panel: 210;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    /* Tablet: a fixed brand column. Locking it to the 6-column grid this early would squeeze the
+       filter chips to ~7rem, which their labels cannot take. */
+    --nav-brand-w: 10rem;
+    /* The logotype fills the brand column, so its height — and therefore where the cartouches and
+       the first filter row begin — follows from the column width and the mark's 3.3305 ratio. */
+    --nav-clear: calc(var(--space-3) + var(--nav-brand-w) / 3.3305);
+    --nav-brand-h: calc(var(--nav-clear) + 6rem);
+  }
+}
+@media (min-width: 64rem) {
+  :root {
+    /* Desktop: the brand column *is* column 1 of the page grid. */
+    --nav-brand-w: var(--grid-col-abs);
+  }
 }
 
 /* Accent theme per page (BaseLayout sets data-accent): corail on the immersive home, violet else. */

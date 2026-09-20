@@ -128,12 +128,13 @@ const programmesForThematique = (value: string) =>
     background: var(--color-paper);
   }
   /* Mobile: the whole document scrolls (footer flows away), so the filters anchor to the page and
-     must clear the pinned header instead of sticking at the very top. */
+     must clear the floating header instead of sticking at the very top. */
   @media (max-width: 47.999rem) {
     .explorer__sticky {
-      top: var(--header-h-mobile);
+      top: var(--nav-clear);
     }
   }
+
   .explorer__filters {
     display: flex;
     flex-direction: column;
@@ -264,6 +265,33 @@ const programmesForThematique = (value: string) =>
   }
   .explorer__empty[hidden] {
     display: none;
+  }
+  /* Desktop: the filter block starts at column 2 of the shared 6-column grid, leaving column 1 to
+     the nav cartouches that hang out of the floating header — this is what puts « Projets » level
+     with the first chip row on the V3 board. The views below span all six columns. */
+  /* Tablet up: the filter block clears the brand column so the cartouches, which hang out of the
+     floating header into column 1, never overlap the chips. Row 1 sits level with « Projets »:
+     both begin at the logotype's bottom edge, which is where <main> starts (--nav-clear). */
+  @media (min-width: 48rem) {
+    .explorer__sticky {
+      padding-left: calc(var(--nav-brand-w) + var(--grid-gap));
+      padding-block-start: 0;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .explorer__row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--grid-gap);
+    }
+    /* The chips are flex children by default (flex: 1 1 9rem, capped at 14rem); inside the grid the
+       track owns the width, so the cap has to go or a chip would not fill its column. */
+    .explorer__chip {
+      flex: initial;
+      min-width: 0;
+      max-width: none;
+    }
   }
 </style>
 
