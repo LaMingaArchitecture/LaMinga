@@ -53,36 +53,36 @@ const infosHasContent =
           ville={blok.ville}
           programme={blok.description_programme}
         >
-          <Fragment slot="actions">
-            {
-              infosHasContent && (
-                <button
-                  type="button"
-                  class="pill pill--infos"
-                  aria-expanded="false"
-                  aria-controls="project-infos"
-                  data-overlay-pill="infos"
-                >
-                  <span class="pill__badge" aria-hidden="true" />
-                  <span class="pill__label">informations</span>
-                </button>
-              )
-            }
-            {
-              hasRelated && (
-                <button
-                  type="button"
-                  class="pill pill--similaires"
-                  aria-expanded="false"
-                  aria-controls="project-similaires"
-                  data-overlay-pill="similaires"
-                >
-                  <span class="pill__badge" aria-hidden="true" />
-                  <span class="pill__label">projets en relation</span>
-                </button>
-              )
-            }
-          </Fragment>
+          {
+            (infosHasContent || hasRelated) && (
+              <Fragment slot="actions">
+                {infosHasContent && (
+                  <button
+                    type="button"
+                    class="pill"
+                    aria-expanded="false"
+                    aria-controls="project-infos"
+                    data-overlay-pill="infos"
+                  >
+                    <span class="pill__badge" aria-hidden="true" />
+                    <span class="pill__label">informations</span>
+                  </button>
+                )}
+                {hasRelated && (
+                  <button
+                    type="button"
+                    class="pill"
+                    aria-expanded="false"
+                    aria-controls="project-similaires"
+                    data-overlay-pill="similaires"
+                  >
+                    <span class="pill__badge" aria-hidden="true" />
+                    <span class="pill__label">projets en relation</span>
+                  </button>
+                )}
+              </Fragment>
+            )
+          }
         </ProjectHudCard>
       </div>
     </div>
@@ -104,7 +104,11 @@ const infosHasContent =
     /* Bounds for the info/related overlays. The card is hidden while an overlay is open, so the
        bottom only needs to clear the active pill + counter row. */
     --band-top: calc(var(--nav-clear) + var(--space-3));
-    --band-bottom: 5.5rem;
+    /* One source for the bar's bottom reservation: the ‹ X/N › cluster shares this corner, so the
+       bar clears it, and the overlay band in turn clears the bar — otherwise an open panel runs
+       under the close disc, which sits above it and would swallow taps on the panel. */
+    --hud-bar-bottom: calc(2.75rem + max(var(--space-4), env(safe-area-inset-bottom)));
+    --band-bottom: calc(var(--hud-bar-bottom) + 2.75rem + var(--space-3));
     --band-x: var(--space-4);
   }
 
@@ -120,8 +124,7 @@ const infosHasContent =
     flex-direction: column;
     gap: var(--space-3);
     padding: var(--space-4);
-    /* Clear the carousel's ‹ X/N › cluster, which sits in this same bottom-right corner. */
-    padding-bottom: calc(2.75rem + max(var(--space-4), env(safe-area-inset-bottom)));
+    padding-bottom: var(--hud-bar-bottom);
     pointer-events: none;
   }
   .project-hud__bar > * {
@@ -163,6 +166,7 @@ const infosHasContent =
     width: 1.75rem;
     height: 1.75rem;
     border-radius: 50%;
+    background: var(--color-coral);
   }
   .pill__badge::before,
   .pill__badge::after {
@@ -185,9 +189,6 @@ const infosHasContent =
   }
   .pill[aria-expanded='true'] .pill__badge::after {
     transform: translate(-50%, -50%) scaleY(0);
-  }
-  .pill__badge {
-    background: var(--color-coral);
   }
 
   /* While an overlay is open the cartouche disappears and only the active button survives, stripped
@@ -247,7 +248,8 @@ const infosHasContent =
          cartouches hanging below it, so the bands have to clear roughly 6rem more than the logotype
          alone — otherwise the info/related panels tuck under the floating nav in column 1. */
       --band-top: var(--nav-brand-h);
-      --band-bottom: 5.5rem;
+      --hud-bar-bottom: var(--space-6);
+      --band-bottom: calc(var(--hud-bar-bottom) + 2.75rem + var(--space-3));
       --band-x: var(--space-6);
     }
     /* Cartouche centred, with the outer columns reserving the bottom-right counter's corner. */
@@ -257,6 +259,7 @@ const infosHasContent =
       align-items: end;
       gap: var(--space-4);
       padding: var(--space-6);
+      padding-bottom: var(--hud-bar-bottom);
     }
     .project-hud__card {
       grid-column: 2;

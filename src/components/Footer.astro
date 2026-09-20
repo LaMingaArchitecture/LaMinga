@@ -75,14 +75,15 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
-    --brand-box-line: var(--color-line);
+
     color: var(--color-ink);
     text-decoration: none;
     line-height: 1.25;
     white-space: nowrap;
   }
+  /* Same hover as the nav cartouches: the outline is already --accent, so the affordance is a fill. */
   a.site-footer__cell:hover {
-    --brand-box-line: var(--accent);
+    --brand-box-fill: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
   }
 
   .site-footer__name {
