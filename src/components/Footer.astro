@@ -8,13 +8,12 @@ interface Props {
 
 const { settings } = Astro.props;
 const tel = telHref(settings?.telephone);
-// Collapse the textarea line breaks so each address sits on a single line — the footer stays a
-// slim, even bar of boxed cells (the two addresses share one cell, inline). The mobile panel, by
-// contrast, keeps the line breaks (via .pre-line) since it has vertical room.
+// Collapse the textarea line breaks so each address sits on a single line — the footer stays a slim,
+// even bar of cartouche cells, one per address as on the V3 board. The mobile panel, by contrast,
+// keeps the line breaks (via .pre-line) since it has vertical room.
 const oneLine = (value?: string) => value?.replace(/\s*\n\s*/g, ' ').trim() || undefined;
 const addrParis = oneLine(settings?.adresse_paris);
 const addrAnglet = oneLine(settings?.adresse_anglet);
-const hasAddress = Boolean(addrParis || addrAnglet);
 ---
 
 <footer class="site-footer">
@@ -27,33 +26,19 @@ const hasAddress = Boolean(addrParis || addrAnglet);
     {
       settings?.email && (
         <a class="site-footer__cell brand-box" href={`mailto:${settings.email}`}>
-          <span class="site-footer__label">mail</span>
-          <span>{settings.email}</span>
+          {settings.email}
         </a>
       )
     }
     {
       tel && (
         <a class="site-footer__cell brand-box" href={tel}>
-          <span class="site-footer__label">tel</span>
-          <span>{settings?.telephone}</span>
+          {settings?.telephone}
         </a>
       )
     }
-    {
-      hasAddress && (
-        <span class="site-footer__cell brand-box site-footer__addresses">
-          <span class="site-footer__label">adresses</span>
-          {addrParis && <span>{addrParis}</span>}
-          {addrParis && addrAnglet && (
-            <span class="site-footer__sep" aria-hidden="true">
-              ·
-            </span>
-          )}
-          {addrAnglet && <span>{addrAnglet}</span>}
-        </span>
-      )
-    }
+    {addrAnglet && <span class="site-footer__cell brand-box">{addrAnglet}</span>}
+    {addrParis && <span class="site-footer__cell brand-box">{addrParis}</span>}
   </div>
 
   <a class="site-footer__cell brand-box site-footer__mentions" href="/mentions-legales">
@@ -103,20 +88,6 @@ const hasAddress = Boolean(addrParis || addrAnglet);
   .site-footer__name {
     font-weight: 600;
     color: var(--accent);
-  }
-
-  .site-footer__label {
-    font-style: italic;
-    font-family: var(--font-serif);
-    color: var(--color-muted);
-  }
-
-  /* Addresses share one cell; allow the text to wrap on tighter widths (others stay tidy). */
-  .site-footer__addresses {
-    white-space: normal;
-  }
-  .site-footer__sep {
-    color: var(--color-line);
   }
 
   .site-footer__mentions {

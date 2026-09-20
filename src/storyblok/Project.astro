@@ -194,9 +194,15 @@ const infosHasContent =
      back to a bare "−" disc (V3 board). The card keeps its box in the layout but loses its chrome
      and its text: the <h1> is the page's only heading, so it is clipped sr-only rather than
      display:none and stays in the a11y tree. The inactive button is removed outright. */
+  /* `background: none` clears both the bleu-clair ground and the .brand-box edge gradients. The
+     two surviving dividers are killed by name — a blanket `*::before` would also wipe the bars
+     that draw the badge's "−". */
   .project-hud[data-overlay-open] :global(.hud-card) {
     background: none;
-    border-color: transparent;
+  }
+  .project-hud[data-overlay-open] :global(.hud-card__actions::before),
+  .project-hud[data-overlay-open] :global(.hud-card__actions > * + *::before) {
+    display: none;
   }
   .project-hud[data-overlay-open] :global(.hud-card__title),
   .project-hud[data-overlay-open] :global(.hud-card__data) {
@@ -208,10 +214,6 @@ const infosHasContent =
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
-    border: 0;
-  }
-  .project-hud[data-overlay-open] :global(.hud-card__actions),
-  .project-hud[data-overlay-open] :global(.hud-card__actions > *) {
     border: 0;
   }
   .project-hud[data-overlay-open] .pill[aria-expanded='false'] {
