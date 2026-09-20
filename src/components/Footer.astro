@@ -21,12 +21,12 @@ const hasAddress = Boolean(addrParis || addrAnglet);
   <div class="site-footer__group">
     {
       settings?.nom_atelier && (
-        <span class="site-footer__cell site-footer__name">{settings.nom_atelier}</span>
+        <span class="site-footer__cell brand-box site-footer__name">{settings.nom_atelier}</span>
       )
     }
     {
       settings?.email && (
-        <a class="site-footer__cell" href={`mailto:${settings.email}`}>
+        <a class="site-footer__cell brand-box" href={`mailto:${settings.email}`}>
           <span class="site-footer__label">mail</span>
           <span>{settings.email}</span>
         </a>
@@ -34,7 +34,7 @@ const hasAddress = Boolean(addrParis || addrAnglet);
     }
     {
       tel && (
-        <a class="site-footer__cell" href={tel}>
+        <a class="site-footer__cell brand-box" href={tel}>
           <span class="site-footer__label">tel</span>
           <span>{settings?.telephone}</span>
         </a>
@@ -42,7 +42,7 @@ const hasAddress = Boolean(addrParis || addrAnglet);
     }
     {
       hasAddress && (
-        <span class="site-footer__cell site-footer__addresses">
+        <span class="site-footer__cell brand-box site-footer__addresses">
           <span class="site-footer__label">adresses</span>
           {addrParis && <span>{addrParis}</span>}
           {addrParis && addrAnglet && (
@@ -56,7 +56,9 @@ const hasAddress = Boolean(addrParis || addrAnglet);
     }
   </div>
 
-  <a class="site-footer__cell site-footer__mentions" href="/mentions-legales"> mentions légales </a>
+  <a class="site-footer__cell brand-box site-footer__mentions" href="/mentions-legales">
+    mentions légales
+  </a>
 </footer>
 
 <style>
@@ -81,20 +83,21 @@ const hasAddress = Boolean(addrParis || addrAnglet);
     min-width: 0;
   }
 
+  /* Cartouche cells, same open-corner outline as the nav buttons and the filter chips — the V3
+     board draws the footer as six cartouches, not as closed boxes. */
   .site-footer__cell {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
-    border: var(--border);
-    border-radius: var(--radius);
+    --brand-box-line: var(--color-line);
     color: var(--color-ink);
     text-decoration: none;
     line-height: 1.25;
     white-space: nowrap;
   }
   a.site-footer__cell:hover {
-    border-color: var(--accent);
+    --brand-box-line: var(--accent);
   }
 
   .site-footer__name {

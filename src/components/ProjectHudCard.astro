@@ -1,8 +1,9 @@
 ---
 /**
- * ProjectHudCard — the persistent bleu-clair project card pinned to the bottom HUD on every slide.
- * Mini-table: a title cell (the page's sole <h1>) beside "Ville" / "Programme" rows. Positioning is
- * owned by the .project-hud bar in Project.astro; this component owns only the card's appearance.
+ * ProjectHudCard — the persistent bleu-clair project cartouche pinned to the bottom HUD.
+ * Per the V3 board: a title cell (the page's sole <h1>) beside a stack of "Ville" / "Programme"
+ * rows and, as the last row, the disclosure buttons passed in through the `actions` slot.
+ * Positioning is owned by the .project-hud bar in Project.astro; this owns only the appearance.
  * "Programme" = description_programme (the one-line description), not the programme relation.
  */
 interface Props {
@@ -12,28 +13,38 @@ interface Props {
 }
 
 const { titre, ville, programme } = Astro.props;
+const hasActions = Astro.slots.has('actions');
 ---
 
 <div class="hud-card">
   <h1 class="hud-card__title">{titre}</h1>
-  {
-    (ville || programme) && (
-      <dl class="hud-card__data">
-        {ville && (
-          <div class="hud-card__row">
-            <dt>Ville</dt>
-            <dd>{ville}</dd>
-          </div>
-        )}
-        {programme && (
-          <div class="hud-card__row">
-            <dt>Programme</dt>
-            <dd class="hud-card__desc">{programme}</dd>
-          </div>
-        )}
-      </dl>
-    )
-  }
+  <div class="hud-card__col">
+    {
+      (ville || programme) && (
+        <dl class="hud-card__data">
+          {ville && (
+            <div class="hud-card__row">
+              <dt>Ville</dt>
+              <dd>{ville}</dd>
+            </div>
+          )}
+          {programme && (
+            <div class="hud-card__row">
+              <dt>Programme</dt>
+              <dd class="hud-card__desc">{programme}</dd>
+            </div>
+          )}
+        </dl>
+      )
+    }
+    {
+      hasActions && (
+        <div class="hud-card__actions">
+          <slot name="actions" />
+        </div>
+      )
+    }
+  </div>
 </div>
 
 <style>
@@ -62,9 +73,42 @@ const { titre, ville, programme } = Astro.props;
     font-weight: 700;
     font-size: 1.25rem;
   }
+  /* Column 2 stacks the data rows and, below them, the disclosure row — the V3 board's third row. */
+  .hud-card__col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
   .hud-card__data {
     margin: 0;
     display: grid;
+  }
+  .hud-card__col > .hud-card__actions {
+    border-top: var(--border-w) solid var(--panel-line);
+  }
+  /* Mobile: stack them, or « projets en relation » has ~7rem of column and truncates. They sit side
+     by side from tablet up, split by the same hairline as the rows above. */
+  .hud-card__actions {
+    display: flex;
+    flex-direction: column;
+  }
+  .hud-card__actions > :global(* + *) {
+    border-top: var(--border-w) solid var(--panel-line);
+  }
+  .hud-card__actions > :global(*) {
+    min-width: 0;
+  }
+  @media (min-width: 48rem) {
+    .hud-card__actions {
+      flex-direction: row;
+    }
+    .hud-card__actions > :global(* + *) {
+      border-top: 0;
+      border-left: var(--border-w) solid var(--panel-line);
+    }
+    .hud-card__actions > :global(*) {
+      flex: 1 1 0;
+    }
   }
   /* Narrower label column than before so the value keeps enough room to wrap on word boundaries on
      mobile (avoids mid-word clamps like "Restru… / de…"). min-content floor lets the widest label
