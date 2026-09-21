@@ -8,55 +8,42 @@ interface Props {
 
 const { settings } = Astro.props;
 const tel = telHref(settings?.telephone);
-// Collapse the textarea line breaks so each address sits on a single line — the footer stays a
-// slim, even bar of boxed cells (the two addresses share one cell, inline). The mobile panel, by
-// contrast, keeps the line breaks (via .pre-line) since it has vertical room.
+// Collapse the textarea line breaks so each address sits on a single line — the footer stays a slim,
+// even bar of cartouche cells, one per address as on the V3 board. The mobile panel, by contrast,
+// keeps the line breaks (via .pre-line) since it has vertical room.
 const oneLine = (value?: string) => value?.replace(/\s*\n\s*/g, ' ').trim() || undefined;
 const addrParis = oneLine(settings?.adresse_paris);
 const addrAnglet = oneLine(settings?.adresse_anglet);
-const hasAddress = Boolean(addrParis || addrAnglet);
 ---
 
 <footer class="site-footer">
   <div class="site-footer__group">
     {
       settings?.nom_atelier && (
-        <span class="site-footer__cell site-footer__name">{settings.nom_atelier}</span>
+        <span class="site-footer__cell brand-box site-footer__name">{settings.nom_atelier}</span>
       )
     }
     {
       settings?.email && (
-        <a class="site-footer__cell" href={`mailto:${settings.email}`}>
-          <span class="site-footer__label">mail</span>
-          <span>{settings.email}</span>
+        <a class="site-footer__cell brand-box" href={`mailto:${settings.email}`}>
+          {settings.email}
         </a>
       )
     }
     {
       tel && (
-        <a class="site-footer__cell" href={tel}>
-          <span class="site-footer__label">tel</span>
-          <span>{settings?.telephone}</span>
+        <a class="site-footer__cell brand-box" href={tel}>
+          {settings?.telephone}
         </a>
       )
     }
-    {
-      hasAddress && (
-        <span class="site-footer__cell site-footer__addresses">
-          <span class="site-footer__label">adresses</span>
-          {addrParis && <span>{addrParis}</span>}
-          {addrParis && addrAnglet && (
-            <span class="site-footer__sep" aria-hidden="true">
-              ·
-            </span>
-          )}
-          {addrAnglet && <span>{addrAnglet}</span>}
-        </span>
-      )
-    }
+    {addrAnglet && <span class="site-footer__cell brand-box site-footer__addr">{addrAnglet}</span>}
+    {addrParis && <span class="site-footer__cell brand-box site-footer__addr">{addrParis}</span>}
   </div>
 
-  <a class="site-footer__cell site-footer__mentions" href="/mentions-legales"> mentions légales </a>
+  <a class="site-footer__cell brand-box site-footer__mentions" href="/mentions-legales">
+    mentions légales
+  </a>
 </footer>
 
 <style>
@@ -81,39 +68,30 @@ const hasAddress = Boolean(addrParis || addrAnglet);
     min-width: 0;
   }
 
+  /* Cartouche cells, same open-corner outline as the nav buttons and the filter chips — the V3
+     board draws the footer as six cartouches, not as closed boxes. */
   .site-footer__cell {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
-    border: var(--border);
-    border-radius: var(--radius);
     color: var(--color-ink);
     text-decoration: none;
     line-height: 1.25;
     white-space: nowrap;
   }
+  /* An address is the one cell whose content the editor can make arbitrarily long, and it is
+     already wider than a 375px screen — so it is the one cell allowed to wrap. */
+  .site-footer__addr {
+    white-space: normal;
+  }
+  /* Same hover as the nav cartouches: the outline is already --accent, so the affordance is a fill. */
   a.site-footer__cell:hover {
-    border-color: var(--accent);
+    --brand-box-fill: var(--brand-box-fill-hover);
   }
 
   .site-footer__name {
     font-weight: 600;
     color: var(--accent);
-  }
-
-  .site-footer__label {
-    font-style: italic;
-    font-family: var(--font-serif);
-    color: var(--color-muted);
-  }
-
-  /* Addresses share one cell; allow the text to wrap on tighter widths (others stay tidy). */
-  .site-footer__addresses {
-    white-space: normal;
-  }
-  .site-footer__sep {
-    color: var(--color-line);
   }
 
   .site-footer__mentions {

@@ -74,16 +74,19 @@ Deux notions suffisent :
 | `projets` (dossier)   | —                | contient toutes les fiches projet                 |
 | `projets` (startpage) | Page Projets     | la page liste `/projets` (grille + filtres)       |
 | `projets/<slug>`      | Projet           | une fiche projet (`/projets/<slug>`)              |
-| `programmes/<slug>`   | Programme        | les 6 programmes (chacun porte **sa couleur**)    |
+| `programmes/<slug>`   | Programme        | les programmes (filtres de la page Projets)       |
 | `atelier`             | Page Atelier     | la page Atelier (`/atelier`)                      |
 | `config`              | Réglages globaux | logo, contact, réseaux sociaux (pas d'URL propre) |
 
 ### Les deux niveaux de classification d'un projet
 
-- **Programme** — **une seule** catégorie par projet, qui **porte une couleur** (1ʳᵉ ligne de
-  filtres sur la page Projets). Les 6 : Logement, Équipement, Patrimoine, Activité, Aménagement,
-  Programmation. On **choisit** le programme dans une liste (c'est une **relation** vers une story
-  `programme`) — on ne le tape pas.
+- **Programme** — **une seule** catégorie par projet (1ʳᵉ ligne de filtres sur la page Projets).
+  On **choisit** le programme dans une liste (c'est une **relation** vers une story `programme`) —
+  on ne le tape pas. La charte V3 fixe 8 programmes : Habitat social, Multi-sites, Programmation,
+  Enseignement, Vitivinicole, Équipement, Commerce, Restauration.
+  > **La couleur par programme a été supprimée.** Toutes les chips sélectionnées s'affichent
+  > désormais en corail, et les vignettes n'ont plus de bordure colorée — c'est ce que dessine la
+  > charte V3. Le champ **Couleur** ne sert plus à rien ; il sera retiré du formulaire.
 - **Thématiques** — **plusieurs** par projet (2ᵉ ligne de filtres). On **coche** dans une liste
   déroulante (la **datasource** `thematique`) — pas de saisie libre.
 
@@ -345,21 +348,19 @@ sans média est **masquée**.
 
 **Content → dossier `programmes`** : une story par programme.
 
-| Champ       | Sert à…                                                                         | Requis |
-| ----------- | ------------------------------------------------------------------------------- | ------ |
-| **Nom**     | le nom (Logement, Équipement, Patrimoine, Activité, Aménagement, Programmation) | ✅     |
-| **Couleur** | **la couleur du programme** (sélecteur natif) — filtres, bordures, survol       |        |
+| Champ   | Sert à…                                                       | Requis |
+| ------- | ------------------------------------------------------------- | ------ |
+| **Nom** | le nom affiché sur la chip de filtre (ex. « Habitat social ») | ✅     |
 
-Changer une **couleur** ou un **nom**, puis **Publier** la story, se reflète sur tout le site après
-reconstruction — **sans intervention technique**.
+Changer un **nom**, puis **Publier** la story, se reflète sur tout le site après reconstruction —
+**sans intervention technique**. Le champ **Couleur** n'est plus lu (charte V3, §7).
 
 ### 5.6 — Réglages globaux (`global_settings`)
 
-Story **`config`** (logo, contact, réseaux — s'affichent dans la navigation et le pied de page).
+Story **`config`** (contact, réseaux — s'affichent dans la navigation et le pied de page).
 
 | Champ                | Sert à…                          |
 | -------------------- | -------------------------------- |
-| **Logo**             | le logo (**SVG** — voir §4.3)    |
 | **Nom de l'atelier** | ex. « LaMinga atelier… »         |
 | **E-mail**           | l'adresse de contact             |
 | **Téléphone**        | le téléphone                     |
@@ -440,26 +441,25 @@ composants — pour un changement **global**, l'équipe technique modifie ce seu
 
 ### Où vivent les assets
 
-| Asset                        | Emplacement                                                            |
-| ---------------------------- | ---------------------------------------------------------------------- |
-| Logo **violet** (pages int.) | **Storyblok** `config.logo` (modifiable par l'éditeur)                 |
-| Logo **corail** (home)       | **dépôt** (`public/logo/logo-corail.svg`) — variante de marque fixe    |
-| Icônes **Insta / LinkedIn**  | **dépôt** (composants `currentColor`, se colorent seuls corail/violet) |
-| Flèches (chevrons)           | **dépôt** (composant `Chevron.astro`)                                  |
-| Police serif                 | **dépôt** auto-hébergée (`public/fonts/`)                              |
-| Icônes engagement            | **Storyblok** `engagement.icone`                                       |
+| Asset                       | Emplacement                                                            |
+| --------------------------- | ---------------------------------------------------------------------- |
+| **Logotype**                | **dépôt** (`public/logo/logo-laminga.svg`)                             |
+| Icônes **Insta / LinkedIn** | **dépôt** (composants `currentColor`, se colorent seuls corail/violet) |
+| Flèches (chevrons)          | **dépôt** (composant `Chevron.astro`)                                  |
+| Polices                     | **dépôt** auto-hébergées (`public/fonts/`)                             |
+| Icônes engagement           | **Storyblok** `engagement.icone`                                       |
 
-> Les SVG **logo** (corail/violet) et le **favicon** du dépôt portent les couleurs de la charte
+> **Le logotype n'est plus modifiable depuis Storyblok.** La charte V3 ne prévoit qu'un seul
+> traitement pour le web (paysage, aplat, corail + rose) et sa règle 1.4 interdit d'en altérer les
+> couleurs, le cadrage ou les proportions : le fichier vit donc dans le dépôt, et le champ
+> `config.logo` n'est plus lu. Le SVG du logo et le **favicon** portent les couleurs de la charte
 > **en dur** : à mettre à jour côté technique si la palette change.
 
-### Changer une couleur de programme (sans déploiement)
+### Les couleurs de programme ont été supprimées (charte V3)
 
-Sur chaque story **`programme`** (`programmes/…`), le champ **Couleur** définit la couleur du
-programme : filtres, bordures et survol des vignettes s'y adaptent, et le texte posé sur un aplat
-reste lisible automatiquement. **Publier** la story suffit — aucune intervention technique.
-Correspondance actuelle : Logement = Turquoise, Équipement = Vert citron, Patrimoine = Rouge corail,
-Activité = Violet vif, Aménagement = Olive, Programmation = Rose (les trois derniers sont **proposés**
-— à valider).
+Il n'y a plus de couleur à régler par programme. La charte V3 peint **toutes** les chips
+sélectionnées du même corail et retire la bordure colorée des vignettes : le champ **Couleur** des
+stories `programme` n'est plus lu par le site et sera retiré du formulaire.
 
 ---
 
@@ -515,7 +515,11 @@ L'aperçu (brouillon) reste **exclu de l'indexation** (accès protégé + `noind
 
 - **Licence Self Modern** : la version fournie est un essai ; à acheter ou remplacer avant la mise en
   ligne (le substitut libre Playfair Display est en place en attendant).
-- **Couleurs de programmes** Activité / Aménagement / Programmation : propositions à confirmer.
+- **Taxonomie V3 à saisir** : remplacer les programmes actuels par les 8 de la charte (Habitat
+  social, Multi-sites, Programmation, Enseignement, Vitivinicole, Équipement, Commerce,
+  Restauration) et les thématiques par les 5 attendues (Réemploi, Biosourcé, Restructuration,
+  Ruralité, Densité urbaine). Le code dérive les filtres des projets publiés : aucune intervention
+  technique n'est nécessaire, seulement la saisie.
 - **Pictogrammes d'engagement** : les fichiers fournis sont en **JPG/PNG** (matriciels) et ne
   correspondent pas au rendu vectoriel des maquettes — **fournir les versions SVG** (monochrome
   `currentColor`, voir §4.3).

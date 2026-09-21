@@ -126,19 +126,19 @@ const firstSection = atelierHero(blok).section;
     position: relative;
     min-height: 100svh;
     overflow: hidden;
-    padding: calc(var(--header-h-mobile) + var(--space-5)) var(--space-4) var(--space-5);
+    padding: calc(var(--nav-brand-h) + var(--space-5)) var(--space-4) var(--space-5);
   }
 
-  /* ---- Deep-navy panel (recipe shared with the project overlays). ----------------------------- */
-  /* Coral headings clear WCAG AA on this navy (the old light bleu-clair failed on corail); body text
-     is paper (--panel-ink). See --panel-bg in tokens.css. */
+  /* ---- Bleu-clair panel (recipe shared with the project overlays). ---------------------------- */
+  /* Body text is aubergine (--panel-ink, 4.79:1); the section headings stay corail as display type,
+     doubled by the serif italic + size shift. The V3 boards draw these panels translucent — kept
+     opaque here so contrast does not become a function of the editor's photo. See tokens.css. */
   .atelier__panel {
     position: relative;
     z-index: 1;
     margin-inline: auto;
     color: var(--panel-ink);
     background: var(--panel-bg);
-    border-radius: var(--radius);
     padding: var(--space-6);
   }
   .atelier__panel--manifeste {
@@ -238,7 +238,7 @@ const firstSection = atelierHero(blok).section;
       align-items: center;
       justify-content: center;
       /* Top pad clears the overlaid (absolute) header; bottom pad breathes above the footer bar. */
-      padding: calc(var(--header-h) + var(--space-6)) var(--space-4) var(--space-6);
+      padding: calc(var(--nav-brand-h) + var(--space-6)) var(--space-4) var(--space-6);
     }
     .atelier__sec--manifeste {
       justify-content: flex-end;

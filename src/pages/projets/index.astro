@@ -1,6 +1,7 @@
 ---
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { chromeFor } from '../../lib/layout';
 import ContentNotice from '../../components/ContentNotice.astro';
 import { getProjectListPage } from '../../lib/content';
 import { resolveSeo, firstSeo, richTextToPlain } from '../../lib/seo';
@@ -17,8 +18,8 @@ const resolved = resolveSeo({
   title={resolved.title}
   description={resolved.description}
   ogImage={resolved.ogImage}
-  footer
   noindex={!blok}
+  {...chromeFor('project_list')}
 >
   {blok ? <StoryblokComponent blok={blok} /> : <ContentNotice />}
 </BaseLayout>

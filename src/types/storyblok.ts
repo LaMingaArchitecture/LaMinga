@@ -14,9 +14,6 @@ export interface StoryblokAsset {
   copyright?: string;
 }
 
-/** Native color-picker returns an object; a plain hex text field returns a string. */
-export type StoryblokColor = string | { color?: string; plugin?: string };
-
 /** Relation field: the resolved story when `resolve_relations` ran, else the uuid string. */
 export type SbRelation = ISbStoryData | string;
 
@@ -56,7 +53,6 @@ export interface SocialLinkBlok extends SbBlokData {
 export interface ProgrammeBlok extends SbBlokData {
   component: 'programme';
   nom: string;
-  couleur?: StoryblokColor;
 }
 
 export interface EngagementBlok extends SbBlokData {
@@ -91,7 +87,7 @@ export interface ProjectBlok extends SbBlokData {
   component: 'project';
   titre: string;
   ville?: string;
-  /** Relation to a single `programme` story (nom + couleur). */
+  /** Relation to a single `programme` story. */
   programme?: SbRelation;
   /** Values from the "thematique" datasource. */
   thematiques?: string[];
@@ -158,8 +154,6 @@ export interface HomePageBlok extends SbBlokData {
 
 export interface GlobalSettings extends SbBlokData {
   component: 'global_settings';
-  /** SVG logo — rendered from the raw filename, not the image service. */
-  logo?: StoryblokAsset;
   nom_atelier?: string;
   email?: string;
   telephone?: string;
@@ -169,18 +163,16 @@ export interface GlobalSettings extends SbBlokData {
   reseaux_sociaux?: SocialLinkBlok[];
 }
 
-/** Resolved programme label + story slug + normalized hex colour. */
+/** Resolved programme label + story slug. */
 export interface ProgrammeSummary {
   nom: string;
   slug?: string;
-  couleur?: string;
 }
 
-/** Programme surfaced to the UI: label, story slug (colour-map key + deep-link), hex colour. */
+/** Programme surfaced to the UI: label + story slug (filter hook + deep-link). */
 export interface ProgrammeLink {
   nom: string;
   slug: string;
-  couleur?: string;
 }
 
 /** Lightweight project view-model for the grid, Index table, related strip and cards. */

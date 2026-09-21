@@ -47,40 +47,43 @@ const infosHasContent =
     {hasRelated && <ProjectRelatedBand id="project-similaires" related={related} />}
 
     <div class="project-hud__bar">
-      <div class="project-hud__pills">
-        {
-          infosHasContent && (
-            <button
-              type="button"
-              class="pill pill--infos"
-              aria-expanded="false"
-              aria-controls="project-infos"
-              data-overlay-pill="infos"
-            >
-              <span class="pill__badge" aria-hidden="true" /> infos
-            </button>
-          )
-        }
-        {
-          hasRelated && (
-            <button
-              type="button"
-              class="pill pill--similaires"
-              aria-expanded="false"
-              aria-controls="project-similaires"
-              data-overlay-pill="similaires"
-            >
-              <span class="pill__badge" aria-hidden="true" /> projets similaires
-            </button>
-          )
-        }
-      </div>
       <div class="project-hud__card">
         <ProjectHudCard
           titre={blok.titre}
           ville={blok.ville}
           programme={blok.description_programme}
-        />
+        >
+          {
+            (infosHasContent || hasRelated) && (
+              <Fragment slot="actions">
+                {infosHasContent && (
+                  <button
+                    type="button"
+                    class="pill"
+                    aria-expanded="false"
+                    aria-controls="project-infos"
+                    data-overlay-pill="infos"
+                  >
+                    <span class="pill__badge" aria-hidden="true" />
+                    <span class="pill__label">informations</span>
+                  </button>
+                )}
+                {hasRelated && (
+                  <button
+                    type="button"
+                    class="pill"
+                    aria-expanded="false"
+                    aria-controls="project-similaires"
+                    data-overlay-pill="similaires"
+                  >
+                    <span class="pill__badge" aria-hidden="true" />
+                    <span class="pill__label">projets en relation</span>
+                  </button>
+                )}
+              </Fragment>
+            )
+          }
+        </ProjectHudCard>
       </div>
     </div>
   </div>
@@ -98,15 +101,19 @@ const infosHasContent =
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    /* Bounds for the info/related overlays. The card is hidden while an overlay is open, so the
-       bottom only needs to clear the active pill + counter row. */
-    --band-top: calc(var(--header-h-mobile) + var(--space-3));
-    --band-bottom: 5.5rem;
+    /* Bounds for the info/related overlays. While one is open the card is stripped back to the
+       bare "−" disc, so the bottom only needs to clear that pill + the counter row. */
+    --band-top: calc(var(--nav-clear) + var(--space-3));
+    /* One source for the bar's bottom reservation: the ‹ X/N › cluster shares this corner, so the
+       bar clears it, and the overlay band in turn clears the bar — otherwise an open panel runs
+       under the close disc, which sits above it and would swallow taps on the panel. */
+    --hud-bar-bottom: calc(2.75rem + max(var(--space-4), env(safe-area-inset-bottom)));
+    --band-bottom: calc(var(--hud-bar-bottom) + 2.75rem + var(--space-3));
     --band-x: var(--space-4);
   }
 
-  /* Bottom bar: card centered above the pills row on mobile; pills · card · (counter) on desktop.
-     z-index keeps pills clickable above an open overlay; the carousel counter sits above all of it. */
+  /* Bottom bar: holds the cartouche, which now carries the disclosure buttons as its last row.
+     z-index keeps them clickable above an open overlay; the carousel counter sits above all of it. */
   .project-hud__bar {
     position: absolute;
     left: 0;
@@ -117,7 +124,7 @@ const infosHasContent =
     flex-direction: column;
     gap: var(--space-3);
     padding: var(--space-4);
-    padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+    padding-bottom: var(--hud-bar-bottom);
     pointer-events: none;
   }
   .project-hud__bar > * {
@@ -125,38 +132,31 @@ const infosHasContent =
   }
 
   .project-hud__card {
-    order: 1;
     align-self: center;
     max-width: 100%;
   }
-  .project-hud__pills {
-    order: 2;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    /* Keep the pills clear of the bottom-right counter on narrow screens. */
-    padding-right: 4.5rem;
-    pointer-events: none;
-  }
-  .project-hud__pills > * {
-    pointer-events: auto;
+  .project-hud[data-overlay-open] .project-hud__card {
+    align-self: start;
   }
 
+  /* A cartouche cell, not a floating pill: the cell's own hairlines come from .hud-card__actions. */
   .pill {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: var(--space-2);
-    min-height: 44px;
-    padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
+    width: 100%;
+    min-height: var(--touch-min);
+    padding: var(--space-2) var(--space-3);
     border: 0;
-    border-radius: 999px;
     background: none;
-    color: var(--hud-ink);
+    color: var(--panel-ink);
     font: inherit;
+    font-family: var(--font-serif);
+    font-style: italic;
     font-size: 0.9375rem;
+    text-align: left;
     cursor: pointer;
     touch-action: manipulation;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
   }
   /* The +/− sign is drawn as two centered bars (pixel-perfect, unlike a text glyph); the vertical
      bar collapses when the pill is expanded, so "+" becomes "−" purely from aria-expanded. */
@@ -166,6 +166,7 @@ const infosHasContent =
     width: 1.75rem;
     height: 1.75rem;
     border-radius: 50%;
+    background: var(--color-coral);
   }
   .pill__badge::before,
   .pill__badge::after {
@@ -175,7 +176,6 @@ const infosHasContent =
     left: 50%;
     transform: translate(-50%, -50%);
     background: var(--color-paper);
-    border-radius: 1px;
     transition: transform var(--transition);
   }
   .pill__badge::before {
@@ -189,18 +189,14 @@ const infosHasContent =
   .pill[aria-expanded='true'] .pill__badge::after {
     transform: translate(-50%, -50%) scaleY(0);
   }
-  .pill--infos .pill__badge {
-    background: var(--color-coral);
-  }
-  .pill--similaires .pill__badge {
-    background: var(--couleur-bleu-clair);
-  }
 
-  /* While an overlay is open, take the persistent card and the other pill out of view so nothing
-     overlaps the panels — only the active pill (now a "−") stays, as the close affordance. The card
-     is hidden visually but kept in the a11y tree (sr-only, not display:none) so its <h1> — the page's
-     only heading — is never removed while an overlay is open. */
-  .project-hud[data-overlay-open] .project-hud__card {
+  /* The card's own open-state rules live in ProjectHudCard.astro, which owns those class names. */
+  .project-hud[data-overlay-open] .pill[aria-expanded='false'] {
+    display: none;
+  }
+  /* Clipped, not display:none — the label is the button's accessible name, and the button survives
+     the open state as the close affordance. `aria-expanded` conveys that activating it collapses. */
+  .project-hud[data-overlay-open] .pill__label {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -210,36 +206,42 @@ const infosHasContent =
     clip-path: inset(50%);
     white-space: nowrap;
   }
-  .project-hud[data-overlay-open] .pill[aria-expanded='false'] {
-    display: none;
+  .project-hud[data-overlay-open] .pill {
+    /* Label gone, so the button shrinks to its disc — keep a full touch target around it, aligned left
+       so the disc itself stays where the board puts it. */
+    width: auto;
+    min-width: var(--touch-min);
+    justify-content: flex-start;
+    padding: 0;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
   }
 
   @media (min-width: 48rem) {
     .project-hud {
-      /* The desktop header's left zone is two *stacked* outlined buttons (Atelier / Projets), so it
-         renders taller than --header-h; budget for that real height plus a gap so the info/related
-         bands clear the floating transparent nav instead of tucking under it. */
-      --band-top: calc(var(--header-h) + var(--space-8) + var(--space-6));
-      --band-bottom: 5.5rem;
+      /* The brand block is the logotype (--nav-clear lands on its bottom edge) plus the two stacked
+         cartouches hanging below it, so the bands have to clear roughly 6rem more than the logotype
+         alone — otherwise the info/related panels tuck under the floating nav in column 1. */
+      --band-top: var(--nav-brand-h);
+      --hud-bar-bottom: var(--space-6);
       --band-x: var(--space-6);
     }
-    /* pills → col 1, card → col 2 (centered); col 3 stays empty to reserve the counter's corner. */
+    /* Cartouche centred, with the outer columns reserving the bottom-right counter's corner. */
     .project-hud__bar {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: end;
       gap: var(--space-4);
       padding: var(--space-6);
+      padding-bottom: var(--hud-bar-bottom);
     }
     .project-hud__card {
-      order: 0;
+      grid-column: 2;
       justify-self: center;
     }
-    .project-hud__pills {
-      order: 0;
+    /* Open: the lone "−" returns to the bottom-left corner the board puts it in. */
+    .project-hud[data-overlay-open] .project-hud__card {
+      grid-column: 1;
       justify-self: start;
-      align-self: end;
-      padding-right: 0;
     }
   }
 </style>

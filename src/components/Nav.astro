@@ -2,23 +2,15 @@
 import SocialLinks from './SocialLinks.astro';
 import MobilePanel from './MobilePanel.astro';
 import type { GlobalSettings } from '../types/storyblok';
+import { LOGO_SRC } from '../lib/brand';
 
 interface Props {
   settings: GlobalSettings | null;
-  /** Page accent: 'coral' on the immersive home (repo corail logo), 'violet' elsewhere. */
-  accent?: 'coral' | 'violet';
 }
 
-const { settings, accent = 'violet' } = Astro.props;
+const { settings } = Astro.props;
 const social = settings?.reseaux_sociaux ?? [];
 const nomAtelier = settings?.nom_atelier ?? 'LaMinga';
-// Logo per the charte: the corail variant ships in the repo for the immersive home header; the
-// violet variant is editor-managed in Storyblok (global_settings.logo), with a repo violet
-// fallback (also for an empty/whitespace Storyblok value — `??` alone won't catch `''`). Rendered
-// from the raw filename/path (the image service would rasterize the SVG).
-const storyblokLogo = settings?.logo?.filename?.trim();
-const logo =
-  accent === 'coral' ? '/logo/logo-corail.svg' : storyblokLogo || '/logo/logo-violet.svg';
 
 // Active section from the current path — a project detail belongs to the Projets section.
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
@@ -32,18 +24,26 @@ const activeSection: 'projets' | 'atelier' | null =
 
 <header class="site-header">
   <nav class="nav" aria-label="Navigation principale">
-    <div class="nav__left">
-      <MobilePanel settings={settings} activeSection={activeSection} />
+    {
+      /* Brand column (grid column 1 on the V3 boards): logotype, then the two cartouches stacked
+        directly beneath it — Projets first, matching the boards' reading order. */
+    }
+    <div class="nav__brand">
+      <a href="/" class="nav__logo">
+        {
+          /* High priority + the <head> preload: the logotype is above the fold on every page, and at
+          the default image priority it is fetched behind the stylesheets and the hero.
+          The alt is the link's only accessible name — an aria-label on the <a> as well would give
+          screen readers two competing names for one link. */
+        }
+        <img
+          class="nav__logo-img"
+          src={LOGO_SRC}
+          alt={`${nomAtelier} — accueil`}
+          fetchpriority="high"
+        />
+      </a>
       <ul class="nav__buttons">
-        <li>
-          <a
-            class="nav__btn brand-box"
-            href="/atelier"
-            aria-current={activeSection === 'atelier' ? 'page' : undefined}
-          >
-            Atelier
-          </a>
-        </li>
         <li>
           <a
             class="nav__btn brand-box"
@@ -53,52 +53,66 @@ const activeSection: 'projets' | 'atelier' | null =
             Projets
           </a>
         </li>
+        <li>
+          <a
+            class="nav__btn brand-box"
+            href="/atelier"
+            aria-current={activeSection === 'atelier' ? 'page' : undefined}
+          >
+            Atelier
+          </a>
+        </li>
       </ul>
     </div>
 
-    <a href="/" class="nav__logo" aria-label={`${nomAtelier} — accueil`}>
-      <img class="nav__logo-img" src={logo} alt={nomAtelier} />
-    </a>
-
     <div class="nav__right">
       <SocialLinks links={social} class="nav__social" />
+      <MobilePanel settings={settings} activeSection={activeSection} />
     </div>
   </nav>
 </header>
 
 <style>
+  /* Two zones on one row: the brand column hugs the left page margin, the social/burger cluster the
+     right. `align-items: start` keeps both pinned to the top edge while the brand column grows
+     downward with its cartouches — the V3 boards put the logotype and the menu in one left stack. */
   .nav {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
+    grid-template-columns: 1fr auto;
+    align-items: start;
     gap: var(--space-4);
-    min-height: var(--header-h-mobile);
-    padding: var(--space-2) var(--space-4);
+    padding: var(--nav-pad-y) var(--page-x);
   }
 
-  /* Logo — centered, links home. The official SVG already carries the boxed-outline mark, so the
-     wrapper stays borderless (no double box). */
+  .nav__brand {
+    grid-column: 1;
+    justify-self: start;
+    display: flex;
+    flex-direction: column;
+    /* Cartouches hang directly off the logotype's bottom rule, as drawn. */
+    gap: 0;
+    min-width: 0;
+  }
+
+  /* The official SVG already carries the boxed outline, so the wrapper stays borderless. */
   .nav__logo {
-    grid-column: 2;
-    justify-self: center;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     text-decoration: none;
     line-height: 1;
   }
+  /* The ratio is what reserves the logotype's box before the SVG arrives. Without it the sizing is
+     `auto` in one dimension at every breakpoint (height here, width from 48rem), so the <img> is
+     zero-sized until the file lands and the logotype pops in after the rest of the header — and the
+     header's height changes under the page. Same viewBox ratio --nav-clear is built on. */
   .nav__logo-img {
-    height: 2.25rem;
+    display: block;
+    height: var(--nav-logo-h);
     width: auto;
+    aspect-ratio: var(--nav-logo-ratio);
   }
 
-  /* Left = burger (mobile) / stacked buttons (desktop); right = social (desktop). */
-  .nav__left {
-    grid-column: 1;
-    justify-self: start;
-  }
   .nav__right {
-    grid-column: 3;
+    grid-column: 2;
     justify-self: end;
     display: flex;
     align-items: center;
@@ -109,20 +123,22 @@ const activeSection: 'projets' | 'atelier' | null =
     display: none;
   }
 
-  /* Stacked outlined nav buttons — hidden on mobile (the burger takes over). */
+  /* Stacked outlined nav cartouches — hidden on mobile (the burger takes over). */
   .nav__buttons {
     display: none;
     list-style: none;
     margin: 0;
     padding: 0;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: 0;
   }
   /* Box outline comes from the .brand-box utility (open-corner edges). Set background-color (not the
      background shorthand) so hover/active fills don't wipe the edge gradients. */
   .nav__btn {
-    display: block;
-    min-width: 7.5rem;
+    /* min-height, not padding alone: --nav-brand-h reserves exactly two of these. */
+    display: flex;
+    align-items: center;
+    min-height: var(--nav-cartouche-h);
     padding: var(--space-1) var(--space-3);
     color: var(--accent);
     font-size: 0.9375rem;
@@ -133,7 +149,7 @@ const activeSection: 'projets' | 'atelier' | null =
     transition: color var(--transition);
   }
   .nav__btn:hover {
-    --brand-box-fill: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
+    --brand-box-fill: var(--brand-box-fill-hover);
   }
   .nav__btn[aria-current='page'] {
     --brand-box-fill: var(--color-beige);
@@ -141,29 +157,32 @@ const activeSection: 'projets' | 'atelier' | null =
     font-weight: 600;
   }
 
-  /* Desktop: reveal the three-zone header. */
+  /* Tablet and up: the cartouches take over from the burger, and the logotype fills the brand
+     column — so the column width alone drives its height, which is what --nav-clear reads to place
+     the content below it (tokens.css). */
   @media (min-width: 48rem) {
-    .nav {
-      min-height: var(--header-h);
-      padding: var(--space-3) var(--space-6);
-      align-items: start;
-    }
     .nav__buttons {
       display: flex;
     }
     .nav__btn {
-      min-width: 9rem;
       padding: var(--space-2) var(--space-4);
-      font-size: 1.125rem;
+      font-size: 1.0625rem;
     }
     .nav__right :global(.nav__social) {
       display: flex;
     }
-    .nav__logo {
-      align-self: start;
+    .nav__brand {
+      width: var(--nav-brand-w);
     }
     .nav__logo-img {
-      height: 3.5rem;
+      height: auto;
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .nav__btn {
+      font-size: 1.125rem;
     }
   }
 </style>

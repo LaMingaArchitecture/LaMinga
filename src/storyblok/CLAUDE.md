@@ -21,7 +21,7 @@ le schéma `storyblok/content-model.md`.
   HTML brut concaténé.
 - **Images** : service Storyblok via `sbImage()` (`src/lib/image.ts`) — `/m/{w}x{h}/` +
   `filters:format(webp)`. Toujours un `alt` (fallback raisonnable).
-- **SVG** (logo, `social_link.icone`, `engagement.icone`) : rendus depuis le **filename brut**, PAS
+- **SVG** (`social_link.icone`, `engagement.icone`) : rendus depuis le **filename brut**, PAS
   `sbImage()` (qui rasterise en webp). Icône décorative accompagnée d'un texte → `alt=""`.
   - **Exception réseaux sociaux** : Instagram et LinkedIn sont rendus par des composants
     `currentColor` du dépôt (`src/components/icons/`), thémés par `--accent` ; `social_link.icone`
@@ -33,11 +33,11 @@ autoplay loop playsinline>` + `<track kind="captions" />` (a11y lint). Hôtes au
   manquant (404 / liste vide / datasource absente) → `null`/`[]` + placeholder `ContentNotice`
   (le build dégrade sans échouer) ; les erreurs réseau/401/5xx remontent et font échouer le build.
   - `version` : `draft` (preview) vs `published` (prod) — déjà géré par `storyblokVersion`.
-  - Relations : `programme` (couleur) + `projets_lies` résolues via `PROJECT_RELATIONS`,
+  - Relations : `programme` + `projets_lies` résolues via `PROJECT_RELATIONS`,
     `home_slide.projet` via `HOME_RELATIONS` (constantes exportées de `content.ts`, réutilisées par
     `preview/[...slug].astro`). Narrowers purs : `resolveProgramme` / `resolveRelated`.
   - Filtre projets : datasource `thematique` (`getThematiques`), jamais de valeurs en dur ;
-    programmes = stories `programme` (nom + couleur).
+    programmes = stories `programme` (nom).
 - **Blocs de page** (`home_page`, `project_list`) : `home_page` rend son `carrousel` de `home_slide`
   via `StoryblokComponent` ; `project_list` charge la grille + les thématiques via
   `getProjectSummaries`/`getThematiques`.

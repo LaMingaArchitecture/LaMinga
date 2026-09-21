@@ -1,25 +1,29 @@
-# Modèle de contenu Storyblok — LaMinga (v2)
+# Modèle de contenu Storyblok — LaMinga (schéma v3)
 
 Source de vérité du schéma. Créé dans l'espace via le **serveur MCP Storyblok**. Les **noms
 techniques sont en `snake_case`** et correspondent exactement aux clés de `components` dans
 `astro.config.mjs` et aux discriminants `component` des types (`src/types/storyblok.ts`).
 
-Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga Templates V1**.
+Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga Templates V3**.
 
 ## Datasource
 
 - **`thematique`** (slug `thematique`) — alimente la 2ᵉ ligne de filtres de la page Projets.
-  Entrées (name → value) : Restructuration → `restructuration`, Sur-élévation → `sur-elevation`,
-  Réemploi → `reemploi` (liste évolutive). L'affichage **« Liste »** est un basculement de vue, **pas**
+  Entrées (name → value) : Réemploi → `reemploi`, Restructuration → `restructuration`,
+  Biosourcé → `biosource`, Ruralité → `ruralite`, Densité urbaine → `densite-urbaine` (liste
+  évolutive). L'affichage **« Liste »** est un basculement de vue, **pas**
   une entrée de datasource.
 
 > Les valeurs sont gérées par les éditeurs ; le code n'en code aucune en dur.
 
 ## Classification à deux niveaux
 
-- **Programme** = catégorie unique par projet, **avec sa couleur** (1ʳᵉ ligne de filtres). Les 6
-  programmes sont des stories `programme` : Logement, Équipement, Patrimoine, Activité, Aménagement,
-  Programmation.
+- **Programme** = catégorie unique par projet (1ʳᵉ ligne de filtres), story `programme`. La charte
+  V3 a **supprimé la couleur par programme** : les planches peignent toutes les chips sélectionnées
+  du même corail et retirent la bordure colorée des vignettes. Le champ `couleur` n'est donc plus
+  lu par le code.
+  Taxonomie V3 (8 programmes) : Habitat social, Multi-sites, Programmation, Enseignement,
+  Vitivinicole, Équipement, Commerce, Restauration.
 - **Thématiques** = plusieurs par projet, depuis la datasource `thematique` (2ᵉ ligne de filtres).
 
 ## Contrat d'URL de la page Projets
@@ -31,21 +35,23 @@ précédents**. Paramètres indépendants et combinables (vocabulaire FR, cohér
 
 | Paramètre            | Valeur                                                 | Effet                          |
 | -------------------- | ------------------------------------------------------ | ------------------------------ |
-| `programme=<slug>`   | slug de la story `programme` (ex. `logement`)          | pré-sélectionne un programme   |
+| `programme=<slug>`   | slug de la story `programme` (ex. `habitat-social`)    | pré-sélectionne un programme   |
 | `thematique=<value>` | `value` de la datasource `thematique` (ex. `reemploi`) | pré-sélectionne une thématique |
 | `vue=index`          | —                                                      | ouvre la vue Liste (tableau)   |
 
-Exemple combiné : `/projets?vue=index&programme=logement`. Une valeur absente ou inconnue est
+Exemple combiné : `/projets?vue=index&programme=habitat-social`. Une valeur absente ou inconnue est
 ignorée (état par défaut : Vignettes, « Tous »). La **Recherche** (champ texte) filtre en direct mais
 reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté dans
 `src/components/ProjectExplorer.astro`.
 
 ### `programme` (content type — stories sous `programmes/`)
 
-| Champ     | Type Storyblok               | Config                                          |
-| --------- | ---------------------------- | ----------------------------------------------- |
-| `nom`     | text                         | requis                                          |
-| `couleur` | custom `native-color-picker` | couleur du programme (filtre, bordures, survol) |
+| Champ | Type Storyblok | Config |
+| ----- | -------------- | ------ |
+| `nom` | text           | requis |
+
+> Le champ `couleur` a été retiré du content type : la charte V3 abandonne la couleur par
+> programme.
 
 ### `media_slide` (bloc imbriqué — slide du carrousel projet)
 
@@ -147,9 +153,11 @@ avec son fond propre. Champs média optionnels : une section au contenu vide est
 
 ### `global_settings` (content type — singleton, story `config`)
 
+> Le champ `logo` existe encore dans le content type mais **n'est plus lu** — à retirer. La charte
+> V3 n'a qu'un seul traitement du logotype, servi depuis le dépôt (`src/lib/brand.ts`).
+
 | Champ              | Type     | Config                  |
 | ------------------ | -------- | ----------------------- |
-| `logo`             | asset    | SVG (rendu brut)        |
 | `nom_atelier`      | text     | « LaMinga atelier… »    |
 | `email`            | text     |                         |
 | `telephone`        | text     |                         |
@@ -211,7 +219,7 @@ repli pour d'autres réseaux.
 | `home`                | `home_page`       | accueil (`/`)                                  |
 | `projets` (startpage) | `project_list`    | page Projets (`/projets`)                      |
 | `projets/<slug>`      | `project`         | fiches projet (≥ 2 pour tester `projets_lies`) |
-| `programmes/<slug>`   | `programme`       | 6 programmes (couleur chacun)                  |
+| `programmes/<slug>`   | `programme`       | les programmes (filtres de la page Projets)    |
 | `atelier`             | `atelier_page`    | page Atelier (`/atelier`)                      |
 | `config`              | `global_settings` | réglages globaux                               |
 

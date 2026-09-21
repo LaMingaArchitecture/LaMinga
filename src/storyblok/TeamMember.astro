@@ -10,14 +10,16 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
 <figure class="team-member" {...storyblokEditable(blok)}>
   {
     blok.photo?.filename && (
-      <img
-        class="team-member__photo"
-        src={sbImage(blok.photo.filename, '500x500')}
-        alt={blok.photo.alt ?? blok.nom}
-        width="500"
-        height="500"
-        loading="lazy"
-      />
+      <div class="team-member__frame brand-box">
+        <img
+          class="team-member__photo"
+          src={sbImage(blok.photo.filename, '500x500')}
+          alt={blok.photo.alt ?? blok.nom}
+          width="500"
+          height="500"
+          loading="lazy"
+        />
+      </div>
     )
   }
   <figcaption class="team-member__caption">
@@ -34,15 +36,23 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
     flex-direction: column;
     gap: var(--space-3);
   }
-  /* Black-and-white via CSS so colour uploads still render greyscale; coral frame from the design. */
+  /* The board frames each portrait in the corail cartouche — an open-corner rule standing clear of
+     the photo, not a border hugging it. The panel colour shows through, so the .brand-box paper
+     ground is cleared rather than inherited. */
+  .team-member__frame {
+    --brand-box-line: var(--color-coral);
+    background-color: transparent;
+    padding: var(--space-3);
+  }
+  /* Black-and-white via CSS so colour uploads still render greyscale. */
   .team-member__photo {
+    display: block;
     width: 100%;
     /* height:auto lets aspect-ratio drive the square; without it the width/height attrs (CLS hints)
        set an explicit height that combines with width:100% and distorts the crop. */
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: cover;
-    border: 2px solid var(--color-coral);
     filter: grayscale(100%);
   }
   .team-member__caption {
@@ -50,13 +60,15 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
     flex-direction: column;
     gap: 2px;
   }
+  /* The board draws name and role corail; not adopted — at this size they are running text, which
+     corail cannot carry on a light panel (see tokens.css). */
   .team-member__name {
-    color: var(--color-coral);
+    color: var(--panel-ink);
     font-weight: 700;
     line-height: 1.2;
   }
   .team-member__role {
-    color: var(--color-coral);
+    color: var(--panel-ink);
     font-family: var(--font-serif);
     font-style: italic;
   }

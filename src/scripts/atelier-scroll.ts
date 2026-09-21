@@ -144,9 +144,57 @@ const setupHeaderState = (root: HTMLElement): void => {
   update();
 };
 
+// Hand the below-the-fold section backgrounds their real source once the hero has had the network
+// to itself. They ship with a blank placeholder because `loading="lazy"` does not hold them back:
+// the backgrounds are overscanned for the parallax (`top: -15%; height: 130%`), so the next
+// section's box crosses the fold and the browser treats it as near-viewport — while the section's
+// own `overflow: hidden` means not one pixel of it is on screen. Fetched alongside the hero
+// they cost the LCP over a second, for nothing visible.
+const LAZY_BG_CEILING = 2000;
+const setupLazyBg = (root: HTMLElement, sections: HTMLElement[]): void => {
+  const hydrate = (img: HTMLImageElement): void => {
+    const { src, srcset } = img.dataset;
+    if (!src) return;
+    delete img.dataset.src;
+    delete img.dataset.srcset;
+    if (srcset) img.srcset = srcset;
+    img.src = src;
+  };
+  let started = false;
+  const start = (): void => {
+    if (started) return;
+    started = true;
+    // Root on whichever box actually scrolls. rootMargin only expands the ROOT's rect, while the
+    // target stays clipped by intermediate scrollers — so a viewport-rooted observer buys zero
+    // lead time on the desktop snap frame, where the article is the scroller, not the window.
+    const scroller = root.scrollHeight > root.clientHeight + 1 ? root : null;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          io.unobserve(entry.target);
+          entry.target.querySelectorAll<HTMLImageElement>('img[data-src]').forEach(hydrate);
+        });
+      },
+      // A viewport of lead time, so the next section's photo is in place before it snaps in.
+      { root: scroller, rootMargin: '100% 0px' },
+    );
+    sections.forEach((section) => io.observe(section));
+  };
+  // `load` is the signal we want (the hero is done), but it is hostage to every other subresource
+  // on the page — a stalled image holds it forever and the backgrounds would never arrive. Race it.
+  if (document.readyState === 'complete') start();
+  else {
+    window.addEventListener('load', start, { once: true });
+    window.setTimeout(start, LAZY_BG_CEILING);
+  }
+};
+
 const enhance = (root: HTMLElement): void => {
   const sections = Array.from(root.querySelectorAll<HTMLElement>('[data-atelier-sec]'));
   if (sections.length === 0) return;
+  // First: the backgrounds ship blank, so this has to run even if a later setup throws.
+  setupLazyBg(root, sections);
   // Reveal + parallax styles apply only once enhanced, so with no JS everything stays visible.
   root.classList.add('atelier--enhanced');
   setupReveal(sections);

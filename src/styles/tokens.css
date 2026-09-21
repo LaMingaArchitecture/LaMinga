@@ -1,38 +1,66 @@
 /* ============================================================================
    LaMinga — charte graphique / design tokens (single source of truth).
 
-   Source: LaMinga_Palette chromatique_01.pdf + LaMinga Templates V2.pdf.
+   Source: LaMinga_Charte graphique_EXE.pdf + templatesSW LaMinga V3 (27 boards).
    Every colour, font, spacing and border on the site comes from a token below —
-   no component may hardcode a hex or font-family. Editors set programme colours
-   in Storyblok (rendered via the [data-programme] map in BaseLayout).
+   no component may hardcode a hex or font-family. The charte V3 retired the per-programme colour:
+   every selected filter chip takes the same corail fill.
 
    PALETTE (charte name — hex — role)
      Beige clair       #f9f7f2  page background
-     Rouge corail      #ff6c4f  brand corail: home accent (logo/social/links/arrows) + programme
-                                Patrimoine fill. Charte value per client (below WCAG AA on light).
-     Violet aubergine  #7e4080  inner-page accent: nav, logo, table text, captions
-     Violet nuit       #32255b  primary dark text
-     Violet vif        #a785ff  secondary violet; programme Activité (proposed)
-     Vert citron       #d5ee6e  programme Équipement
-     Olive             #bbbd2b  programme Aménagement (proposed)
-     Turquoise         #11a3c2  programme Logement
-     Bleu clair        #bbd5fd  translucent info panels
-     Taupe clair       #d0b8b0  active nav tint, thématique selection, Projets bg @10%
-     Rose              #fec9d7  programme Programmation (proposed)
-     Gris              #c6c6c6  neutral
-     Jaune fluo        #ffff00  annotation only (not used in UI)
+     Rouge corail      #ff6c4f  logotype, home accent (social/links/arrows), display titles only.
+                                Below AA on every light ground here — 1.87:1 on bleu clair, 2.61:1
+                                on beige, ~2.19:1 over photos — so it never carries running text.
+     Violet aubergine  #7e4080  inner-page accent + all panel ink and hairlines
+     Violet nuit       #32255b  primary dark text; label on a selected (corail) chip
+     Bleu clair        #bbd5fd  panels: project HUD, info pop-up, related band, atelier
+     Taupe clair       #d0b8b0  active nav tint + related-band label ground
+     Rose              #fec9d7  selected thématique chip fill
+     Gris / Violet vif / Vert citron / Olive / Turquoise / Jaune fluo — in the charte, unused by
+                              the UI. The hairline grey drawn on screen is --color-line #d8d0cc, a
+                              warm neutral off the charte, kept because it reads on beige.
 
-   TYPOGRAPHY
-     Helvetica (system stack)      UI, titles, body — the .ttc is not embedded.
-     Self Modern italic (serif)    accent labels: filter row 2, "Titre – Ville" captions,
-                                   table headers, footer labels. Self Modern is a *trial* font;
-                                   pending a confirmed licence we self-host the OFL didone
-                                   Playfair Display Italic as a stand-in (font-display: swap).
+   TYPOGRAPHY (charte V3 § 3.1)
+     Sora            UI, titles, body. Self-hosted variable face (wght 100–800, latin subset); the
+                     boards use Light 300 / Regular 400 / SemiBold 600 / Bold 700, hence variable.
+     Self Modern     accent labels (filter row 2, "Titre – Ville" captions, table headers, footer).
+     italic          The delivered face is a *trial*, and carries only 93 glyphs — î ô ç œ « » … €
+                     are absent, so « Maîtrise d'ouvrage » cannot render. Until a licence is bought
+                     we self-host OFL Playfair Display Italic as a stand-in.
+     Roboto          prescribed by the charte for running text but absent from all 27 boards, where
+                     body copy is Sora — hence not loaded.
    ============================================================================ */
 
-/* Self-hosted OFL stand-in for Self Modern italic (subset: Latin + French). Self-hosted only —
-   the strict prod CSP allows `font-src 'self'`, no external font CDN. Swap this face for the
-   licensed Self Modern woff2 once confirmed; the --font-serif stack does not change. */
+/* Sora — the charte's primary face. Self-hosted only: the strict prod CSP allows `font-src 'self'`,
+   no external font CDN. One variable file (33 KB) covers the four weights the deck uses, against
+   ~60 KB as statics. Licence: public/fonts/OFL-Sora.txt (OFL 1.1, no Reserved Font Name). */
+@font-face {
+  font-family: 'Sora';
+  src: url('/fonts/sora-latin-variable.woff2') format('woff2-variations');
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-matched fallback for Sora, so the `swap` never reflows the page (CLS budget < 0.1). Derived
+   from Sora (upem 1000: x-height 534, ascender 970, descender 290) against Arial (x-height 0.5186em):
+   size-adjust = 534/1000 ÷ 0.5186; the ascent/descent overrides are divided by that same factor
+   because size-adjust rescales them in turn. */
+@font-face {
+  font-family: 'Sora Fallback';
+  src: local('Helvetica Neue'), local('Arial'), local('Liberation Sans');
+  size-adjust: 103%;
+  ascent-override: 94.2%;
+  descent-override: 28.2%;
+  line-gap-override: 0%;
+}
+
+/* Self-hosted OFL stand-in for Self Modern italic (subset: Latin + French). Swap this face for the
+   licensed Self Modern woff2 once purchased; the --font-serif stack does not change.
+   Licence: public/fonts/OFL-PlayfairDisplay.txt. */
 @font-face {
   font-family: 'Playfair Display';
   src: url('/fonts/playfair-italic.woff2') format('woff2');
@@ -52,11 +80,6 @@
   --couleur-olive: #bbbd2b;
   --couleur-turquoise: #11a3c2;
   --couleur-bleu-clair: #bbd5fd;
-  /* Deep blue derived from bleu-clair for panels that carry coral text: corail #ff6c4f is below
-     WCAG AA on the light bleu-clair (~1.9:1), and a *mid* blue would only lower it further, so the
-     text-bearing panels darken to this navy — corail then clears AA (~4.6:1) and body text flips
-     to paper (--panel-ink). Kept in the blue family per the charte. */
-  --couleur-bleu-nuit: #1f3053;
   --couleur-taupe-clair: #d0b8b0;
   --couleur-rose: #fec9d7;
   --couleur-gris: #c6c6c6;
@@ -67,15 +90,17 @@
   --color-ink: var(--couleur-violet-nuit);
   --color-violet: var(--couleur-violet-aubergine);
   --color-coral: var(--couleur-corail);
-  --color-beige: var(--couleur-taupe-clair); /* active-button tint + thématique tint */
-  /* Deep panel behind coral text (atelier panels + project HUD card). --panel-ink = light body
-     text on it; --panel-line = hairline separators. OPAQUE on purpose: these panels sit over
-     full-bleed photos/video with no scrim, so any translucency would let a bright backdrop lift the
-     effective luminance and drop corail below AA — solid navy keeps corail at 4.68:1 regardless. */
-  --panel-bg: var(--couleur-bleu-nuit);
-  --panel-ink: var(--couleur-beige-clair);
-  --panel-line: color-mix(in srgb, var(--couleur-beige-clair) 42%, transparent);
-  --color-beige-10: #f5f1eb; /* Projets/Index bg (#d0b8b0 @10% over beige clair) */
+  --color-beige: var(--couleur-taupe-clair); /* active-button tint + related-band label ground */
+  --color-thematique-fill: var(--couleur-rose); /* selected thématique chip */
+  /* Charte V3 panel (project HUD card, info pop-up, related band, atelier panels): bleu clair with
+     aubergine ink and hairlines — measured off the V3 boards, where labels and body copy are
+     aubergine and only display titles are corail. Aubergine on bleu clair is 4.79:1 (AA).
+     OPAQUE on purpose: these panels sit over full-bleed photos/video with no scrim, so a
+     translucent panel would make every contrast ratio a function of the editor's photo — the V3
+     atelier boards do draw them translucent, which is deliberately not adopted here. */
+  --panel-bg: var(--couleur-bleu-clair);
+  --panel-ink: var(--couleur-violet-aubergine);
+  --panel-line: var(--couleur-violet-aubergine);
   --color-line: #d8d0cc; /* thin borders for the boxed-cell aesthetic */
   --color-muted: #626262; /* secondary text — ≥4.5:1 on paper (WCAG AA) */
   --color-scrim: color-mix(in srgb, var(--couleur-violet-nuit) 55%, transparent); /* overlays */
@@ -84,23 +109,27 @@
   --accent: var(--color-violet);
 
   /* ---- Typography ------------------------------------------------------ */
-  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans: 'Sora', 'Sora Fallback', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-serif: 'Playfair Display', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
-  /* ---- Shape & spacing ------------------------------------------------- */
-  --radius: 6px;
+  /* ---- Shape & spacing -------------------------------------------------
+     No corner radius on any box the charte draws: it is an architectural-drawing language and every
+     frame is square. The only curves the UI draws are deliberate circles — the corail +/− disc and
+     the engagement ring — written `border-radius: 50%`. Third-party brand marks (the social icons)
+     keep their own trademarked geometry and are out of scope for this rule. */
   --border-w: 1px;
   --border: var(--border-w) solid var(--color-line);
-  --border-accent: var(--border-w) solid var(--accent);
+  /* Minimum touch target. One unit, in rem, so the hit area scales with the user's base font. */
+  --touch-min: 2.75rem;
   /* Structural separators between header / content / footer — visible, accent-tinted. */
   --border-rule: var(--border-w) solid color-mix(in srgb, var(--accent) 32%, transparent);
   /* Brand boxed element: a thin accent outline whose four edges stop just short of the corners,
      leaving them open (architectural-sketch look). Drawn as four edge strokes — see .brand-box in
-     global.css. When selected, the fill is inset by the same gap so the corners stay open.
-     Applied to the nav menu buttons + Liste table cells. */
+     global.css. When selected, the fill is inset by the same gap so the corners stay open. */
   --brand-box-gap: 3px;
   --brand-box-w: 1px;
   --brand-box-line: var(--accent);
+  --brand-box-fill-hover: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -109,15 +138,57 @@
   --space-6: 1.5rem;
   --space-8: 2rem;
 
+  /* ---- Page grid (charte V3) -------------------------------------------
+     The boards lay the whole site on 6 columns: the brand block (logotype + the Projets/Atelier
+     cartouches) owns column 1, the Projets filter chips own columns 2-6, and the footer cells span
+     all six. Measured off the V3 header board: 2.7% side margin, 14.4% column, 2.0% gutter.
+     --grid-col is viewport-based rather than container-based so that the header (out of flow) and
+     the Projets filters (in flow) resolve the same column width. */
+  --page-x: clamp(1rem, 2.7vw, 2.5rem);
+  --grid-gap: clamp(0.5rem, 1.95vw, 1.75rem);
+  --grid-col: calc((100vw - 2 * var(--page-x) - 5 * var(--grid-gap)) / 6);
+
+  /* ---- Nav metrics -----------------------------------------------------
+     The header is out of flow, so nothing in the page reacts to its size: these tokens ARE the
+     contract, and Nav.astro / MobilePanel.astro consume them rather than restating the numbers.
+     Changing a value here moves the header and the content that clears it together. */
+  --nav-pad-y: var(--space-2);
+  --nav-logo-h: 2.25rem;
+  --nav-burger-h: 2.75rem; /* also the 44px touch floor, and the tallest thing in the mobile band */
+  --nav-logo-ratio: 3.33325; /* public/logo/logo-laminga.svg viewBox 141.73 / 42.52 */
+  --nav-brand-w: 10rem; /* brand column: the header and the Projets filter indent share it */
+  --nav-cartouche-h: 2.75rem; /* min-height on .nav__btn, so --nav-brand-h stays true if type grows */
+  /* Room page content must leave for the header — on mobile the whole band, set by the burger. */
+  --nav-clear: calc(2 * var(--nav-pad-y) + var(--nav-burger-h));
+  /* Logotype + the cartouches below it. Content spanning column 1 (atelier panels, carousel recap,
+     project bands) clears this; content leaving column 1 free (the filters) clears --nav-clear. */
+  --nav-brand-h: var(--nav-clear);
+
   /* ---- Frame ----------------------------------------------------------- */
-  --header-h: 4.75rem;
-  --header-h-mobile: 3.75rem;
   --transition: 200ms ease;
 
   /* ---- z-index scale --------------------------------------------------- */
   --z-header: 100;
   --z-scrim: 200;
   --z-panel: 210;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --nav-pad-y: var(--space-3);
+    /* The burger is gone and the logotype fills the brand column, so the clearance becomes the
+       logotype's bottom edge — which is exactly where the cartouches, and the first filter row,
+       begin. The cartouches then hang below it into column 1. */
+    --nav-clear: calc(var(--nav-pad-y) + var(--nav-brand-w) / var(--nav-logo-ratio));
+    --nav-brand-h: calc(var(--nav-clear) + 2 * var(--nav-cartouche-h));
+  }
+}
+@media (min-width: 64rem) {
+  :root {
+    /* Desktop: the brand column *is* column 1 of the page grid. Below this the column stays fixed —
+       one sixth of an 834px viewport is ~7rem, which the filter chip labels cannot take. */
+    --nav-brand-w: var(--grid-col);
+  }
 }
 
 /* Accent theme per page (BaseLayout sets data-accent): corail on the immersive home, violet else. */

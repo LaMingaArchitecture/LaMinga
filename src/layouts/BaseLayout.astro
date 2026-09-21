@@ -5,7 +5,8 @@ import { STORYBLOK_VERSION } from 'astro:env/server';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Seo from '../components/Seo.astro';
-import { getSettings, getProgrammes, buildProgrammeColorCss } from '../lib/content';
+import { getSettings } from '../lib/content';
+import { LOGO_SRC } from '../lib/brand';
 import { professionalServiceJsonLd } from '../lib/seo';
 import type { PreloadImage } from '../lib/media';
 
@@ -60,15 +61,6 @@ const {
 } = Astro.props;
 
 const settings = await getSettings();
-// Programmes feed the site-wide programme→colour map below. getProgrammes is build-cached
-// (published), so the whole SSG build makes a single call.
-const programmes = await getProgrammes();
-
-// Programme colours are applied via a global <style> keyed on [data-programme="<slug>"] rather
-// than inline style="" attributes (which the strict hash-based CSP would block). This <style> is
-// emitted in <head> BEFORE Astro's CSP <meta>, so it is not governed by the meta-CSP and always
-// applies; buildProgrammeColorCss validates both interpolated values (slug whitelist + colorHex).
-const programmeColorCss = buildProgrammeColorCss(programmes);
 
 // The header floats over the hero on footer-less pages and sits as a solid bar otherwise; the
 // Atelier opts into a floating header while keeping its footer, so allow an explicit override.
@@ -118,6 +110,24 @@ const preconnectOrigins = preload.length
       siteName={settings?.nom_atelier ?? 'LaMinga'}
       jsonLd={allJsonLd}
     />
+    {
+      /* Sora carries every body string, so discovering it only after the CSS parses would cost a
+    visible swap. Preloaded ahead of the LCP image: it is 33 KB and same-origin, the image is not. */
+    }
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/sora-latin-variable.woff2"
+      crossorigin
+    />
+    {
+      /* The logotype is site chrome: it sits above the fold on every page but is only discovered
+    once the header markup parses, and an <img> starts at low priority until layout. Without this it
+    lands after the stylesheets and the hero, so the header draws its cartouches first and the
+    logotype drops in afterwards. Cached for every subsequent page. */
+    }
+    <link rel="preload" as="image" type="image/svg+xml" href={LOGO_SRC} fetchpriority="high" />
     {/* Warm the Storyblok image origin(s) the LCP uses before the hero fetch. */}
     {preconnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
     {
@@ -134,7 +144,6 @@ const preconnectOrigins = preload.length
       ))
     }
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {programmeColorCss && <style is:global set:html={programmeColorCss} />}
   </head>
   <body
     data-accent={accent}
@@ -142,7 +151,7 @@ const preconnectOrigins = preload.length
     data-immersive={immersive ? '' : undefined}
     data-immersive-scroll={immersiveScroll ? '' : undefined}
   >
-    <Nav settings={settings} accent={accent} />
+    <Nav settings={settings} />
     <main id="contenu">
       <slot />
     </main>

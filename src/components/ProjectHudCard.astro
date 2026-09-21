@@ -1,8 +1,9 @@
 ---
 /**
- * ProjectHudCard — the persistent bleu-clair project card pinned to the bottom HUD on every slide.
- * Mini-table: a title cell (the page's sole <h1>) beside "Ville" / "Programme" rows. Positioning is
- * owned by the .project-hud bar in Project.astro; this component owns only the card's appearance.
+ * ProjectHudCard — the persistent bleu-clair project cartouche pinned to the bottom HUD.
+ * Per the V3 board: a title cell (the page's sole <h1>) beside a stack of "Ville" / "Programme"
+ * rows and, as the last row, the disclosure buttons passed in through the `actions` slot.
+ * Positioning is owned by the .project-hud bar in Project.astro; this owns only the appearance.
  * "Programme" = description_programme (the one-line description), not the programme relation.
  */
 interface Props {
@@ -12,57 +13,158 @@ interface Props {
 }
 
 const { titre, ville, programme } = Astro.props;
+const hasActions = Astro.slots.has('actions');
 ---
 
-<div class="hud-card">
+<div class="hud-card brand-box">
   <h1 class="hud-card__title">{titre}</h1>
-  {
-    (ville || programme) && (
-      <dl class="hud-card__data">
-        {ville && (
-          <div class="hud-card__row">
-            <dt>Ville</dt>
-            <dd>{ville}</dd>
-          </div>
-        )}
-        {programme && (
-          <div class="hud-card__row">
-            <dt>Programme</dt>
-            <dd class="hud-card__desc">{programme}</dd>
-          </div>
-        )}
-      </dl>
-    )
-  }
+  <div class="hud-card__col">
+    {
+      (ville || programme) && (
+        <dl class="hud-card__data">
+          {ville && (
+            <div class="hud-card__row">
+              <dt>Ville</dt>
+              <dd>{ville}</dd>
+            </div>
+          )}
+          {programme && (
+            <div class="hud-card__row">
+              <dt>Programme</dt>
+              <dd class="hud-card__desc">{programme}</dd>
+            </div>
+          )}
+        </dl>
+      )
+    }
+    {
+      hasActions && (
+        <div class="hud-card__actions">
+          <slot name="actions" />
+        </div>
+      )
+    }
+  </div>
 </div>
 
 <style>
-  /* Deep navy card so the coral title/values clear WCAG AA (light bleu-clair failed on corail);
-     labels flip to paper (--panel-ink), hairlines to --panel-line. See tokens.css. */
+  /* Charte V3 cartouche: bleu clair ground, aubergine labels and hairlines. The project name stays
+     corail as a display title; the values are running text and take --panel-ink, which corail
+     cannot carry on a light panel (see tokens.css). background-color, not the shorthand — it would
+     wipe .brand-box's edge gradients. */
   .hud-card {
     pointer-events: auto;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     max-width: min(92vw, 34rem);
-    background: var(--panel-bg);
-    border: var(--border-w) solid var(--panel-line);
-    border-radius: var(--radius);
+    background-color: var(--panel-bg);
+    --brand-box-line: var(--panel-line);
   }
+  /* Internal dividers are drawn as inset pseudo-elements, not borders: the charte opens every
+     junction as well as every corner, so each one stops --brand-box-gap short of the frame. */
+  .hud-card__title,
+  .hud-card__row + .hud-card__row,
+  .hud-card__data + .hud-card__actions,
+  .hud-card__actions > :global(* + *) {
+    position: relative;
+  }
+  .hud-card__title::after,
+  .hud-card__row + .hud-card__row::before,
+  .hud-card__data + .hud-card__actions::before,
+  .hud-card__actions > :global(* + *)::before {
+    content: '';
+    position: absolute;
+    background: var(--panel-line);
+  }
+  /* Vertical: title | data column. */
+  .hud-card__title::after {
+    top: var(--brand-box-gap);
+    bottom: var(--brand-box-gap);
+    right: 0;
+    width: var(--brand-box-w);
+  }
+  /* Horizontal: between data rows, above the actions row, and — while the action cells are stacked
+     on mobile — between them too. */
+  .hud-card__row + .hud-card__row::before,
+  .hud-card__data + .hud-card__actions::before,
+  .hud-card__actions > :global(* + *)::before {
+    top: 0;
+    left: var(--brand-box-gap);
+    right: var(--brand-box-gap);
+    height: var(--brand-box-w);
+  }
+  /* Open state. The hook belongs to Project.astro's .project-hud, but every class it acts on is
+     this component's, so the rules live here and only the ancestor is :global — renaming an
+     internal cannot silently break the open state from another file. The card keeps its box: the
+     <h1> is the page's only heading, so it is clipped rather than display:none and stays in the
+     a11y tree. `background: none` also clears the .brand-box edge gradients, and the two dividers
+     are killed by name — a blanket `*::before` would wipe the bars drawing the badge's "−". */
+  :global(.project-hud[data-overlay-open]) .hud-card {
+    background: none;
+  }
+  :global(.project-hud[data-overlay-open]) .hud-card__actions::before,
+  :global(.project-hud[data-overlay-open]) .hud-card__actions > :global(* + *)::before {
+    display: none;
+  }
+  :global(.project-hud[data-overlay-open]) .hud-card__title,
+  :global(.project-hud[data-overlay-open]) .hud-card__data {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .hud-card__title {
     align-self: stretch;
     display: flex;
     align-items: center;
     margin: 0;
     padding: var(--space-3) var(--space-4);
-    border-right: var(--border-w) solid var(--panel-line);
     color: var(--color-coral);
+    /* 700 is the non-colour cue that carries the title when corail alone cannot. */
     font-family: var(--font-sans);
     font-weight: 700;
     font-size: 1.25rem;
   }
+  /* Column 2 stacks the data rows and, below them, the disclosure row — the V3 board's third row. */
+  .hud-card__col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
   .hud-card__data {
     margin: 0;
     display: grid;
+  }
+  /* Mobile: stack them, or « projets en relation » has ~7rem of column and truncates. They sit side
+     by side from tablet up, split by the same hairline as the rows above. */
+  .hud-card__actions {
+    display: flex;
+    flex-direction: column;
+  }
+  .hud-card__actions > :global(*) {
+    min-width: 0;
+  }
+  @media (min-width: 48rem) {
+    .hud-card__actions {
+      flex-direction: row;
+    }
+    .hud-card__actions > :global(*) {
+      flex: 1 1 0;
+    }
+    .hud-card__actions > :global(* + *)::before {
+      top: var(--brand-box-gap);
+      bottom: var(--brand-box-gap);
+      left: 0;
+      right: auto;
+      width: var(--brand-box-w);
+      height: auto;
+    }
   }
   /* Narrower label column than before so the value keeps enough room to wrap on word boundaries on
      mobile (avoids mid-word clamps like "Restru… / de…"). min-content floor lets the widest label
@@ -74,9 +176,7 @@ const { titre, ville, programme } = Astro.props;
     align-items: baseline;
     padding: var(--space-2) var(--space-4);
   }
-  .hud-card__row + .hud-card__row {
-    border-top: var(--border-w) solid var(--panel-line);
-  }
+
   .hud-card__row dt {
     font-family: var(--font-serif);
     font-style: italic;
@@ -84,14 +184,18 @@ const { titre, ville, programme } = Astro.props;
   }
   .hud-card__row dd {
     margin: 0;
-    color: var(--color-coral);
+    color: var(--panel-ink);
     font-size: 0.9375rem;
   }
-  /* The programme description can be long — cap it to two lines on the compact card. */
+  /* The programme description can be long — cap it to two lines on the compact card. French compound
+     words ("Restructuration") outrun the narrow value column on a 390px screen, and `overflow:hidden`
+     would clip one mid-glyph instead of wrapping it, so hyphenate (html lang="fr") and allow a break. */
   .hud-card__desc {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    hyphens: auto;
+    overflow-wrap: break-word;
   }
 </style>

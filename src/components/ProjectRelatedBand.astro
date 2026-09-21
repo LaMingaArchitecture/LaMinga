@@ -43,16 +43,11 @@ const { id, related, hidden = true } = Astro.props;
     grid-template-columns: 1fr;
     gap: var(--space-5);
     padding: var(--space-5);
-    /* Deep navy band to match the HUD card + info overlay; the light plan-masse vignettes pop on it
-       and the card captions flip to paper (rule below). */
+    /* Bleu clair band to match the HUD card + info overlay, per the V3 board. Captions keep the
+       page --accent (aubergine, 4.79:1 here) — no override needed. */
     background: var(--panel-bg);
-    border-radius: var(--radius);
     overflow-y: auto;
     overscroll-behavior: contain;
-  }
-  /* Card captions are --accent (violet) by default — unreadable on the navy band, so lift them. */
-  .related-band :global(.project-card--vignette .project-card__title) {
-    color: var(--panel-ink);
   }
   .related-band[hidden] {
     display: none;
@@ -61,10 +56,11 @@ const { id, related, hidden = true } = Astro.props;
     margin: 0;
     padding: var(--space-4);
     background: var(--color-beige);
-    border-radius: var(--radius);
     font-family: var(--font-serif);
     font-style: italic;
-    font-size: 1.375rem;
+    /* 24px is where WCAG's large-text threshold starts, and aubergine on taupe is 3.81:1 — enough
+       at 3:1, not at the 4.5:1 normal-text bar. Sizing up keeps the board's colour and passes. */
+    font-size: 1.5rem;
     line-height: 1.2;
     color: var(--color-violet);
   }
