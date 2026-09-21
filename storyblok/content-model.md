@@ -1,4 +1,4 @@
-# Modèle de contenu Storyblok — LaMinga (v2)
+# Modèle de contenu Storyblok — LaMinga (schéma v3)
 
 Source de vérité du schéma. Créé dans l'espace via le **serveur MCP Storyblok**. Les **noms
 techniques sont en `snake_case`** et correspondent exactement aux clés de `components` dans
@@ -9,8 +9,9 @@ Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga 
 ## Datasource
 
 - **`thematique`** (slug `thematique`) — alimente la 2ᵉ ligne de filtres de la page Projets.
-  Entrées (name → value) : Restructuration → `restructuration`, Sur-élévation → `sur-elevation`,
-  Réemploi → `reemploi` (liste évolutive). L'affichage **« Liste »** est un basculement de vue, **pas**
+  Entrées (name → value) : Réemploi → `reemploi`, Restructuration → `restructuration`,
+  Biosourcé → `biosource`, Ruralité → `ruralite`, Densité urbaine → `densite-urbaine` (liste
+  évolutive). L'affichage **« Liste »** est un basculement de vue, **pas**
   une entrée de datasource.
 
 > Les valeurs sont gérées par les éditeurs ; le code n'en code aucune en dur.
@@ -21,8 +22,8 @@ Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga 
   V3 a **supprimé la couleur par programme** : les planches peignent toutes les chips sélectionnées
   du même corail et retirent la bordure colorée des vignettes. Le champ `couleur` n'est donc plus
   lu par le code.
-  > Taxonomie V3 à appliquer côté Storyblok (8 programmes) : Habitat social, Multi-sites,
-  > Programmation, Enseignement, Vitivinicole, Équipement, Commerce, Restauration.
+  Taxonomie V3 (8 programmes) : Habitat social, Multi-sites, Programmation, Enseignement,
+  Vitivinicole, Équipement, Commerce, Restauration.
 - **Thématiques** = plusieurs par projet, depuis la datasource `thematique` (2ᵉ ligne de filtres).
 
 ## Contrat d'URL de la page Projets
@@ -34,11 +35,11 @@ précédents**. Paramètres indépendants et combinables (vocabulaire FR, cohér
 
 | Paramètre            | Valeur                                                 | Effet                          |
 | -------------------- | ------------------------------------------------------ | ------------------------------ |
-| `programme=<slug>`   | slug de la story `programme` (ex. `logement`)          | pré-sélectionne un programme   |
+| `programme=<slug>`   | slug de la story `programme` (ex. `habitat-social`)    | pré-sélectionne un programme   |
 | `thematique=<value>` | `value` de la datasource `thematique` (ex. `reemploi`) | pré-sélectionne une thématique |
 | `vue=index`          | —                                                      | ouvre la vue Liste (tableau)   |
 
-Exemple combiné : `/projets?vue=index&programme=logement`. Une valeur absente ou inconnue est
+Exemple combiné : `/projets?vue=index&programme=habitat-social`. Une valeur absente ou inconnue est
 ignorée (état par défaut : Vignettes, « Tous »). La **Recherche** (champ texte) filtre en direct mais
 reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté dans
 `src/components/ProjectExplorer.astro`.
@@ -49,8 +50,8 @@ reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté
 | ----- | -------------- | ------ |
 | `nom` | text           | requis |
 
-> Le champ `couleur` (`native-color-picker`) existe encore dans le schéma mais **n'est plus lu** —
-> à retirer du content type. La charte V3 abandonne la couleur par programme.
+> Le champ `couleur` a été retiré du content type : la charte V3 abandonne la couleur par
+> programme.
 
 ### `media_slide` (bloc imbriqué — slide du carrousel projet)
 

@@ -29,12 +29,19 @@ const activeSection: 'projets' | 'atelier' | null =
         directly beneath it — Projets first, matching the boards' reading order. */
     }
     <div class="nav__brand">
-      <a href="/" class="nav__logo" aria-label={`${nomAtelier} — accueil`}>
+      <a href="/" class="nav__logo">
         {
           /* High priority + the <head> preload: the logotype is above the fold on every page, and at
-          the default image priority it is fetched behind the stylesheets and the hero. */
+          the default image priority it is fetched behind the stylesheets and the hero.
+          The alt is the link's only accessible name — an aria-label on the <a> as well would give
+          screen readers two competing names for one link. */
         }
-        <img class="nav__logo-img" src={LOGO_SRC} alt={nomAtelier} fetchpriority="high" />
+        <img
+          class="nav__logo-img"
+          src={LOGO_SRC}
+          alt={`${nomAtelier} — accueil`}
+          fetchpriority="high"
+        />
       </a>
       <ul class="nav__buttons">
         <li>
