@@ -236,7 +236,7 @@ body[data-immersive-scroll][data-atelier-scrolled] > header {
   }
 }
 
-/* ---- Baseline content styles (shell-adjacent; refined by the page tickets) ---------------- */
+/* ---- Baseline content styles (shell-adjacent; page components refine them) ---------------- */
 
 /* Storyblok richtext (mentions légales, project text, atelier, project-list intro). */
 .richtext {

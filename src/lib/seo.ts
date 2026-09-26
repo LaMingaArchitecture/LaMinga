@@ -7,7 +7,7 @@
 import { renderRichText } from '@storyblok/astro';
 import { coverPhoto } from './content';
 import { sbImage } from './image';
-import { LOGO_SRC } from './brand';
+import { LOGO_SRC, SITE_DEFAULT_DESCRIPTION, SITE_DEFAULT_NAME } from './brand';
 import { collapseWhitespace, isHttpUrl } from './url';
 import type {
   GlobalSettings,
@@ -18,8 +18,6 @@ import type {
   TeamMemberBlok,
 } from '../types/storyblok';
 
-const SITE_DEFAULT_NAME = 'LaMinga';
-const SITE_DEFAULT_DESCRIPTION = "Atelier d'architecture LaMinga.";
 /** Final og:image fallback — a branded raster generated from the logo (see public/og-default.png). */
 export const SITE_DEFAULT_OG_IMAGE = '/og-default.png';
 /** Storyblok asset hosts — only these are routed through the image service. */

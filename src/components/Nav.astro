@@ -2,7 +2,8 @@
 import SocialLinks from './SocialLinks.astro';
 import MobilePanel from './MobilePanel.astro';
 import type { GlobalSettings } from '../types/storyblok';
-import { LOGO_SRC } from '../lib/brand';
+import { LOGO_SRC, siteName } from '../lib/brand';
+import { activeSectionFor } from '../lib/layout';
 
 interface Props {
   settings: GlobalSettings | null;
@@ -10,16 +11,9 @@ interface Props {
 
 const { settings } = Astro.props;
 const social = settings?.reseaux_sociaux ?? [];
-const nomAtelier = settings?.nom_atelier ?? 'LaMinga';
+const nomAtelier = siteName(settings);
 
-// Active section from the current path — a project detail belongs to the Projets section.
-const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
-const activeSection: 'projets' | 'atelier' | null =
-  path === '/projets' || path.startsWith('/projets/')
-    ? 'projets'
-    : path === '/atelier'
-      ? 'atelier'
-      : null;
+const activeSection = activeSectionFor(Astro.url.pathname);
 ---
 
 <header class="site-header">

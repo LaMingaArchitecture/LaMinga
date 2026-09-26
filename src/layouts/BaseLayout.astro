@@ -6,6 +6,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Seo from '../components/Seo.astro';
 import { getSettings } from '../lib/content';
+import { SITE_DEFAULT_DESCRIPTION, SITE_DEFAULT_NAME, siteName } from '../lib/brand';
 import { LOGO_SRC } from '../lib/brand';
 import { professionalServiceJsonLd } from '../lib/seo';
 import type { PreloadImage } from '../lib/media';
@@ -45,8 +46,8 @@ interface Props {
 }
 
 const {
-  title = 'LaMinga',
-  description = "Atelier d'architecture LaMinga.",
+  title = SITE_DEFAULT_NAME,
+  description = SITE_DEFAULT_DESCRIPTION,
   noindex = false,
   ogImage,
   ogType = 'website',
@@ -107,7 +108,7 @@ const preconnectOrigins = preload.length
       noindex={noindex || forceNoindex}
       ogImage={ogImage}
       ogType={ogType}
-      siteName={settings?.nom_atelier ?? 'LaMinga'}
+      siteName={siteName(settings)}
       jsonLd={allJsonLd}
     />
     {
