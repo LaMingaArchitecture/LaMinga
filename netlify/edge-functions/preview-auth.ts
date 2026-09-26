@@ -5,9 +5,9 @@
 // Two Netlify sites build this repo from `main`: the production site
 // (STORYBLOK_VERSION=published) and the preview site (STORYBLOK_VERSION=draft, which
 // renders unpublished Storyblok drafts). This runs on every request of both sites
-// but self-disables on production, so only the preview site is protected. It fails
-// closed: only an explicit STORYBLOK_VERSION=published visible at runtime disables it,
-// so a var scoped to "Builds" only (or renamed) can never expose drafts.
+// but self-disables on production, so only the preview site is protected. Either
+// preview signal (STORYBLOK_VERSION=draft or PREVIEW_BASIC_AUTH) turns the gate on, so
+// one var missing at runtime (e.g. scoped to "Builds" only) cannot expose drafts.
 // Credentials come from the PREVIEW_BASIC_AUTH env var ("user:password"), set only
 // in the preview site's Netlify environment.
 //
@@ -17,12 +17,12 @@
 // `pnpm typecheck` runs.
 
 export default function previewAuth(request: Request): Response | undefined {
-  // Inert on the production site. Keep this env read + early return as the first action
-  // so a prod request can never error here.
-  if (Netlify.env.get('STORYBLOK_VERSION') === 'published') return undefined;
-
+  // Inert on the production site and in local dev (neither sets a preview signal). Keep
+  // these env reads + early return first so a prod request can never error here.
   const expected = Netlify.env.get('PREVIEW_BASIC_AUTH');
-  // Fail closed: never expose drafts if the gate isn't configured.
+  if (!expected && Netlify.env.get('STORYBLOK_VERSION') !== 'draft') return undefined;
+
+  // Fail closed: a draft site without credentials never serves anything.
   if (!expected) {
     return new Response('Preview access is not configured.', { status: 503 });
   }

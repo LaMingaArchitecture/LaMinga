@@ -33,11 +33,11 @@ jamais commités.
   `PREVIEW_BASIC_AUTH=<user:password>` (un secret **long et aléatoire** — le gate n'a pas de
   limite de tentatives), `PUBLIC_SITE_URL=https://preview-laminga.netlify.app`.
 
-> ⚠️ **Portée (scope) des variables** : `STORYBLOK_VERSION` et `PREVIEW_BASIC_AUTH` doivent rester
-> sur **All scopes** (au minimum _Builds_ **et** _Functions_), sur les **deux** sites. Le build les lit
-> au moment de la compilation, mais l'edge function `preview-auth` les lit à l'exécution. Le gate
-> échoue fermé : s'il ne voit pas `STORYBLOK_VERSION=published`, il exige l'authentification. Une
-> variable limitée à _Builds_ sur la **prod** rendrait donc tout le site public inaccessible (`503`).
+> ⚠️ **Portée (scope) des variables** : sur le site B, `STORYBLOK_VERSION` et `PREVIEW_BASIC_AUTH`
+> doivent rester sur **All scopes** (au minimum _Builds_ **et** _Functions_) : le build les lit à la
+> compilation, l'edge function `preview-auth` à l'exécution. Le gate s'active dès que **l'une** des
+> deux est visible à l'exécution, donc une seule variable mal réglée n'expose pas les drafts. Ne
+> **jamais** définir `PREVIEW_BASIC_AUTH` sur la prod (le site public exigerait un mot de passe).
 
 ## 2. Créer le second site (preview)
 
@@ -52,8 +52,8 @@ jamais commités.
    `/preview/` récupère le `draft` en direct (SSR), donc seul un **changement de code** justifie un
    rebuild, c.-à-d. sur merge dans `main`. Évite des builds inutiles.
 5. Le gate d'accès (edge function `preview-auth`, déclaré dans `netlify.toml` et
-   `netlify/edge-functions/`) s'active tout seul sur le site B et reste inerte sur la prod
-   (`STORYBLOK_VERSION=published`, lue à l'exécution — cf. portée au §1).
+   `netlify/edge-functions/`) s'active tout seul sur le site B (`STORYBLOK_VERSION=draft` ou
+   `PREVIEW_BASIC_AUTH` présent) et reste inerte sur la prod — cf. portée au §1.
 
 ## 3. Build hook + webhook de publication (prod uniquement)
 
