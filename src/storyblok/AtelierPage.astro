@@ -35,6 +35,8 @@ const firstSection = atelierHero(blok).section;
   data-atelier
   {...storyblokEditable(blok)}
 >
+  {/* Section titles are <h2>; the page title sits above them for assistive tech only. */}
+  <h1 class="visually-hidden">L'atelier LaMinga</h1>
   {
     blok.video?.filename && (
       <section class="atelier__sec atelier__sec--video" data-atelier-sec>

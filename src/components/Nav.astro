@@ -118,9 +118,13 @@ const activeSection: 'projets' | 'atelier' | null =
     align-items: center;
     gap: var(--space-3);
   }
-  /* Header social row: desktop only (the burger panel carries social on mobile). */
+  /* Header social row: desktop only (the burger panel carries social on mobile). The header floats
+     over photos and the marks must stay plate-less outlines, so a paper halo lifts them off dark
+     images instead of a backing badge. */
   .nav__right :global(.nav__social) {
     display: none;
+    filter: drop-shadow(0 0 1px var(--color-paper)) drop-shadow(0 0 1px var(--color-paper))
+      drop-shadow(0 0 6px var(--color-paper));
   }
 
   /* Stacked outlined nav cartouches — hidden on mobile (the burger takes over). */

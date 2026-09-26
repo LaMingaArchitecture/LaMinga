@@ -10,6 +10,8 @@ const { blok } = Astro.props as { blok: HomePageBlok };
 const slides = blok.carrousel ?? [];
 ---
 
+{/* The home is all imagery, so its <h1> is for assistive tech and search engines only. */}
+<h1 class="visually-hidden">LaMinga — atelier d'architecture</h1>
 <FullscreenCarousel ariaLabel="Projets à la une" {...storyblokEditable(blok)}>
   {slides.map((slide, i) => <StoryblokComponent blok={slide} first={i === 0} />)}
 </FullscreenCarousel>
