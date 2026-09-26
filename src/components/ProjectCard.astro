@@ -24,7 +24,7 @@ const cover = visual?.filename ? sbImage(visual.filename, isVignette ? '600x600'
       <img
         class="project-card__cover"
         src={cover}
-        alt={visual?.alt ?? project.titre}
+        alt={visual?.alt || project.titre}
         loading="lazy"
       />
     ) : (

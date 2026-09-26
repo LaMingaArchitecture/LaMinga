@@ -16,7 +16,7 @@ const { slides } = Astro.props;
 
 const thumbSrc = (slide: MediaSlideBlok): string => {
   const source =
-    slide.image_paysage?.filename ?? slide.image_portrait?.filename ?? slide.poster?.filename;
+    slide.image_paysage?.filename || slide.image_portrait?.filename || slide.poster?.filename;
   return source ? sbImage(source, '400x400') : '';
 };
 ---

@@ -2,7 +2,8 @@
 // Presentational helper (not a registered blok): renders a responsive picture or a
 // decorative muted-loop video from the shared media fields. Centralizes the CSP
 // media-src surface and the jsx-a11y `<track>` mitigation for every project/home video.
-import { sbImageW, sbSrcset, SIZES_FULLSCREEN, HERO_IMG_WIDTH, POSTER_WIDTH } from '../lib/image';
+import { sbImageW, sbSrcset, SIZES_FULLSCREEN, HERO_IMG_WIDTH } from '../lib/image';
+import { resolveMediaSources } from '../lib/media';
 import type { StoryblokAsset } from '../types/storyblok';
 
 interface Props {
@@ -27,17 +28,18 @@ const {
 
 // The eager visual is the page's LCP → mark it high priority; the rest lazy-load.
 const eager = loading === 'eager';
-// Video src uses the raw filename (an mp4 asset, not transformable by the image service). The
-// widths (HERO_IMG_WIDTH, POSTER_WIDTH) and 100vw sizes come from src/lib/image.ts so this branch's
-// URLs stay byte-identical to lcpPreload's (src/lib/media.ts) — no double-download of the LCP.
-const videoSrc = video?.filename;
-const posterSrc = poster?.filename ? sbImageW(poster.filename, POSTER_WIDTH) : undefined;
-const portrait = imagePortrait?.filename;
-const paysage = imagePaysage?.filename ?? portrait;
+// Same selection + widths as lcpPreload (src/lib/media.ts), so the LCP URL is byte-identical to
+// its preload — no double-download.
+const { videoSrc, posterSrc, portrait, paysage } = resolveMediaSources({
+  imagePaysage,
+  imagePortrait,
+  video,
+  poster,
+});
 ---
 
 {
-  videoSrc ? (
+  videoSrc && (
     <video
       class:list={['responsive-media', 'responsive-media--video', className]}
       src={videoSrc}
@@ -53,7 +55,10 @@ const paysage = imagePaysage?.filename ?? portrait;
           satisfies jsx-a11y while keeping the markup HTML-valid (track needs a src). */}
       <track kind="captions" src="/media/empty.vtt" srclang="fr" label="Sans paroles" />
     </video>
-  ) : paysage ? (
+  )
+}
+{
+  !videoSrc && paysage && (
     <picture class:list={['responsive-media', className]}>
       {portrait && (
         <source media="(max-width: 640px)" srcset={sbSrcset(portrait)} sizes={SIZES_FULLSCREEN} />
@@ -68,5 +73,5 @@ const paysage = imagePaysage?.filename ?? portrait;
         decoding="async"
       />
     </picture>
-  ) : null
+  )
 }

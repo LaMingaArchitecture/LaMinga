@@ -14,7 +14,7 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
         <img
           class="team-member__photo"
           src={sbImage(blok.photo.filename, '500x500')}
-          alt={blok.photo.alt ?? blok.nom}
+          alt={blok.photo.alt || blok.nom}
           width="500"
           height="500"
           loading="lazy"

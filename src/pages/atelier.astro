@@ -7,6 +7,7 @@ import ContentNotice from '../components/ContentNotice.astro';
 import { getAtelierPage } from '../lib/content';
 import { resolveSeo, firstSeo, richTextToPlain, absoluteImageUrl, personJsonLd } from '../lib/seo';
 import { lcpPreload, atelierHero } from '../lib/media';
+import { presentAsset } from '../lib/image';
 
 const blok = await getAtelierPage();
 
@@ -14,7 +15,7 @@ const resolved = resolveSeo({
   seo: firstSeo(blok?.seo),
   title: 'Atelier — LaMinga',
   description: richTextToPlain(blok?.texte_minga),
-  image: blok?.image ?? blok?.poster,
+  image: presentAsset(blok?.image) ?? blok?.poster,
 });
 
 // One Person node per team member, worksFor → LaMinga (org by @id).
