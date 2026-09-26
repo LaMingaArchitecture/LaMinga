@@ -33,6 +33,12 @@ jamais commités.
   `PREVIEW_BASIC_AUTH=<user:password>` (un secret **long et aléatoire** — le gate n'a pas de
   limite de tentatives), `PUBLIC_SITE_URL=https://preview-laminga.netlify.app`.
 
+> ⚠️ **Portée (scope) des variables** : `STORYBLOK_VERSION` et `PREVIEW_BASIC_AUTH` doivent rester
+> sur **All scopes** (au minimum _Builds_ **et** _Functions_), sur les **deux** sites. Le build les lit
+> au moment de la compilation, mais l'edge function `preview-auth` les lit à l'exécution. Le gate
+> échoue fermé : s'il ne voit pas `STORYBLOK_VERSION=published`, il exige l'authentification. Une
+> variable limitée à _Builds_ sur la **prod** rendrait donc tout le site public inaccessible (`503`).
+
 ## 2. Créer le second site (preview)
 
 À faire dans l'UI (non réalisable depuis le dépôt) :
@@ -46,8 +52,8 @@ jamais commités.
    `/preview/` récupère le `draft` en direct (SSR), donc seul un **changement de code** justifie un
    rebuild, c.-à-d. sur merge dans `main`. Évite des builds inutiles.
 5. Le gate d'accès (edge function `preview-auth`, déclaré dans `netlify.toml` et
-   `netlify/edge-functions/`) s'active tout seul sur le site B (`STORYBLOK_VERSION=draft`) et reste
-   inerte sur la prod.
+   `netlify/edge-functions/`) s'active tout seul sur le site B et reste inerte sur la prod
+   (`STORYBLOK_VERSION=published`, lue à l'exécution — cf. portée au §1).
 
 ## 3. Build hook + webhook de publication (prod uniquement)
 
@@ -88,6 +94,8 @@ script qui choisit la version (cf. `.env.example`).
 - [ ] Build de prod OK ; les pages de contenu sont bien pré-rendues (HTML statique).
 - [ ] Site B : toute URL non authentifiée → `401` (pages statiques comprises) ; authentifiée → OK.
 - [ ] Site B **sans** `PREVIEW_BASIC_AUTH` renseigné → toute URL renvoie `503` (fail-closed, aucun draft servi).
+- [ ] Après **toute** modification des variables d'environnement : site B non authentifié → `401`,
+      prod publique → `200`.
 - [ ] Site B : `/preview/<slug>` rend le `draft` à la demande (SSR).
 - [ ] L'éditeur visuel Storyblok affiche le site B et reflète les modifications en direct.
 - [ ] Publier une story déclenche un rebuild de la prod (build hook) et le contenu apparaît.
