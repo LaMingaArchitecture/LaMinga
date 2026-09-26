@@ -5,7 +5,7 @@ import type { MediaSlideBlok } from '../types/storyblok';
 
 // `first` (the LCP slide) loads eagerly; the rest lazy-load. Forwarded via StoryblokComponent.
 const { blok, first = false } = Astro.props as { blok: MediaSlideBlok; first?: boolean };
-const alt = blok.image_paysage?.alt ?? blok.image_portrait?.alt ?? '';
+const alt = blok.image_paysage?.alt || blok.image_portrait?.alt || '';
 ---
 
 <figure

@@ -6,12 +6,13 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 
 ## Commandes (pnpm)
 
-- `pnpm dev` — développement
+- `pnpm dev` — développement (contenu `published`)
+- `pnpm dev:preview` — développement en `draft` + bridge (port 4322)
 - `pnpm build` — build de prod (doit TOUJOURS passer avant un commit)
 - `pnpm preview` — prévisualiser le build
 - `pnpm lint` / `pnpm lint:fix` — ESLint
 - `pnpm format` / `pnpm format:check` — Prettier
-- `pnpm typecheck` — `astro check`
+- `pnpm typecheck` — `astro check` + typage de l'edge function
 - `pnpm audit` — audit des dépendances
 
 ## Stack (versions verrouillées par pnpm-lock.yaml)
@@ -35,13 +36,19 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 
 ## Structure
 
-- `src/storyblok/` — un composant par bloc (prop `blok`, `storyblokEditable` sur la racine) ;
-  voir `src/storyblok/CLAUDE.md`. Schéma : `storyblok/content-model.md`
-- `src/components/` — UI non-Storyblok (Nav, Footer, ProjectCard, ThematiqueFilter)
+- `src/storyblok/` — un composant par bloc (prop `blok`, `storyblokEditable` sur la racine), plus
+  les helpers de présentation propres aux bloks (`ResponsiveMedia`, `AtelierBg`, `RichText`, non
+  enregistrés) ; voir `src/storyblok/CLAUDE.md`. Schéma : `storyblok/content-model.md`
+- `src/components/` — UI non-Storyblok (Nav, MobilePanel, Footer, Seo, SocialLinks,
+  FullscreenCarousel, ProjectExplorer + vues Projets, ProjectCard, `icons/`)
 - `src/lib/` — `content.ts` (accès contenu live ; contenu manquant 404/vide → `null`/`[]` +
-  placeholder, les erreurs réseau/401/5xx remontent), `storyblok.ts`, `image.ts`
-- `src/layouts/`, `src/types/`
-- Pages : `index`, `projets/index`, `projets/[slug]`, `atelier`, `preview/[...slug]`
+  placeholder, les erreurs réseau/401/5xx remontent), `storyblok.ts`, `image.ts` (service image,
+  `presentAsset`), `media.ts` (sources + preload LCP), `seo.ts`, `layout.ts`, `brand.ts`, `llms.ts`,
+  `search.ts`, `url.ts`
+- `src/scripts/` — scripts client (progressive enhancement)
+- `src/layouts/`, `src/types/`, `src/styles/` (`tokens.css` = charte)
+- Pages : `index`, `projets/index`, `projets/[slug]`, `atelier`, `mentions-legales`, `404`,
+  `preview/[...slug]`, endpoints `robots.txt` et `llms.txt`
 - `scripts/generate-headers.mjs` → `public/_headers` (cadrage selon `STORYBLOK_VERSION`, généré au build)
 - `netlify/edge-functions/preview-auth.ts` — Basic-Auth du site preview (Deno ; hors toolchain Astro)
 
@@ -51,10 +58,11 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 - Types : `home_page` (`home_slide`), `project_list`, `project` (`media_slide`, `engagement`),
   `atelier_page` (`team_member`), `programme`, `global_settings` (+ `social_link`)
 - **Noms techniques en `snake_case`** = clés de `components` dans `astro.config.mjs`
-- Classification à 2 niveaux : **`programme`** (relation, 1 par projet, avec `couleur`) +
+- Classification à 2 niveaux : **`programme`** (relation, 1 par projet) +
   **`thematiques`** (datasource `thematique`, plusieurs par projet — jamais de valeurs en dur)
 - Projets liés = relation `projets_lies` ; relations résolues via `PROJECT_RELATIONS` /
-  `HOME_RELATIONS` (`src/lib/content.ts`, fetch partagé sans N+1) — même liste dans `preview/[...slug]`
+  `HOME_RELATIONS` (`src/lib/content.ts`, fetch partagé sans N+1) — combinées par `getPreviewStory()`
+  pour `preview/[...slug]`
 - Assets SVG (logo, icônes) rendus depuis le filename brut (pas `sbImage`) ; vidéo mp4 → CSP `media-src`
 - Schéma détaillé : `storyblok/content-model.md`
 - Nav : Logo · Projets · Atelier · Réseaux Sociaux

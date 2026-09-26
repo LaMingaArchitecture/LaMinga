@@ -1,3 +1,13 @@
+import type { StoryblokAsset } from '../types/storyblok';
+
+/**
+ * The asset when it has a file, else undefined. Storyblok delivers a cleared asset field as
+ * `{ filename: '' }` rather than null, which would otherwise defeat `??` fallbacks.
+ */
+export function presentAsset(asset?: StoryblokAsset | null): StoryblokAsset | undefined {
+  return asset?.filename ? asset : undefined;
+}
+
 /**
  * Build a Storyblok Image Service URL.
  * @param filename absolute Storyblok asset URL (https://a.storyblok.com/f/...)

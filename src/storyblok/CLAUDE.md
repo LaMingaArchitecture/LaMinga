@@ -10,8 +10,8 @@ le schéma `storyblok/content-model.md`.
 - **Enregistrer tout nouveau bloc Storyblok** (tout ce qui a un `component`) dans `components`
   de `astro.config.mjs`, clé = **nom technique `snake_case`** (= `content.component`), valeur =
   `storyblok/MonComposant`. Les composants de présentation pilotés par des champs (p. ex.
-  `ImageGallery`, `ProjectCard`) ne sont PAS des bloks : ils s'importent directement, ne pas les
-  enregistrer.
+  `ResponsiveMedia`, `AtelierBg`, `RichText`, `ProjectCard`) ne sont PAS des bloks : ils
+  s'importent directement, ne pas les enregistrer.
 - **Rendu imbriqué** via `<StoryblokComponent blok={nestedBlok} />` (jamais d'import direct
   d'un bloc enregistré depuis une page → risque de cycle d'imports).
 - **Bloc non enregistré** (composant inconnu ou en cours de modélisation) → rendu par `FallbackBlok`
@@ -34,8 +34,8 @@ autoplay loop playsinline>` + `<track kind="captions" />` (a11y lint). Hôtes au
   (le build dégrade sans échouer) ; les erreurs réseau/401/5xx remontent et font échouer le build.
   - `version` : `draft` (preview) vs `published` (prod) — déjà géré par `storyblokVersion`.
   - Relations : `programme` + `projets_lies` résolues via `PROJECT_RELATIONS`,
-    `home_slide.projet` via `HOME_RELATIONS` (constantes exportées de `content.ts`, réutilisées par
-    `preview/[...slug].astro`). Narrowers purs : `resolveProgramme` / `resolveRelated`.
+    `home_slide.projet` via `HOME_RELATIONS` (constantes de `content.ts`, combinées par
+    `getPreviewStory()` pour `preview/[...slug].astro`). Narrowers purs : `resolveProgramme` / `resolveRelated`.
   - Filtre projets : datasource `thematique` (`getThematiques`), jamais de valeurs en dur ;
     programmes = stories `programme` (nom).
 - **Blocs de page** (`home_page`, `project_list`) : `home_page` rend son `carrousel` de `home_slide`

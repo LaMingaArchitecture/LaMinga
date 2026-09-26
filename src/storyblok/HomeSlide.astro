@@ -13,7 +13,7 @@ const href = projet ? `/projets/${projet.slug}` : undefined;
 const titre = content
   ? [content.titre, content.ville, content.description_programme].filter(Boolean).join(' — ')
   : '';
-const alt = blok.image_paysage?.alt ?? content?.titre ?? '';
+const alt = blok.image_paysage?.alt || content?.titre || '';
 ---
 
 <article

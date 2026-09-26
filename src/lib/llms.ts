@@ -6,6 +6,7 @@
 import { PUBLIC_SITE_URL } from 'astro:env/client';
 import { getSettings, getAllProjects, getAtelierPage } from './content';
 import { richTextToPlain } from './seo';
+import { SITE_DEFAULT_NAME } from './brand';
 import { collapseWhitespace, isHttpUrl } from './url';
 
 const abs = (path: string): string => new URL(path, PUBLIC_SITE_URL).href;
@@ -21,7 +22,7 @@ export async function buildLlmsTxt(): Promise<string> {
     getAtelierPage(),
   ]);
 
-  const name = collapseWhitespace(settings?.nom_atelier) ?? 'LaMinga';
+  const name = collapseWhitespace(settings?.nom_atelier) ?? SITE_DEFAULT_NAME;
   const cities = [settings?.adresse_paris && 'Paris', settings?.adresse_anglet && 'Anglet'].filter(
     Boolean,
   ) as string[];

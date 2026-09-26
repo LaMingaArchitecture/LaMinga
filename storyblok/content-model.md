@@ -201,7 +201,8 @@ Résolution groupée dans `src/lib/content.ts` via les constantes exportées :
 - `PROJECT_RELATIONS = ['project.programme', 'project.projets_lies']` — sur le fetch de liste partagé.
 - `HOME_RELATIONS = ['home_slide.projet']` — sur le fetch de la home.
 
-La route SSR `src/pages/preview/[...slug].astro` réutilise ces mêmes constantes.
+La route SSR `src/pages/preview/[...slug].astro` passe par `getPreviewStory()` (`content.ts`), qui
+combine ces mêmes constantes.
 
 ## Assets SVG
 

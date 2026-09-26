@@ -1,11 +1,13 @@
 ---
+import { siteName } from '../lib/brand';
+import type { NavSection } from '../lib/layout';
 import SocialLinks from './SocialLinks.astro';
 import { telHref } from '../lib/url';
 import type { GlobalSettings } from '../types/storyblok';
 
 interface Props {
   settings: GlobalSettings | null;
-  activeSection: 'projets' | 'atelier' | null;
+  activeSection: NavSection | null;
 }
 
 const { settings, activeSection } = Astro.props;
@@ -40,7 +42,7 @@ const tel = telHref(settings?.telephone);
     aria-label="Menu"
   >
     <div class="mobile-nav__panel-head">
-      <span class="mobile-nav__title">{settings?.nom_atelier ?? 'LaMinga'}</span>
+      <span class="mobile-nav__title">{siteName(settings)}</span>
       <button type="button" class="mobile-nav__close">
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
           <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2"></path>

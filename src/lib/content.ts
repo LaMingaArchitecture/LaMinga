@@ -1,4 +1,5 @@
-import type { ISbStoryData } from '@storyblok/astro';
+import type { ISbStoryData, SbBlokData } from '@storyblok/astro';
+import { presentAsset } from './image';
 import { getStoryblokApi, storyblokVersion } from './storyblok';
 import type {
   AtelierPageBlok,
@@ -61,6 +62,8 @@ const SLUG = {
 
 const DATASOURCE_THEMATIQUE = 'thematique';
 
+const MAX_PER_PAGE = 100;
+
 /**
  * Relations resolved on the shared project list fetch — single source of truth so
  * the delivery call and the SSR preview route never drift. Format `<component>.<field>`.
@@ -69,6 +72,27 @@ export const PROJECT_RELATIONS = ['project.programme', 'project.projets_lies'] a
 
 /** Relation resolved on the home_page fetch (each slide's linked project). */
 export const HOME_RELATIONS = ['home_slide.projet'] as const;
+
+/**
+ * Memoizes a published fetch for the process lifetime: the whole SSG build, or a `pnpm dev` session
+ * (restart it to see newly published edits). Never caches in draft: the SSR preview must reflect
+ * live edits per request. A rejected promise is
+ * evicted so a transient error (network/5xx) is not replayed to every later caller.
+ */
+function memoizePublished<T>(fetcher: () => Promise<T>): () => Promise<T> {
+  let cache: Promise<T> | undefined;
+  return () => {
+    if (storyblokVersion !== 'published') return fetcher();
+    if (!cache) {
+      const result = fetcher();
+      cache = result;
+      result.catch(() => {
+        if (cache === result) cache = undefined;
+      });
+    }
+    return cache;
+  };
+}
 
 function fetchStoryContent<T>(
   slug: string,
@@ -88,6 +112,15 @@ function fetchStoryContent<T>(
   );
 }
 
+// Paginated list fetch (the delivery API caps a page at 100 entries).
+function fetchAll<T>(slug: string, params: Record<string, unknown>): Promise<T[]> {
+  return getStoryblokApi().getAll(slug, {
+    version: storyblokVersion,
+    per_page: MAX_PER_PAGE,
+    ...params,
+  }) as Promise<T[]>;
+}
+
 export function getHomePage(): Promise<HomePageBlok | null> {
   return fetchStoryContent<HomePageBlok>(SLUG.home, { resolve_relations: [...HOME_RELATIONS] });
 }
@@ -100,71 +133,44 @@ export function getAtelierPage(): Promise<AtelierPageBlok | null> {
   return fetchStoryContent<AtelierPageBlok>(SLUG.atelier);
 }
 
-// Plain fetch (no memo): the SSR preview must reflect live draft edits per request.
-export function getSettings(): Promise<GlobalSettings | null> {
-  return fetchStoryContent<GlobalSettings>(SLUG.settings);
+/** Any story with every relation resolved — the single fetch of the SSR preview route. */
+export function getPreviewStory(slug: string): Promise<SbBlokData | null> {
+  return fetchStoryContent<SbBlokData>(slug, {
+    resolve_relations: [...PROJECT_RELATIONS, ...HOME_RELATIONS],
+  });
 }
 
-// Cache the published datasource for the whole SSG build (it is static during a build) —
-// getThematiques is called by the Projets list and by every project detail page. Never cache
-// in draft/preview: the SSR editor must reflect live datasource edits per request.
-let thematiquesCache: Promise<ThematiqueEntry[]> | undefined;
+export const getSettings = memoizePublished(() => fetchStoryContent<GlobalSettings>(SLUG.settings));
 
-export function getThematiques(): Promise<ThematiqueEntry[]> {
-  if (storyblokVersion === 'published' && thematiquesCache) return thematiquesCache;
-  const result = tolerateNotFound(
+export const getThematiques = memoizePublished(() =>
+  tolerateNotFound<ThematiqueEntry[]>(
     async () => {
-      const api = getStoryblokApi();
-      const { data } = await api.get('cdn/datasource_entries', {
+      const entries = await fetchAll<ThematiqueEntry>('cdn/datasource_entries', {
         datasource: DATASOURCE_THEMATIQUE,
-        version: storyblokVersion,
-        per_page: 100,
       });
-      const entries: Array<{ name: string; value: string }> = data.datasource_entries ?? [];
       return entries.map((entry) => ({ name: entry.name, value: entry.value }));
     },
     [],
     `datasource "${DATASOURCE_THEMATIQUE}" absente (${storyblokVersion}) — filtre vide`,
-  );
-  if (storyblokVersion === 'published') thematiquesCache = result;
-  return result;
-}
-
-// Cache the published programme stories for the whole SSG build (static during a build) —
-// getProgrammes feeds the Projets explorer filter chips.
-// filter chips. Never cache in draft/preview: the SSR editor must reflect live edits per request.
-let programmesCache: Promise<ProgrammeLink[]> | undefined;
+  ),
+);
 
 /**
- * List the `programme` stories (under `programmes/`) as { nom, slug }. Consumer: the Projets
- * explorer chips, which deep-link as
- * `/projets?programme=<slug>`. Mirrors the getThematiques cache/404 contract: a missing folder
- * degrades to an empty list rather than failing the build. `slug` is the story's own slug.
+ * List the `programme` stories (under `programmes/`) as { nom, slug } for the Projets explorer
+ * chips, which deep-link as `/projets?programme=<slug>`. A missing folder degrades to [].
  */
-export function getProgrammes(): Promise<ProgrammeLink[]> {
-  if (storyblokVersion === 'published' && programmesCache) return programmesCache;
-  const result = tolerateNotFound(
+export const getProgrammes = memoizePublished(() =>
+  tolerateNotFound<ProgrammeLink[]>(
     async () => {
-      const api = getStoryblokApi();
-      const { data } = await api.get('cdn/stories', {
-        version: storyblokVersion,
-        starts_with: 'programmes/',
-        per_page: 100,
-      });
-      const stories: ISbStoryData[] = data.stories ?? [];
+      const stories = await fetchAll<ISbStoryData>('cdn/stories', { starts_with: 'programmes/' });
       return stories
         .filter((story) => (story.content as ProgrammeBlok)?.component === 'programme')
-        .map((story) => {
-          const content = story.content as ProgrammeBlok;
-          return { nom: content.nom, slug: story.slug };
-        });
+        .map((story) => ({ nom: (story.content as ProgrammeBlok).nom, slug: story.slug }));
     },
     [],
     `aucune story sous "programmes/" (${storyblokVersion}) — menu programmes vide`,
-  );
-  if (storyblokVersion === 'published') programmesCache = result;
-  return result;
-}
+  ),
+);
 
 /** True when a relation field arrived resolved (a story object, not a bare uuid). */
 export function isResolved(rel: unknown): rel is ISbStoryData {
@@ -183,12 +189,14 @@ function toProgramme(blok: ProjectBlok): ProgrammeSummary | undefined {
 
 /** Cover photo for the VRAC grid / Index hover: the explicit field, else the first carousel image. */
 export function coverPhoto(blok: ProjectBlok): StoryblokAsset | undefined {
-  if (blok.photo_couverture?.filename) return blok.photo_couverture;
   const first = blok.carrousel?.find(
-    (slide) => slide.image_paysage?.filename || slide.image_portrait?.filename,
+    (slide) => presentAsset(slide.image_paysage) ?? presentAsset(slide.image_portrait),
   );
-  if (!first) return undefined;
-  return first.image_paysage?.filename ? first.image_paysage : first.image_portrait;
+  return (
+    presentAsset(blok.photo_couverture) ??
+    presentAsset(first?.image_paysage) ??
+    presentAsset(first?.image_portrait)
+  );
 }
 
 function toSummary(blok: ProjectBlok, slug: string): ProjectSummary {
@@ -201,61 +209,42 @@ function toSummary(blok: ProjectBlok, slug: string): ProjectSummary {
     statut: blok.statut,
     programme: toProgramme(blok),
     thematiques: blok.thematiques ?? [],
-    vignette: blok.vignette_plan,
+    vignette: presentAsset(blok.vignette_plan),
     photo: coverPhoto(blok),
   };
 }
 
-/** Programme (label + colour) for the project detail (pure post-resolution narrower). */
+/** Programme (label + slug) for the project detail (pure post-resolution narrower). */
 export function resolveProgramme(blok: ProjectBlok): ProgrammeSummary | undefined {
   return toProgramme(blok);
 }
 
 // Related projects (the `projets_lies` relation, resolved via resolve_relations), else [].
-// Each related story's own `programme` resolves too because every project lives under
-// `projets/` and is co-fetched by getProjectStories(), so its programme is in the shared
-// `rels` map the client applies across the whole tree (verified: related cards show colour).
+// Each related story's own `programme` resolves too: the client sends `resolve_level=2` whenever
+// `resolve_relations` is set, so every response carries the nested relations of its stories.
 export function resolveRelated(blok: ProjectBlok): ProjectSummary[] {
   return (blok.projets_lies ?? [])
     .filter(isResolved)
     .map((story) => toSummary(story.content as ProjectBlok, story.slug));
 }
 
-// Cache the published project list for the whole SSG build (static during a build) — this is the
-// heaviest fetch (per_page:100 + resolve_relations) and is shared by getStaticPaths, the Projets
-// grid, and llms.txt. Never cache in draft/preview: the SSR editor must reflect live edits per request.
-let projectStoriesCache: Promise<ISbStoryData[]> | undefined;
-
 // Single list fetch with the programme + linked-project relations resolved, shared by
-// the grid and the static-path generation (no per-project N+1).
-function getProjectStories(): Promise<ISbStoryData[]> {
-  if (storyblokVersion === 'published' && projectStoriesCache) return projectStoriesCache;
-  const result = tolerateNotFound(
+// getStaticPaths, the Projets grid and llms.txt (no per-project N+1). `by_slugs`, not `starts_with`:
+// when a page references too many relations the client re-fetches them by uuid and forwards
+// `starts_with`, which would drop every programme (they live under `programmes/`).
+const getProjectStories = memoizePublished(() =>
+  tolerateNotFound<ISbStoryData[]>(
     async () => {
-      const api = getStoryblokApi();
-      const { data } = await api.get('cdn/stories', {
-        version: storyblokVersion,
-        starts_with: 'projets/',
-        per_page: 100,
+      const stories = await fetchAll<ISbStoryData>('cdn/stories', {
+        by_slugs: 'projets/*',
         resolve_relations: [...PROJECT_RELATIONS],
       });
-      const stories: ISbStoryData[] = data.stories ?? [];
       return stories.filter((story) => (story.content as ProjectBlok)?.component === 'project');
     },
     [],
     `aucune story sous "projets/" (${storyblokVersion}) — grille vide`,
-  );
-  if (storyblokVersion === 'published') {
-    projectStoriesCache = result;
-    // Only 404s are swallowed (→ []); a non-404 failure (network/401/5xx) rejects and must fail the
-    // build. Drop the rejected promise from the cache so a transient error can't be replayed to every
-    // later caller as a permanent failure.
-    result.catch(() => {
-      if (projectStoriesCache === result) projectStoriesCache = undefined;
-    });
-  }
-  return result;
-}
+  ),
+);
 
 export async function getProjectSummaries(): Promise<ProjectSummary[]> {
   const stories = await getProjectStories();

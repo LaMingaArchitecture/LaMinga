@@ -1,13 +1,11 @@
 ---
 export const prerender = false;
 
-import type { SbBlokData } from '@storyblok/astro';
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import { STORYBLOK_VERSION } from 'astro:env/server';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { chromeFor } from '../../lib/layout';
-import { getStoryblokApi } from '../../lib/storyblok';
-import { PROJECT_RELATIONS, HOME_RELATIONS } from '../../lib/content';
+import { getPreviewStory } from '../../lib/content';
 
 // On-demand SSR route that renders DRAFT content live for the Storyblok Visual
 // Editor. The guard keeps production effectively static: in the published
@@ -19,20 +17,9 @@ if (STORYBLOK_VERSION !== 'draft') {
 
 const slug = Astro.params.slug ?? 'home';
 
-async function fetchDraftContent(): Promise<SbBlokData | null> {
-  try {
-    const api = getStoryblokApi();
-    const { data } = await api.get(`cdn/stories/${slug}`, {
-      version: 'draft',
-      resolve_relations: [...PROJECT_RELATIONS, ...HOME_RELATIONS],
-    });
-    return (data?.story?.content ?? null) as SbBlokData | null;
-  } catch {
-    return null;
-  }
-}
-
-const content = await fetchDraftContent();
+// Only a missing story (404) reads as "introuvable"; auth/network/5xx errors propagate as a 500
+// so a revoked Preview token is not mistaken for a missing story.
+const content = await getPreviewStory(slug);
 
 if (!content) {
   return new Response(`Aperçu introuvable : ${slug}`, { status: 404 });

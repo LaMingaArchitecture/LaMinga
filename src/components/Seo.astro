@@ -5,6 +5,7 @@
  * og:image is absolutized here so the storyblok host / branded default resolve consistently.
  */
 import { PUBLIC_SITE_URL } from 'astro:env/client';
+import { SITE_DEFAULT_NAME } from '../lib/brand';
 import { absoluteImageUrl, serializeJsonLd } from '../lib/seo';
 
 interface Props {
@@ -27,7 +28,7 @@ const {
   noindex = false,
   ogImage,
   ogType = 'website',
-  siteName = 'LaMinga',
+  siteName = SITE_DEFAULT_NAME,
   jsonLd = [],
 } = Astro.props;
 

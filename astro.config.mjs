@@ -35,7 +35,7 @@ const securityConfig = isDraft
             "img-src 'self' data: https://a.storyblok.com https://a2.storyblok.com",
             "media-src 'self' https://a.storyblok.com https://a2.storyblok.com",
             "font-src 'self' data:",
-            "connect-src 'self' https://api.storyblok.com",
+            "connect-src 'self'",
           ],
         },
       },

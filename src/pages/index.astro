@@ -9,12 +9,13 @@ import { lcpPreload, slideMediaFields } from '../lib/media';
 
 const home = await getHomePage();
 const firstSlide = home?.carrousel?.[0];
+const firstMedia = firstSlide ? slideMediaFields(firstSlide) : undefined;
 const resolved = resolveSeo({
   seo: firstSeo(home?.seo),
   title: "LaMinga — Atelier d'architecture",
-  image: firstSlide?.image_paysage ?? firstSlide?.image_portrait ?? firstSlide?.poster,
+  image: firstMedia?.imagePaysage ?? firstMedia?.imagePortrait ?? firstMedia?.poster,
 });
-const preload = firstSlide ? lcpPreload(slideMediaFields(firstSlide)) : [];
+const preload = firstMedia ? lcpPreload(firstMedia) : [];
 ---
 
 <BaseLayout

@@ -1,10 +1,16 @@
 /**
- * Shared LCP-preload resolution. The preload <link> must resolve to the EXACT URL the browser
- * picks for the LCP <img>/<video poster>, or the hero double-downloads. So the preload descriptors
- * here mirror ResponsiveMedia.astro's source selection byte-for-byte.
- * ⚠️ Keep in sync with src/storyblok/ResponsiveMedia.astro.
+ * Shared media source selection. The LCP preload <link> must resolve to the EXACT URL the browser
+ * picks for the LCP <img>/<video poster>, or the hero double-downloads — so lcpPreload and
+ * ResponsiveMedia.astro both derive their URLs from resolveMediaSources().
  */
-import { sbImageW, sbSrcset, SIZES_FULLSCREEN, HERO_IMG_WIDTH, POSTER_WIDTH } from './image';
+import {
+  presentAsset,
+  sbImageW,
+  sbSrcset,
+  SIZES_FULLSCREEN,
+  HERO_IMG_WIDTH,
+  POSTER_WIDTH,
+} from './image';
 import type { AtelierPageBlok, StoryblokAsset } from '../types/storyblok';
 
 export interface MediaFields {
@@ -34,10 +40,31 @@ export function slideMediaFields(blok: {
   poster?: StoryblokAsset;
 }): MediaFields {
   return {
-    imagePaysage: blok.image_paysage,
-    imagePortrait: blok.image_portrait,
-    video: blok.video,
-    poster: blok.poster,
+    imagePaysage: presentAsset(blok.image_paysage),
+    imagePortrait: presentAsset(blok.image_portrait),
+    video: presentAsset(blok.video),
+    poster: presentAsset(blok.poster),
+  };
+}
+
+export interface MediaSources {
+  /** Raw mp4 URL (not transformable by the image service). */
+  videoSrc?: string;
+  posterSrc?: string;
+  portrait?: string;
+  /** Desktop image; falls back to the portrait when only a portrait exists. */
+  paysage?: string;
+}
+
+/** Filenames/URLs to render for a media blok — the single selection shared by render + preload. */
+export function resolveMediaSources(m: MediaFields): MediaSources {
+  const portrait = m.imagePortrait?.filename || undefined;
+  const poster = m.poster?.filename;
+  return {
+    videoSrc: m.video?.filename || undefined,
+    posterSrc: poster ? sbImageW(poster, POSTER_WIDTH) : undefined,
+    portrait,
+    paysage: m.imagePaysage?.filename || portrait,
   };
 }
 
@@ -46,12 +73,8 @@ export function slideMediaFields(blok: {
  * Video LCP → preload the poster only (a <video poster> can't take a srcset).
  */
 export function lcpPreload(m: MediaFields): PreloadImage[] {
-  if (m.video?.filename) {
-    const poster = m.poster?.filename;
-    return poster ? [{ href: sbImageW(poster, POSTER_WIDTH) }] : [];
-  }
-  const portrait = m.imagePortrait?.filename;
-  const paysage = m.imagePaysage?.filename ?? portrait;
+  const { videoSrc, posterSrc, portrait, paysage } = resolveMediaSources(m);
+  if (videoSrc) return posterSrc ? [{ href: posterSrc }] : [];
   if (!paysage) return [];
 
   const links: PreloadImage[] = [];

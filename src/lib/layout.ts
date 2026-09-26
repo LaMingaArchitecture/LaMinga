@@ -25,3 +25,13 @@ const CHROME: Record<string, LayoutChrome> = {
 export function chromeFor(component: string | undefined): LayoutChrome {
   return (component && CHROME[component]) || { footer: true, scroll: true };
 }
+
+export type NavSection = 'projets' | 'atelier';
+
+/** Nav section owning a path — a project detail belongs to the Projets section. */
+export function activeSectionFor(pathname: string): NavSection | null {
+  const path = pathname.replace(/\/+$/, '') || '/';
+  if (path === '/projets' || path.startsWith('/projets/')) return 'projets';
+  if (path === '/atelier') return 'atelier';
+  return null;
+}
