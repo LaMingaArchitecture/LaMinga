@@ -445,7 +445,7 @@ composants — pour un changement **global**, l'équipe technique modifie ce seu
 | --------------------------- | ---------------------------------------------------------------------- |
 | **Logotype**                | **dépôt** (`public/logo/logo-laminga.svg`)                             |
 | Icônes **Insta / LinkedIn** | **dépôt** (composants `currentColor`, se colorent seuls corail/violet) |
-| Flèches (chevrons)          | **dépôt** (composant `Chevron.astro`)                                  |
+| Flèches (triangles)         | **dépôt** (composant `Fleche.astro` + curseurs `public/cursors/`)      |
 | Polices                     | **dépôt** auto-hébergées (`public/fonts/`)                             |
 | Icônes engagement           | **Storyblok** `engagement.icone`                                       |
 

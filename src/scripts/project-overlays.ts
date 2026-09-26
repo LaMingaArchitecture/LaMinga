@@ -38,7 +38,7 @@ const enhance = (root: HTMLElement): void => {
     });
   });
 
-  // Global Escape: works wherever focus sits (pill, panel link, carousel counter, slide…).
+  // Global Escape: works wherever focus sits (pill, panel link, carousel arrow, slide…).
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
     const open = pairs.find((pair) => pair.pill.getAttribute('aria-expanded') === 'true');

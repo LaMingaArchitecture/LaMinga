@@ -1,9 +1,12 @@
 // Fullscreen carousel — progressive enhancement over the CSS scroll-snap track.
 // Navigates by scrolling the SAME native snap container (never a CSS transform), so scroll-snap,
 // swipe, keyboard and buttons all share one source of truth (scroll position, read back via an
-// IntersectionObserver). Adds arrows, ArrowLeft/Right keys, per-slide + live-region ARIA, and
-// plays/pauses each slide's <video> by visibility. Honors prefers-reduced-motion. Multi-instance.
+// IntersectionObserver). Adds arrows, a split prev/next mouse cursor, ArrowLeft/Right keys,
+// per-slide + live-region ARIA, and plays/pauses each slide's <video> by visibility. Honors
+// prefers-reduced-motion. Multi-instance.
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+// Inside the Storyblok Visual Editor a click on a slide selects its blok, so it must not also step.
+const inEditor = window.self !== window.top;
 
 const enhance = (root: HTMLElement): void => {
   const track = root.querySelector<HTMLElement>('[data-fc-track]');
@@ -15,10 +18,11 @@ const enhance = (root: HTMLElement): void => {
 
   const prev = root.querySelector<HTMLButtonElement>('[data-fc-prev]');
   const next = root.querySelector<HTMLButtonElement>('[data-fc-next]');
-  const currentEl = root.querySelector<HTMLElement>('[data-fc-current]');
   const live = root.querySelector<HTMLElement>('[data-fc-live]');
   const count = slides.length;
   let index = 0;
+  let pointerX: number | null = null;
+  let lastPointerType = '';
 
   slides.forEach((slide, i) => {
     slide.setAttribute('role', 'group');
@@ -26,14 +30,30 @@ const enhance = (root: HTMLElement): void => {
     slide.setAttribute('aria-label', `${i + 1} sur ${count}`);
   });
 
+  // Which half of the track the mouse is over → the cursor arrow (CSS reads data-fc-side). A side
+  // with nowhere to go (first/last slide) gets no attribute, so no arrow promises a dead click.
+  const sideAt = (clientX: number): 'prev' | 'next' | null => {
+    const { left, width } = track.getBoundingClientRect();
+    const side = clientX < left + width / 2 ? 'prev' : 'next';
+    if (side === 'prev' && index === 0) return null;
+    if (side === 'next' && index === count - 1) return null;
+    return side;
+  };
+
+  const syncSide = (): void => {
+    const side = pointerX === null ? null : sideAt(pointerX);
+    if (side) root.dataset.fcSide = side;
+    else delete root.dataset.fcSide;
+  };
+
   const render = (): void => {
-    if (currentEl) currentEl.textContent = String(index + 1);
     if (live) live.textContent = `Diapositive ${index + 1} sur ${count}`;
     if (prev) prev.disabled = index === 0;
     if (next) next.disabled = index === count - 1;
     // Never orphan focus when the focused arrow disables at an end.
     if (prev?.disabled && document.activeElement === prev) next?.focus();
     if (next?.disabled && document.activeElement === next) prev?.focus();
+    syncSide();
   };
 
   const goTo = (target: number): void => {
@@ -91,6 +111,34 @@ const enhance = (root: HTMLElement): void => {
     if (Number.isFinite(to)) goTo(to);
   });
 
+  // Mouse only, checked per event (not once at load) so touch taps on hybrid devices never step
+  // and a mouse plugged in later still gets the cursor.
+  if (!inEditor) {
+    track.addEventListener('pointerdown', (event) => {
+      lastPointerType = event.pointerType;
+    });
+    track.addEventListener('pointermove', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      pointerX = event.clientX;
+      syncSide();
+    });
+    track.addEventListener('pointerleave', () => {
+      pointerX = null;
+      syncSide();
+    });
+    // Links (home title) and buttons (recap tiles) keep their own action. A click ending a text
+    // selection is not a navigation; neither is the 2nd click of a double-click, which would read
+    // an intermediate index mid smooth-scroll.
+    track.addEventListener('click', (event) => {
+      if (lastPointerType !== 'mouse' || event.detail > 1) return;
+      if ((event.target as HTMLElement).closest('a, button')) return;
+      const selection = document.getSelection();
+      if (selection && !selection.isCollapsed) return;
+      const side = sideAt(event.clientX);
+      if (side) goTo(index + (side === 'prev' ? -1 : 1));
+    });
+  }
+
   root.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') {
       event.preventDefault();
@@ -104,7 +152,7 @@ const enhance = (root: HTMLElement): void => {
   if (reduce.matches) track.querySelectorAll('video').forEach((video) => video.pause());
 
   // Controls ship visible-but-disabled (see FullscreenCarousel.astro); render() now flips them live
-  // — enabling `next` and updating the counter — so they transition from loading to interactive.
+  // — enabling `next` — so they transition from loading to interactive.
   render();
   syncClair(slides[index]);
 };
