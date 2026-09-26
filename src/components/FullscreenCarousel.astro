@@ -1,8 +1,9 @@
 ---
 /**
  * FullscreenCarousel — generic, blok-type-agnostic fullscreen scroller.
- * Wraps already-rendered slides via <slot/> (home_slide on the home, media_slide on project pages), so it owns the
- * scroll-snap track + slide sizing and neither slide type needs to know it's in a carousel.
+ * Wraps already-rendered slides via <slot/> (home_slide on the home, media_slide on project
+ * pages), so it owns the scroll-snap track + slide sizing and neither slide type needs to know
+ * it's in a carousel.
  * Progressive enhancement: the CSS scroll-snap track works with no JS (native swipe/scroll);
  * `fullscreen-carousel.ts` layers arrows, a split prev/next mouse cursor, keyboard nav, ARIA live
  * announcements, lazy video. The controls render at all times — the arrows ship `disabled`

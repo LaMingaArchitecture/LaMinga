@@ -74,8 +74,9 @@ export const PROJECT_RELATIONS = ['project.programme', 'project.projets_lies'] a
 export const HOME_RELATIONS = ['home_slide.projet'] as const;
 
 /**
- * Memoizes a published fetch for the whole SSG build (content is static during a build). Never
- * caches in draft: the SSR preview must reflect live edits per request. A rejected promise is
+ * Memoizes a published fetch for the process lifetime: the whole SSG build, or a `pnpm dev` session
+ * (restart it to see newly published edits). Never caches in draft: the SSR preview must reflect
+ * live edits per request. A rejected promise is
  * evicted so a transient error (network/5xx) is not replayed to every later caller.
  */
 function memoizePublished<T>(fetcher: () => Promise<T>): () => Promise<T> {
@@ -188,12 +189,14 @@ function toProgramme(blok: ProjectBlok): ProgrammeSummary | undefined {
 
 /** Cover photo for the VRAC grid / Index hover: the explicit field, else the first carousel image. */
 export function coverPhoto(blok: ProjectBlok): StoryblokAsset | undefined {
-  if (blok.photo_couverture?.filename) return blok.photo_couverture;
   const first = blok.carrousel?.find(
-    (slide) => slide.image_paysage?.filename || slide.image_portrait?.filename,
+    (slide) => presentAsset(slide.image_paysage) ?? presentAsset(slide.image_portrait),
   );
-  if (!first) return undefined;
-  return first.image_paysage?.filename ? first.image_paysage : first.image_portrait;
+  return (
+    presentAsset(blok.photo_couverture) ??
+    presentAsset(first?.image_paysage) ??
+    presentAsset(first?.image_portrait)
+  );
 }
 
 function toSummary(blok: ProjectBlok, slug: string): ProjectSummary {
@@ -217,8 +220,8 @@ export function resolveProgramme(blok: ProjectBlok): ProgrammeSummary | undefine
 }
 
 // Related projects (the `projets_lies` relation, resolved via resolve_relations), else [].
-// Each related story's own `programme` resolves too: every project lives under `projets/` and is
-// co-fetched by getProjectStories(), so its programme is in the shared `rels` map.
+// Each related story's own `programme` resolves too: the client sends `resolve_level=2` whenever
+// `resolve_relations` is set, so every response carries the nested relations of its stories.
 export function resolveRelated(blok: ProjectBlok): ProjectSummary[] {
   return (blok.projets_lies ?? [])
     .filter(isResolved)
@@ -226,12 +229,14 @@ export function resolveRelated(blok: ProjectBlok): ProjectSummary[] {
 }
 
 // Single list fetch with the programme + linked-project relations resolved, shared by
-// getStaticPaths, the Projets grid and llms.txt (no per-project N+1).
+// getStaticPaths, the Projets grid and llms.txt (no per-project N+1). `by_slugs`, not `starts_with`:
+// when a page references too many relations the client re-fetches them by uuid and forwards
+// `starts_with`, which would drop every programme (they live under `programmes/`).
 const getProjectStories = memoizePublished(() =>
   tolerateNotFound<ISbStoryData[]>(
     async () => {
       const stories = await fetchAll<ISbStoryData>('cdn/stories', {
-        starts_with: 'projets/',
+        by_slugs: 'projets/*',
         resolve_relations: [...PROJECT_RELATIONS],
       });
       return stories.filter((story) => (story.content as ProjectBlok)?.component === 'project');

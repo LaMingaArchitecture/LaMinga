@@ -7,7 +7,7 @@
 import { renderRichText } from '@storyblok/astro';
 import { coverPhoto } from './content';
 import { sbImage } from './image';
-import { LOGO_SRC, SITE_DEFAULT_DESCRIPTION, SITE_DEFAULT_NAME } from './brand';
+import { LOGO_SRC, SITE_DEFAULT_DESCRIPTION, siteName } from './brand';
 import { collapseWhitespace, isHttpUrl } from './url';
 import type {
   GlobalSettings,
@@ -211,7 +211,7 @@ export function professionalServiceJsonLd(
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
     '@id': orgId(siteUrl),
-    name: settings.nom_atelier?.trim() || SITE_DEFAULT_NAME,
+    name: siteName(settings),
     url: siteHome(siteUrl),
     email: settings.email?.trim() || undefined,
     telephone: settings.telephone?.trim() || undefined,

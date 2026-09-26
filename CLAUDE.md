@@ -61,7 +61,8 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 - Classification à 2 niveaux : **`programme`** (relation, 1 par projet) +
   **`thematiques`** (datasource `thematique`, plusieurs par projet — jamais de valeurs en dur)
 - Projets liés = relation `projets_lies` ; relations résolues via `PROJECT_RELATIONS` /
-  `HOME_RELATIONS` (`src/lib/content.ts`, fetch partagé sans N+1) — même liste dans `preview/[...slug]`
+  `HOME_RELATIONS` (`src/lib/content.ts`, fetch partagé sans N+1) — combinées par `getPreviewStory()`
+  pour `preview/[...slug]`
 - Assets SVG (logo, icônes) rendus depuis le filename brut (pas `sbImage`) ; vidéo mp4 → CSP `media-src`
 - Schéma détaillé : `storyblok/content-model.md`
 - Nav : Logo · Projets · Atelier · Réseaux Sociaux
