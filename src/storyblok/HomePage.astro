@@ -10,10 +10,6 @@ const { blok } = Astro.props as { blok: HomePageBlok };
 const slides = blok.carrousel ?? [];
 ---
 
-<FullscreenCarousel
-  ariaLabel="Projets à la une"
-  slideCount={slides.length}
-  {...storyblokEditable(blok)}
->
+<FullscreenCarousel ariaLabel="Projets à la une" {...storyblokEditable(blok)}>
   {slides.map((slide, i) => <StoryblokComponent blok={slide} first={i === 0} />)}
 </FullscreenCarousel>

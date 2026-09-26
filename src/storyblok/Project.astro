@@ -12,9 +12,8 @@ import type { ProjectBlok } from '../types/storyblok';
 const { blok } = Astro.props as { blok: ProjectBlok };
 const related = resolveRelated(blok);
 const slides = blok.carrousel ?? [];
-// The recap mosaic is only worth a slide when there are ≥2 visuals; it counts in the "X / N".
+// The recap mosaic is only worth a slide when there are ≥2 visuals.
 const showRecap = slides.length >= 2;
-const slideCount = slides.length + (showRecap ? 1 : 0);
 const hasRelated = related.length > 0;
 
 // Data-sheet rows (info overlay), empty fields dropped so no blank rows render.
@@ -32,13 +31,7 @@ const infosHasContent =
   rows.length > 0 || Boolean(blok.texte) || (blok.engagements?.length ?? 0) > 0;
 ---
 
-<FullscreenCarousel
-  controls="grouped"
-  counter
-  ariaLabel={blok.titre}
-  slideCount={slideCount}
-  {...storyblokEditable(blok)}
->
+<FullscreenCarousel controls="grouped" ariaLabel={blok.titre} {...storyblokEditable(blok)}>
   {slides.map((slide, i) => <StoryblokComponent blok={slide} first={i === 0} />)}
   {showRecap && <ProjectRecapSlide slides={slides} />}
 
@@ -102,9 +95,9 @@ const infosHasContent =
     z-index: 1;
     pointer-events: none;
     /* Bounds for the info/related overlays. While one is open the card is stripped back to the
-       bare "−" disc, so the bottom only needs to clear that pill + the counter row. */
+       bare "−" disc, so the bottom only needs to clear that pill + the arrow row. */
     --band-top: calc(var(--nav-clear) + var(--space-3));
-    /* One source for the bar's bottom reservation: the ‹ X/N › cluster shares this corner, so the
+    /* One source for the bar's bottom reservation: the ◀ ▶ arrow cluster shares this corner, so the
        bar clears it, and the overlay band in turn clears the bar — otherwise an open panel runs
        under the close disc, which sits above it and would swallow taps on the panel. */
     --hud-bar-bottom: calc(2.75rem + max(var(--space-4), env(safe-area-inset-bottom)));
@@ -113,7 +106,7 @@ const infosHasContent =
   }
 
   /* Bottom bar: holds the cartouche, which now carries the disclosure buttons as its last row.
-     z-index keeps them clickable above an open overlay; the carousel counter sits above all of it. */
+     z-index keeps them clickable above an open overlay; the carousel arrows sit above all of it. */
   .project-hud__bar {
     position: absolute;
     left: 0;
@@ -225,7 +218,7 @@ const infosHasContent =
       --hud-bar-bottom: var(--space-6);
       --band-x: var(--space-6);
     }
-    /* Cartouche centred, with the outer columns reserving the bottom-right counter's corner. */
+    /* Cartouche centred, with the outer columns reserving the bottom-right arrows' corner. */
     .project-hud__bar {
       display: grid;
       grid-template-columns: 1fr auto 1fr;

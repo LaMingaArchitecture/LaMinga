@@ -4,38 +4,25 @@
  * Wraps already-rendered slides via <slot/> (home_slide now, media_slide later), so it owns the
  * scroll-snap track + slide sizing and neither slide type needs to know it's in a carousel.
  * Progressive enhancement: the CSS scroll-snap track works with no JS (native swipe/scroll);
- * `fullscreen-carousel.ts` layers arrows, keyboard nav, ARIA live announcements, lazy video. The
- * controls render at all times — the arrows ship `disabled` (dimmed) and the script enables them
- * once ready — so they show a loading state instead of popping in after load (with no JS they stay
- * disabled while native swipe still works).
+ * `fullscreen-carousel.ts` layers arrows, a split prev/next mouse cursor, keyboard nav, ARIA live
+ * announcements, lazy video. The controls render at all times — the arrows ship `disabled`
+ * (dimmed) and the script enables them once ready — so they show a loading state instead of
+ * popping in after load (with no JS they stay disabled while native swipe still works).
  */
 import type { HTMLAttributes } from 'astro/types';
-import Chevron from './icons/Chevron.astro';
+import Fleche from './icons/Fleche.astro';
 
 interface Props extends HTMLAttributes<'section'> {
   /** Accessible name for the carousel region (home: "Projets à la une"; project page: the title). */
   ariaLabel: string;
-  /** Slide count — renders the counter's N server-side and seeds the script. */
-  slideCount: number;
-  /** Show the "X / N" counter (project page: true; home: false). */
-  counter?: boolean;
   /**
-   * Control layout: 'split' (home) = arrows mid-height at the edges, counter bottom-right;
-   * 'grouped' (project page) = chevrons flank the counter in one bottom-right ‹ X / N › cluster.
+   * Control layout: 'split' (home) = arrows mid-height at the edges;
+   * 'grouped' (project page) = both arrows side by side in one bottom-right cluster.
    */
   controls?: 'split' | 'grouped';
 }
 
-const {
-  ariaLabel,
-  slideCount,
-  counter = false,
-  controls = 'split',
-  class: className,
-  ...attrs
-} = Astro.props;
-// ‹ X / N › is meaningless without N, so the grouped cluster always shows the counter.
-const showCounter = counter || controls === 'grouped';
+const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.props;
 ---
 
 <section
@@ -57,7 +44,7 @@ const showCounter = counter || controls === 'grouped';
 
   {
     /* Wrapper is `display:contents` in split mode (children keep their own absolute anchoring) and a
-      flex row bottom-right in grouped mode. Visual order prev → counter → next drives the cluster. */
+      flex row bottom-right in grouped mode. */
   }
   {
     /* Rendered visible at all times (never popped in). Both arrows start `disabled` (dimmed) so the
@@ -72,15 +59,8 @@ const showCounter = counter || controls === 'grouped';
       aria-label="Diapositive précédente"
       disabled
     >
-      <Chevron direction="left" size={40} />
+      <Fleche direction="left" size={28} />
     </button>
-    {
-      showCounter && (
-        <p class="fc__counter" data-fc-counter aria-hidden="true">
-          <span data-fc-current>1</span> / {slideCount}
-        </p>
-      )
-    }
     <button
       type="button"
       class="fc__arrow fc__arrow--next"
@@ -88,11 +68,13 @@ const showCounter = counter || controls === 'grouped';
       aria-label="Diapositive suivante"
       disabled
     >
-      <Chevron direction="right" size={40} />
+      <Fleche direction="right" size={28} />
     </button>
   </div>
 
-  {/* Slide changes announced here; the visual counter stays aria-hidden to avoid double-speak. */}
+  {
+    /* Slide position ("Diapositive X sur N") is announced here only — there is no visual counter. */
+  }
   <p class="visually-hidden" data-fc-live aria-live="polite" role="status"></p>
 </section>
 
@@ -141,16 +123,13 @@ const showCounter = counter || controls === 'grouped';
   }
 
   /* Split mode (home): the wrapper is transparent, so its children keep the absolute anchoring
-     below (mid-height arrows + bottom-right counter), pixel-identical to before the wrapper existed. */
+     below (mid-height arrows at the edges). */
   .fc__controls {
     display: contents;
   }
 
   /* Controls are absolute overlays shown at ALL times (the arrows ship `disabled`/dimmed and the
      script enables them once ready), so they never pop in after load. Absolute → zero CLS. */
-  .fc__counter {
-    display: block;
-  }
   .fc__arrow {
     display: grid;
     position: absolute;
@@ -163,7 +142,7 @@ const showCounter = counter || controls === 'grouped';
     padding: var(--space-2);
     border: 0;
     background: none;
-    color: var(--accent);
+    color: var(--hud-ink);
     cursor: pointer;
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
     touch-action: manipulation;
@@ -179,20 +158,8 @@ const showCounter = counter || controls === 'grouped';
     cursor: default;
   }
 
-  .fc__counter {
-    position: absolute;
-    right: var(--space-4);
-    bottom: var(--space-4);
-    z-index: 2;
-    margin: 0;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
-  }
-
-  /* Grouped mode (project page): prev → counter → next as one bottom-right ‹ X / N › cluster.
-     The wrapper becomes the positioned box; its children flow inline. Ink flips per active slide
-     (--hud-ink); the drop-shadow keeps it legible over any photo. */
+  /* Grouped mode (project page): prev + next as one bottom-right cluster. The wrapper becomes the
+     positioned box; its children flow inline. */
   .fc--grouped .fc__controls {
     position: absolute;
     right: var(--space-4);
@@ -202,26 +169,43 @@ const showCounter = counter || controls === 'grouped';
     align-items: center;
     gap: var(--space-1);
   }
-  .fc--grouped .fc__arrow,
-  .fc--grouped .fc__counter {
+  .fc--grouped .fc__arrow {
     position: static;
     inset: auto;
     transform: none;
-    color: var(--hud-ink);
-  }
-  /* Compact cluster: thin chevrons hugging the "X / N", 44px-tall touch target, tight horizontally. */
-  .fc--grouped .fc__arrow {
-    min-width: 0;
-    min-height: 2.75rem;
-    padding: 0 var(--space-1);
-  }
-  .fc--grouped .fc__counter {
-    font-size: 1.25rem;
-    letter-spacing: 0.02em;
   }
   .fc--grouped .fc__arrow :global(svg) {
     width: 1.25rem;
     height: 1.25rem;
-    stroke-width: 1.5px;
+  }
+
+  /* Mouse only: the photo itself is the control — each half shows the matching arrow as the cursor
+     and a click there steps (fullscreen-carousel.ts sets data-fc-side, and omits it at either end).
+     CSS cursor images can't read currentColor, hence one file per ink. */
+  @media (hover: hover) and (pointer: fine) {
+    .fc[data-fc-side='prev'] .fc__track {
+      cursor:
+        url('/cursors/fleche-gauche-corail.svg') 4 16,
+        pointer;
+    }
+    .fc[data-fc-side='next'] .fc__track {
+      cursor:
+        url('/cursors/fleche-droite-corail.svg') 28 16,
+        pointer;
+    }
+    .fc[data-clair][data-fc-side='prev'] .fc__track {
+      cursor:
+        url('/cursors/fleche-gauche-papier.svg') 4 16,
+        pointer;
+    }
+    .fc[data-clair][data-fc-side='next'] .fc__track {
+      cursor:
+        url('/cursors/fleche-droite-papier.svg') 28 16,
+        pointer;
+    }
+    .fc__track :global(a),
+    .fc__track :global(button) {
+      cursor: pointer;
+    }
   }
 </style>

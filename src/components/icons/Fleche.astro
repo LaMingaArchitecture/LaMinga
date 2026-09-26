@@ -1,0 +1,41 @@
+---
+/**
+ * Fleche — the charte's solid triangle arrow ("souris flèche"), the carousel's précédent/suivant
+ * control. Fill follows currentColor so it takes the carousel's --hud-ink; the rose hairline keeps
+ * it legible over photos of the same hue. The cursor variants in public/cursors/ copy these points
+ * and the corail / papier / rose hexes by hand (cursor images can't read CSS) — update them together.
+ */
+interface Props {
+  direction?: 'left' | 'right';
+  size?: number | string;
+  class?: string;
+}
+const { direction = 'right', size = 24, class: className } = Astro.props;
+const points = direction === 'left' ? '87.8 87 3.3 44.9 87.8 2.9' : '3.3 87 87.8 44.9 3.3 2.9';
+---
+
+<svg
+  class:list={['icon', className]}
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="2.8 2.4 85.5 85.1"
+  width={size}
+  height={size}
+  aria-hidden="true"
+  focusable="false"
+>
+  <polygon
+    points={points}
+    fill="currentColor"
+    stroke-width="1"
+    stroke-miterlimit="10"
+    vector-effect="non-scaling-stroke"></polygon>
+</svg>
+
+<style>
+  .icon {
+    display: block;
+  }
+  .icon polygon {
+    stroke: var(--color-arrow-edge);
+  }
+</style>

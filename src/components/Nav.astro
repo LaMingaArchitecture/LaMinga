@@ -135,7 +135,7 @@ const activeSection: 'projets' | 'atelier' | null =
   /* Box outline comes from the .brand-box utility (open-corner edges). Set background-color (not the
      background shorthand) so hover/active fills don't wipe the edge gradients. */
   .nav__btn {
-    /* min-height, not padding alone: --nav-brand-h reserves exactly two of these. */
+    /* min-height, not padding alone: --nav-brand-h reserves exactly two of these (+ the row gap). */
     display: flex;
     align-items: center;
     min-height: var(--nav-cartouche-h);
@@ -163,10 +163,12 @@ const activeSection: 'projets' | 'atelier' | null =
   @media (min-width: 48rem) {
     .nav__buttons {
       display: flex;
+      gap: var(--nav-row-gap);
     }
     .nav__btn {
-      padding: var(--space-2) var(--space-4);
-      font-size: 1.0625rem;
+      padding: 0 var(--space-3);
+      font-size: var(--nav-cartouche-font);
+      line-height: 1.2;
     }
     .nav__right :global(.nav__social) {
       display: flex;
@@ -177,12 +179,6 @@ const activeSection: 'projets' | 'atelier' | null =
     .nav__logo-img {
       height: auto;
       width: 100%;
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .nav__btn {
-      font-size: 1.125rem;
     }
   }
 </style>
