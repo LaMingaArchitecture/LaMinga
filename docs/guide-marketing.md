@@ -99,7 +99,7 @@ Certains champs pointent vers **une autre page** au lieu de contenir du texte :
 - **Projet mis en avant** d'un slide d'accueil → une fiche projet.
 
 Dans l'éditeur, ces champs ouvrent un **sélecteur** : on cherche et on **sélectionne** la ou les
-stories cibles. Le site va ensuite chercher tout seul les infos liées (titre, ville, couleur…).
+stories cibles. Le site va ensuite chercher tout seul les infos liées (titre, ville, programme…).
 
 ---
 
@@ -241,26 +241,26 @@ les gestes dans l'éditeur. **Requis** = à remplir obligatoirement ; les autres
 **Content → dossier `projets` → + Entry → type _Projet_.** Le **nom** de l'entrée forme l'URL
 (_slug_) : ex. `buzenval` → `/projets/buzenval`. **Éviter accents et espaces** dans le slug.
 
-| Champ                     | Sert à…                                                           | Requis |
-| ------------------------- | ----------------------------------------------------------------- | ------ |
-| **Titre**                 | le titre du projet                                                | ✅     |
-| **Ville**                 | la ville                                                          |        |
-| **Programme**             | **une** catégorie (relation → story programme) — porte la couleur |        |
-| **Thématiques**           | **plusieurs** (cases à cocher, liste déroulante)                  |        |
-| **Description programme** | une ligne (ex. « Restructuration de logements insalubres… »)      |        |
-| **Maîtrise d'ouvrage**    | le maître d'ouvrage                                               |        |
-| **Équipe**                | l'équipe (texte libre)                                            |        |
-| **Statut**                | ex. « Livré 2023 »                                                |        |
-| **Surface (m² SDP)**      | texte libre (autorise « NC », une fourchette…)                    |        |
-| **Montant HT**            | ex. « 8 M€ »                                                      |        |
-| **Divers**                | détails complémentaires                                           |        |
-| **Texte descriptif**      | le corps de texte (texte riche)                                   |        |
-| **Engagements**           | jusqu'à **3** blocs (icône SVG + libellé)                         |        |
-| **Carrousel**             | les **Slides média** (voir ci-dessous), dans l'ordre              |        |
-| **Vignette plan-masse**   | le plan-masse **N&B** affiché dans la grille Projets              |        |
-| **Photo de couverture**   | photo représentative ; si vide → 1ʳᵉ image du carrousel           |        |
-| **Projets liés**          | d'autres fiches projet (relations)                                |        |
-| **SEO** (bloc)            | réglages de partage (facultatif — voir §8)                        |        |
+| Champ                     | Sert à…                                                      | Requis |
+| ------------------------- | ------------------------------------------------------------ | ------ |
+| **Titre**                 | le titre du projet                                           | ✅     |
+| **Ville**                 | la ville                                                     |        |
+| **Programme**             | **une** catégorie (relation → story programme)               |        |
+| **Thématiques**           | **plusieurs** (cases à cocher, liste déroulante)             |        |
+| **Description programme** | une ligne (ex. « Restructuration de logements insalubres… ») |        |
+| **Maîtrise d'ouvrage**    | le maître d'ouvrage                                          |        |
+| **Équipe**                | l'équipe (texte libre)                                       |        |
+| **Statut**                | ex. « Livré 2023 »                                           |        |
+| **Surface (m² SDP)**      | texte libre (autorise « NC », une fourchette…)               |        |
+| **Montant HT**            | ex. « 8 M€ »                                                 |        |
+| **Divers**                | détails complémentaires                                      |        |
+| **Texte descriptif**      | le corps de texte (texte riche)                              |        |
+| **Engagements**           | jusqu'à **3** blocs (icône SVG + libellé)                    |        |
+| **Carrousel**             | les **Slides média** (voir ci-dessous), dans l'ordre         |        |
+| **Vignette plan-masse**   | le plan-masse **N&B** affiché dans la grille Projets         |        |
+| **Photo de couverture**   | photo représentative ; si vide → 1ʳᵉ image du carrousel      |        |
+| **Projets liés**          | d'autres fiches projet (relations)                           |        |
+| **SEO** (bloc)            | réglages de partage (facultatif — voir §8)                   |        |
 
 **Ajouter des slides au carrousel (`media_slide`)** — dans le champ **Carrousel**, cliquer **+**,
 choisir _Slide média_, puis remplir :
@@ -404,8 +404,9 @@ Présent (facultatif) sur `home`, `projets`, `atelier` et chaque **projet**. Voi
 ## 7. Charte graphique (couleurs, polices, assets)
 
 La charte est centralisée dans **une seule couche de design tokens** (`src/styles/tokens.css`) :
-chaque couleur, police, espacement et bordure du site en découle. Rien n'est codé en dur dans les
-composants — pour un changement **global**, l'équipe technique modifie ce seul fichier.
+chaque couleur, police, espacement et bordure du site en découle — pour un changement **global** de
+ces éléments, l'équipe technique modifie ce seul fichier. (Les tailles de texte, elles, sont encore
+réglées composant par composant.)
 
 ### Palette
 

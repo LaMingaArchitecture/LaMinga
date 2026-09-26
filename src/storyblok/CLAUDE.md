@@ -10,7 +10,7 @@ le schéma `storyblok/content-model.md`.
 - **Enregistrer tout nouveau bloc Storyblok** (tout ce qui a un `component`) dans `components`
   de `astro.config.mjs`, clé = **nom technique `snake_case`** (= `content.component`), valeur =
   `storyblok/MonComposant`. Les composants de présentation pilotés par des champs (p. ex.
-  `ImageGallery`, `ProjectCard`) ne sont PAS des bloks : ils s'importent directement, ne pas les
+  `ResponsiveMedia`, `AtelierBg`, `RichText`, `ProjectCard`) ne sont PAS des bloks : ils s'importent directement, ne pas les
   enregistrer.
 - **Rendu imbriqué** via `<StoryblokComponent blok={nestedBlok} />` (jamais d'import direct
   d'un bloc enregistré depuis une page → risque de cycle d'imports).
