@@ -17,10 +17,9 @@ const safe = links
   .map((link) => ({ ...link, url: link.url?.trim() ?? '' }))
   .filter((link) => isHttpUrl(link.url));
 
-// Detect the network so Instagram/LinkedIn render as the official inline marks. Inline (not <img>)
-// lets them paint with currentColor = the page --accent, so they theme corail on the home header
-// and violet elsewhere with no per-page asset swap. Any other network falls back to the Storyblok
-// icon asset, then the platform name.
+// Detect the network so Instagram/LinkedIn render as the client's corail disc marks (inline, painted
+// with currentColor). Any other network falls back to the Storyblok icon asset, then the platform
+// name.
 type Platform = 'instagram' | 'linkedin';
 const DISPLAY_NAME: Record<Platform, string> = { instagram: 'Instagram', linkedin: 'LinkedIn' };
 // Detect by URL host (anchored) rather than free-text substrings, so a label/URL merely containing
@@ -79,11 +78,13 @@ const platformOf = (url: string): Platform | null => {
     margin: 0;
     padding: 0;
   }
+  /* Corail on every page, including the violet inner pages — client decision, accepted although a
+     corail disc on beige is below the 3:1 non-text contrast floor (tokens.css). */
   .social-links a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent);
+    color: var(--color-coral);
     font-size: 0.875rem;
     text-decoration: none;
   }

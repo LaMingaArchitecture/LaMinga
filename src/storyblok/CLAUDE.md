@@ -24,8 +24,8 @@ le schéma `storyblok/content-model.md`.
 - **SVG** (`social_link.icone`, `engagement.icone`) : rendus depuis le **filename brut**, PAS
   `sbImage()` (qui rasterise en webp). Icône décorative accompagnée d'un texte → `alt=""`.
   - **Exception réseaux sociaux** : Instagram et LinkedIn sont rendus par des composants
-    `currentColor` du dépôt (`src/components/icons/`), thémés par `--accent` ; `social_link.icone`
-    n'est qu'un repli pour d'autres réseaux.
+    `currentColor` du dépôt (`src/components/icons/`, pastilles corail fournies par le client,
+    corail sur toutes les pages) ; `social_link.icone` n'est qu'un repli pour d'autres réseaux.
 - **Vidéo** (`media_slide`/`home_slide`/atelier) : via `ResponsiveMedia.astro` — `<video muted
 autoplay loop playsinline>` + `<track kind="captions" />` (a11y lint). Hôtes autorisés par le CSP
   `media-src` (`astro.config.mjs`).
