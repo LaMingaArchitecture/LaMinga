@@ -77,13 +77,15 @@ const tel = telHref(settings?.telephone);
 </div>
 
 <style>
+  /* Burger and drawer are corail on every page, like the logotype and the social discs (client
+     decision; corail on beige is below the AA floors — tokens.css). Scoped here, so the page's own
+     --accent still themes everything else. */
   .mobile-nav {
+    --accent: var(--color-coral);
     display: inline-flex;
   }
 
-  /* Burger button (the label drives the hidden checkbox — works with no JS). Corail on every page,
-     like the logotype and the social discs it sits beside (client decision; below the 3:1 non-text
-     floor on beige — tokens.css). */
+  /* Burger button (the label drives the hidden checkbox — works with no JS). */
   .mobile-nav__burger {
     display: inline-flex;
     align-items: center;
@@ -91,7 +93,7 @@ const tel = telHref(settings?.telephone);
     /* Sets the mobile header's height, which --nav-clear reserves for it (tokens.css). */
     width: var(--nav-burger-h);
     height: var(--nav-burger-h);
-    border: var(--border-w) solid var(--color-coral);
+    border: var(--border-w) solid var(--accent);
     background: color-mix(in srgb, var(--color-paper) 85%, transparent);
     cursor: var(--cursor-link);
   }
@@ -102,7 +104,7 @@ const tel = telHref(settings?.telephone);
     display: block;
     width: 1.25rem;
     height: 2px;
-    background: var(--color-coral);
+    background: var(--accent);
   }
   .mobile-nav__burger-bars {
     position: relative;
@@ -117,7 +119,7 @@ const tel = telHref(settings?.telephone);
   }
   /* Visible focus ring on the burger when the (hidden) checkbox is focused. */
   .mobile-nav__checkbox:focus-visible + .mobile-nav__burger {
-    outline: 2px solid var(--color-coral);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
@@ -200,6 +202,7 @@ const tel = telHref(settings?.telephone);
   /* Same .brand-box open-corner outline as the desktop nav buttons. Drive the active fill through
      --brand-box-fill (a gradient layer), never a `background` shorthand which would wipe the edges. */
   .mobile-nav__links a {
+    --brand-box-line: var(--color-cartouche-line);
     display: block;
     padding: var(--space-3);
     color: var(--accent);
@@ -208,8 +211,7 @@ const tel = telHref(settings?.telephone);
     transition: color var(--transition);
   }
   .mobile-nav__links a[aria-current='page'] {
-    --brand-box-fill: var(--color-beige);
-    color: var(--color-ink);
+    --brand-box-fill: var(--color-white);
     font-weight: 600;
   }
 
