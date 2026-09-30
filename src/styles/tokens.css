@@ -11,12 +11,17 @@
      Rouge corail      #ff6c4f  logotype, home accent (social/links/arrows), display titles only.
                                 Below AA on every light ground here — 1.87:1 on bleu clair, 2.61:1
                                 on beige, ~2.19:1 over photos — so it never carries running text.
-                                One client-mandated exception: the project cartouche values.
+                                Client-mandated exceptions: the project cartouche values, the
+                                social discs, and the aubergine label on a selected (corail)
+                                programme chip (2.56:1).
      Violet aubergine  #7e4080  inner-page accent + all panel ink and hairlines
      Violet nuit       #32255b  primary dark text; label on a selected (corail) chip
      Bleu clair        #bbd5fd  panels: project HUD, info pop-up, related band, atelier
      Taupe clair       #d0b8b0  active nav tint + related-band label ground
-     Rose              #fec9d7  selected thématique chip fill
+     Rose              #fec9d7  selected thématique chip fill; hairlines of the nav cartouches and
+                                the Projets filter chips
+     Blanc             #ffffff  off the charte, drawn on the client boards: hover/active fill of the
+                                nav and filter cartouches, glyph of the social discs
      Gris / Violet vif / Vert citron / Olive / Turquoise / Jaune fluo — in the charte, unused by
                               the UI. The hairline grey drawn on screen is --color-line #d8d0cc, a
                               warm neutral off the charte, kept because it reads on beige.
@@ -85,12 +90,15 @@
   --couleur-rose: #fec9d7;
   --couleur-gris: #c6c6c6;
   --couleur-jaune-fluo: #ffff00;
+  --couleur-blanc: #ffffff;
 
   /* ---- Semantic aliases — component-facing ---------------------------- */
   --color-paper: var(--couleur-beige-clair);
   --color-ink: var(--couleur-violet-nuit);
   --color-violet: var(--couleur-violet-aubergine);
   --color-coral: var(--couleur-corail);
+  --color-white: var(--couleur-blanc);
+  --color-cartouche-line: var(--couleur-rose); /* nav + filter cartouche hairlines */
   --color-beige: var(--couleur-taupe-clair); /* active-button tint + related-band label ground */
   --color-thematique-fill: var(--couleur-rose); /* selected thématique chip */
   --color-arrow-edge: var(--couleur-rose); /* carousel arrow hairline (Fleche + public/cursors) */
@@ -131,7 +139,7 @@
   --brand-box-gap: 3px;
   --brand-box-w: 1px;
   --brand-box-line: var(--accent);
-  --brand-box-fill-hover: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
+  --brand-box-fill-hover: var(--color-white);
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -162,6 +170,8 @@
   --nav-cartouche-h: 2.75rem; /* min-height on .nav__btn, so --nav-brand-h stays true if type grows */
   /* Between the stacked cartouches, and between the filter rows level with them. */
   --nav-row-gap: var(--space-1);
+  /* Between the logotype and the first cartouche — twice the row gap, as the client board draws it. */
+  --nav-logo-gap: var(--space-2);
   --nav-cartouche-font: 0.875rem; /* nav cartouches and the filter chips level with them */
   /* Room page content must leave for the header — on mobile the whole band, set by the burger. */
   --nav-clear: calc(2 * var(--nav-pad-y) + var(--nav-burger-h));
@@ -201,7 +211,9 @@
     /* Thin cartouches: the V3 header board draws each one at ~0.43x the logotype's height. The 24px
        floor keeps them at the WCAG 2.5.8 AA target size (the burger replaces them below 48rem). */
     --nav-cartouche-h: max(1.5rem, calc(var(--nav-brand-w) / var(--nav-logo-ratio) * 0.43));
-    --nav-brand-h: calc(var(--nav-clear) + 2 * var(--nav-cartouche-h) + var(--nav-row-gap));
+    --nav-brand-h: calc(
+      var(--nav-clear) + var(--nav-logo-gap) + 2 * var(--nav-cartouche-h) + var(--nav-row-gap)
+    );
   }
 }
 @media (min-width: 64rem) {

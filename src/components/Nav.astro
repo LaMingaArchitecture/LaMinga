@@ -83,7 +83,6 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     justify-self: start;
     display: flex;
     flex-direction: column;
-    /* Cartouches hang directly off the logotype's bottom rule, as drawn. */
     gap: 0;
     min-width: 0;
   }
@@ -112,13 +111,9 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     align-items: center;
     gap: var(--space-3);
   }
-  /* Header social row: desktop only (the burger panel carries social on mobile). The header floats
-     over photos and the marks must stay plate-less outlines, so a paper halo lifts them off dark
-     images instead of a backing badge. */
+  /* Header social row: desktop only (the burger panel carries social on mobile). */
   .nav__right :global(.nav__social) {
     display: none;
-    filter: drop-shadow(0 0 1px var(--color-paper)) drop-shadow(0 0 1px var(--color-paper))
-      drop-shadow(0 0 6px var(--color-paper));
   }
 
   /* Stacked outlined nav cartouches — hidden on mobile (the burger takes over). */
@@ -133,6 +128,7 @@ const activeSection = activeSectionFor(Astro.url.pathname);
   /* Box outline comes from the .brand-box utility (open-corner edges). Set background-color (not the
      background shorthand) so hover/active fills don't wipe the edge gradients. */
   .nav__btn {
+    --brand-box-line: var(--color-cartouche-line);
     /* min-height, not padding alone: --nav-brand-h reserves exactly two of these (+ the row gap). */
     display: flex;
     align-items: center;
@@ -150,8 +146,7 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     --brand-box-fill: var(--brand-box-fill-hover);
   }
   .nav__btn[aria-current='page'] {
-    --brand-box-fill: var(--color-beige);
-    color: var(--color-ink);
+    --brand-box-fill: var(--color-white);
     font-weight: 600;
   }
 
@@ -173,10 +168,30 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     }
     .nav__brand {
       width: var(--nav-brand-w);
+      gap: var(--nav-logo-gap);
     }
     .nav__logo-img {
       height: auto;
       width: 100%;
+    }
+  }
+
+  /* Mouse devices: only the logotype shows; the cartouches appear while the pointer is over the
+     brand column (the logo gap is inside it, so the path down to them keeps the hover) or while one
+     holds keyboard focus. visibility, not display — the boxes keep their room, so --nav-brand-h
+     stays true and nothing below shifts. Touch tablets have no hover and keep them visible. */
+  @media (min-width: 48rem) and (hover: hover) and (pointer: fine) {
+    .nav__buttons {
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity var(--transition),
+        visibility var(--transition);
+    }
+    .nav__brand:hover .nav__buttons,
+    .nav__brand:focus-within .nav__buttons {
+      opacity: 1;
+      visibility: visible;
     }
   }
 </style>
