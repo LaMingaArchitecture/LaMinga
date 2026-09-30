@@ -12,12 +12,13 @@ const { projects } = Astro.props;
 
 {
   /* Liste (index) view: boxed-cell table. Rows carry the same filter hooks as the vignettes; hover
-    tints the row corail and the script floats the project's cover thumbnail. Scrolls with the page
+    tints the row corail and the script lays the project's cover thumbnail over the Programme column,
+    from the hovered row down. Scrolls with the page
     (sticky filters keep the rows filterable). */
 }
 <div class="index" data-view="index" hidden>
   <div class="index__scroll">
-    <div class="index__table-wrap">
+    <div class="index__table-wrap" data-thumb-scroll>
       <table class="index-table">
         <thead>
           <tr>
@@ -39,14 +40,16 @@ const { projects } = Astro.props;
                 data-programme={project.programme?.slug ?? ''}
                 data-thematiques={project.thematiques.join(' ')}
                 data-search={projectSearchText(project)}
-                data-thumb={project.photo?.filename ? sbImage(project.photo.filename, '400x0') : ''}
+                data-thumb={project.photo?.filename ? sbImage(project.photo.filename, '800x0') : ''}
               >
                 <th scope="row" class="index__name brand-box">
                   <a href={`/projets/${project.slug}`}>{project.titre}</a>
                 </th>
                 <td class="brand-box">{project.maitre_ouvrage}</td>
                 <td class="brand-box">{project.ville}</td>
-                <td class="brand-box">{project.description_programme}</td>
+                <td class="brand-box" data-thumb-anchor>
+                  {project.description_programme}
+                </td>
                 <td class="brand-box">{project.statut}</td>
                 <td class="index__link brand-box">
                   <a href={`/projets/${project.slug}`}>Voir le projet</a>
@@ -132,14 +135,11 @@ const { projects } = Astro.props;
     text-decoration: underline;
   }
 
+  /* left/top/width are set by the script from the hovered row's Programme cell. */
   .index__thumb {
     position: absolute;
-    left: 20%;
-    width: clamp(9rem, 22vw, 14rem);
     aspect-ratio: 4 / 3;
     object-fit: cover;
-    border: var(--border-w) solid var(--color-coral);
-    box-shadow: 0 12px 30px -16px color-mix(in srgb, var(--color-ink) 60%, transparent);
     pointer-events: none;
     z-index: 3;
   }
