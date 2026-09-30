@@ -24,7 +24,7 @@ const src = image?.filename ? sbImageW(image.filename, HERO_IMG_WIDTH) : undefin
 const srcset = image?.filename ? sbSrcset(image.filename) : undefined;
 
 // Transparent 1×1: a valid `src` for the deferred backgrounds, so nothing is fetched until
-// atelier-scroll hands over the real source. Allowed by the CSP (`img-src 'self' data:`).
+// atelier-images.ts hands over the real source. Allowed by the CSP (`img-src 'self' data:`).
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 // Shared by the eager / deferred / no-JS branches so the three cannot drift apart. `alt` stays an
@@ -50,7 +50,7 @@ const imgAttrs = { sizes: SIZES_FULLSCREEN, decoding: 'async' as const };
         />
       ) : (
         <Fragment>
-          {/* Deferred until after the LCP — see the note on setupDeferredImages in atelier-scroll.ts. The
+          {/* Deferred until after the LCP — see the note on setupDeferredImages in atelier-images.ts. The
               section clips its overscan (`.atelier__sec { overflow: hidden }`), so none of this
               image is on screen while the hero paints, even though its box crosses the fold.
               No `loading`: the src is a data: URI, so there is nothing for it to defer. */}
