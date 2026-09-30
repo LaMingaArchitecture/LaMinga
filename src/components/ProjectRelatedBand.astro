@@ -82,6 +82,7 @@ const { id, related, hidden = true } = Astro.props;
       align-self: start;
       max-width: 13rem;
     }
+    /* One row of five = MAX_RELATED in src/lib/content.ts (the similarity fallback's cap). */
     .related-band__grid {
       grid-template-columns: repeat(5, 1fr);
     }

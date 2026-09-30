@@ -60,7 +60,8 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 - **Noms techniques en `snake_case`** = clés de `components` dans `astro.config.mjs`
 - Classification à 2 niveaux : **`programme`** (relation, 1 par projet) +
   **`thematiques`** (datasource `thematique`, plusieurs par projet — jamais de valeurs en dur)
-- Projets liés = relation `projets_lies` ; relations résolues via `PROJECT_RELATIONS` /
+- Projets liés = relation `projets_lies`, sinon repli automatique sur les projets similaires
+  (`getRelatedProjects` : même programme puis thématiques partagées, max 5) ; relations résolues via `PROJECT_RELATIONS` /
   `HOME_RELATIONS` (`src/lib/content.ts`, fetch partagé sans N+1) — combinées par `getPreviewStory()`
   pour `preview/[...slug]`
 - Assets SVG (logo, icônes) rendus depuis le filename brut (pas `sbImage`) ; vidéo mp4 → CSP `media-src`

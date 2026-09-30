@@ -35,7 +35,9 @@ autoplay loop playsinline>` + `<track kind="captions" />` (a11y lint). Hôtes au
   - `version` : `draft` (preview) vs `published` (prod) — déjà géré par `storyblokVersion`.
   - Relations : `programme` + `projets_lies` résolues via `PROJECT_RELATIONS`,
     `home_slide.projet` via `HOME_RELATIONS` (constantes de `content.ts`, combinées par
-    `getPreviewStory()` pour `preview/[...slug].astro`). Narrowers purs : `resolveProgramme` / `resolveRelated`.
+    `getPreviewStory()` pour `preview/[...slug].astro`). Narrower pur : `resolveProgramme`.
+  - Projets en relation : `getRelatedProjects(blok)` (async) — `projets_lies` si renseigné, sinon
+    jusqu'à 5 projets similaires (même programme, puis thématiques partagées).
   - Filtre projets : datasource `thematique` (`getThematiques`), jamais de valeurs en dur ;
     programmes = stories `programme` (nom).
 - **Blocs de page** (`home_page`, `project_list`) : `home_page` rend son `carrousel` de `home_slide`
