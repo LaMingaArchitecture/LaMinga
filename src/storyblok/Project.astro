@@ -31,7 +31,7 @@ const infosHasContent =
   rows.length > 0 || Boolean(blok.texte) || (blok.engagements?.length ?? 0) > 0;
 ---
 
-<FullscreenCarousel controls="grouped" ariaLabel={blok.titre} {...storyblokEditable(blok)}>
+<FullscreenCarousel ariaLabel={blok.titre} {...storyblokEditable(blok)}>
   {slides.map((slide, i) => <StoryblokComponent blok={slide} first={i === 0} />)}
   {showRecap && <ProjectRecapSlide slides={slides} />}
 

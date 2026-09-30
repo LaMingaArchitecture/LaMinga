@@ -194,9 +194,25 @@ body[data-immersive-scroll][data-atelier-scrolled] > header {
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+/* Same clipping, lifted while the element has keyboard focus (focus-only controls). !important
+   because a component's scoped rule for the control has the same specificity and may load later —
+   it would otherwise re-grow the clipped box. */
+.visually-hidden-focusable:not(:focus-visible) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
 
 /* Preserve authored line breaks (textarea content) without a CSP-blocked inline style. */
@@ -210,15 +226,17 @@ body[data-immersive-scroll][data-atelier-scrolled] > header {
    fill is the page paper; a *selected* fill (--brand-box-fill) is drawn as an extra layer inset by
    the same gap, so the white corners survive when active. Contract for consumers: set
    --brand-box-line / --brand-box-fill / background-color, never a `background` or `border`
-   shorthand — either wipes the edge gradients. */
+   shorthand — either wipes the edge gradients. The line falls back to --accent here, on the box
+   itself, rather than in :root, where var(--accent) would resolve once to the root accent and
+   ignore the page's body[data-accent]. */
 .brand-box {
   background-color: var(--color-paper);
   background-image:
     /* four open-corner edges (painted on top) */
-    linear-gradient(var(--brand-box-line), var(--brand-box-line)),
-    linear-gradient(var(--brand-box-line), var(--brand-box-line)),
-    linear-gradient(var(--brand-box-line), var(--brand-box-line)),
-    linear-gradient(var(--brand-box-line), var(--brand-box-line)),
+    linear-gradient(var(--brand-box-line, var(--accent)), var(--brand-box-line, var(--accent))),
+    linear-gradient(var(--brand-box-line, var(--accent)), var(--brand-box-line, var(--accent))),
+    linear-gradient(var(--brand-box-line, var(--accent)), var(--brand-box-line, var(--accent))),
+    linear-gradient(var(--brand-box-line, var(--accent)), var(--brand-box-line, var(--accent))),
     /* inset selected fill (transparent unless --brand-box-fill is set) */
     linear-gradient(var(--brand-box-fill, transparent), var(--brand-box-fill, transparent));
   background-repeat: no-repeat;
