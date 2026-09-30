@@ -11,6 +11,7 @@
      Rouge corail      #ff6c4f  logotype, home accent (social/links/arrows), display titles only.
                                 Below AA on every light ground here — 1.87:1 on bleu clair, 2.61:1
                                 on beige, ~2.19:1 over photos — so it never carries running text.
+                                One client-mandated exception: the project cartouche values.
      Violet aubergine  #7e4080  inner-page accent + all panel ink and hairlines
      Violet nuit       #32255b  primary dark text; label on a selected (corail) chip
      Bleu clair        #bbd5fd  panels: project HUD, info pop-up, related band, atelier
@@ -171,10 +172,23 @@
   /* ---- Frame ----------------------------------------------------------- */
   --transition: 200ms ease;
 
+  /* ---- Cursor ----------------------------------------------------------
+     Brand cursor: a corail dot, fine pointers only (overridden below). Components write
+     `cursor: var(--cursor-link)` instead of `pointer` so every control shows the same dot. */
+  --cursor-default: auto;
+  --cursor-link: pointer;
+
   /* ---- z-index scale --------------------------------------------------- */
   --z-header: 100;
   --z-scrim: 200;
   --z-panel: 210;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :root {
+    --cursor-default: url('/cursors/point-corail.svg') 14 14, auto;
+    --cursor-link: url('/cursors/point-corail.svg') 14 14, pointer;
+  }
 }
 
 @media (min-width: 48rem) {

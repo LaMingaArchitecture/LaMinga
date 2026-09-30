@@ -43,7 +43,7 @@ const infosHasContent =
       <div class="project-hud__card">
         <ProjectHudCard
           titre={blok.titre}
-          ville={blok.ville}
+          maitreOuvrage={blok.maitre_ouvrage}
           programme={blok.description_programme}
         >
           {
@@ -148,7 +148,7 @@ const infosHasContent =
     font-style: italic;
     font-size: 0.9375rem;
     text-align: left;
-    cursor: pointer;
+    cursor: var(--cursor-link);
     touch-action: manipulation;
   }
   /* The +/− sign is drawn as two centered bars (pixel-perfect, unlike a text glyph); the vertical

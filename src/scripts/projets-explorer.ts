@@ -196,21 +196,35 @@ if (root) {
     apply();
   });
 
-  // Liste hover: float the project's cover thumbnail beside the hovered row (one request per row).
+  // Liste hover: lay the project's cover thumbnail over the Programme column, from the hovered row
+  // down (one request per row).
   if (thumb && thumb.parentElement) {
     const area = thumb.parentElement;
     indexRows.forEach((row) => {
       row.addEventListener('mouseenter', () => {
         const src = row.dataset.thumb;
-        if (!src) return;
+        const cell = row.querySelector<HTMLElement>('[data-thumb-anchor]');
+        if (!src || !cell) return;
+        const areaRect = area.getBoundingClientRect();
+        const cellRect = cell.getBoundingClientRect();
         thumb.src = src;
-        thumb.style.top = `${row.getBoundingClientRect().top - area.getBoundingClientRect().top}px`;
+        thumb.style.top = `${cellRect.top - areaRect.top}px`;
+        thumb.style.left = `${cellRect.left - areaRect.left}px`;
+        thumb.style.width = `${cellRect.width}px`;
         thumb.hidden = false;
       });
       row.addEventListener('mouseleave', () => {
         thumb.hidden = true;
       });
     });
+    // The table scrolls sideways on narrow screens; the thumbnail is positioned once, so drop it.
+    area.querySelector('[data-thumb-scroll]')?.addEventListener(
+      'scroll',
+      () => {
+        thumb.hidden = true;
+      },
+      { passive: true },
+    );
   }
 
   apply();

@@ -163,7 +163,7 @@ const programmesForThematique = (value: string) =>
     color: var(--accent);
     font-size: var(--nav-cartouche-font);
     text-align: left;
-    cursor: pointer;
+    cursor: var(--cursor-link);
     transition: color var(--transition);
   }
   .explorer__chip:hover {
@@ -217,7 +217,7 @@ const programmesForThematique = (value: string) =>
     font-style: italic;
     font-size: 0.9375rem;
     color: var(--accent);
-    cursor: pointer;
+    cursor: var(--cursor-link);
   }
   /* Active view / open search: violet nuit upright + 600. The V3 boards draw this corail, but
      corail on beige is 2.61:1 — below AA and below the 3:1 large-text floor — so the active state
