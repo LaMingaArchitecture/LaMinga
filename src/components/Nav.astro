@@ -190,4 +190,18 @@ const activeSection = activeSectionFor(Astro.url.pathname);
       pointer-events: auto;
     }
   }
+
+  /* From tablet up the transparent header box spans the full width down to the bottom of the brand
+     block — over the Projets filter rows level with the cartouches, and over the carousels — so it
+     lets clicks through and only its two zones catch them. Not where the header has a paper ground
+     (prose pages; the scrolled Atelier, whose band stays in portrait): content scrolled under it is
+     hidden there and must not be clickable. */
+  @media (min-width: 48rem) {
+    :global(body:not([data-scroll]):not([data-atelier-scrolled])) .site-header {
+      pointer-events: none;
+    }
+    :global(body:not([data-scroll]):not([data-atelier-scrolled])) :is(.nav__brand, .nav__right) {
+      pointer-events: auto;
+    }
+  }
 </style>

@@ -76,7 +76,7 @@ body {
   flex-direction: column;
 }
 
-/* Atelier + Mentions légales opt into scrolling (BaseLayout sets data-scroll). */
+/* Mentions légales, 404 and unknown story types scroll as a document (BaseLayout sets data-scroll). */
 body[data-scroll] {
   height: auto;
   min-height: 100svh;
@@ -113,18 +113,6 @@ body > header {
   inset: 0 0 auto 0;
   z-index: var(--z-header);
   background: transparent;
-}
-/* From tablet up the transparent header box spans the full width down to the bottom of the brand
-   block — over the Projets filter rows level with the cartouches, and over the carousels. It lets
-   clicks through; only its own controls catch them. Not where the header has a paper ground (mobile,
-   prose pages): there, content scrolled under it is hidden and must not be clickable. */
-@media (min-width: 48rem) {
-  body:not([data-scroll]) > header {
-    pointer-events: none;
-  }
-  body:not([data-scroll]) > header :is(.nav__brand, .nav__right) {
-    pointer-events: auto;
-  }
 }
 /* Non-immersive pages own a scroll container, so the header must not scroll away with it. */
 body:not([data-immersive]):not([data-immersive-scroll]) > header {
