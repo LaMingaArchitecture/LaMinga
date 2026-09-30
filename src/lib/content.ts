@@ -64,6 +64,11 @@ const DATASOURCE_THEMATIQUE = 'thematique';
 
 const MAX_PER_PAGE = 100;
 
+/** Fallback « projets en relation »: one row of the related band (ProjectRelatedBand, 5 columns). */
+const MAX_RELATED = 5;
+/** Draft only: how long the related fallback reuses its project list across preview requests. */
+const DRAFT_CANDIDATES_TTL_MS = 60_000;
+
 /**
  * Relations resolved on the shared project list fetch — single source of truth so
  * the delivery call and the SSR preview route never drift. Format `<component>.<field>`.
@@ -222,7 +227,7 @@ export function resolveProgramme(blok: ProjectBlok): ProgrammeSummary | undefine
 // Related projects (the `projets_lies` relation, resolved via resolve_relations), else [].
 // Each related story's own `programme` resolves too: the client sends `resolve_level=2` whenever
 // `resolve_relations` is set, so every response carries the nested relations of its stories.
-export function resolveRelated(blok: ProjectBlok): ProjectSummary[] {
+function resolveRelated(blok: ProjectBlok): ProjectSummary[] {
   return (blok.projets_lies ?? [])
     .filter(isResolved)
     .map((story) => toSummary(story.content as ProjectBlok, story.slug));
@@ -254,4 +259,62 @@ export async function getProjectSummaries(): Promise<ProjectSummary[]> {
 export async function getAllProjects(): Promise<Array<{ slug: string; blok: ProjectBlok }>> {
   const stories = await getProjectStories();
   return stories.map((story) => ({ slug: story.slug, blok: story.content as ProjectBlok }));
+}
+
+interface Similarity {
+  story: ISbStoryData;
+  sameProgramme: boolean;
+  sharedThematiques: number;
+}
+
+/** The projects most similar to `blok` (itself excluded): same programme first, then the most
+ *  shared thématiques; projects sharing neither are dropped. */
+function rankSimilar(blok: ProjectBlok, stories: ISbStoryData[]): ProjectSummary[] {
+  const programme = toProgramme(blok)?.slug;
+  const thematiques = new Set(blok.thematiques ?? []);
+  const similarityOf = (story: ISbStoryData): Similarity => {
+    const other = story.content as ProjectBlok;
+    return {
+      story,
+      sameProgramme: programme !== undefined && toProgramme(other)?.slug === programme,
+      sharedThematiques: (other.thematiques ?? []).filter((value) => thematiques.has(value)).length,
+    };
+  };
+  return stories
+    .filter((story) => (story.content as ProjectBlok)._uid !== blok._uid)
+    .map(similarityOf)
+    .filter(({ sameProgramme, sharedThematiques }) => sameProgramme || sharedThematiques > 0)
+    .sort(
+      (a, b) =>
+        Number(b.sameProgramme) - Number(a.sameProgramme) ||
+        b.sharedThematiques - a.sharedThematiques,
+    )
+    .slice(0, MAX_RELATED)
+    .map(({ story }) => toSummary(story.content as ProjectBlok, story.slug));
+}
+
+// Published: the build-wide memoized list. Draft: getProjectStories never caches, so without this
+// every preview page view would refetch the whole list; a neighbour edited in the last minute may
+// be missing from the band until the next refresh.
+let draftCandidates: { at: number; stories: Promise<ISbStoryData[]> } | undefined;
+function getSimilarCandidates(): Promise<ISbStoryData[]> {
+  if (storyblokVersion === 'published') return getProjectStories();
+  const now = Date.now();
+  if (!draftCandidates || now - draftCandidates.at > DRAFT_CANDIDATES_TTL_MS) {
+    const stories = getProjectStories();
+    draftCandidates = { at: now, stories };
+    stories.catch(() => {
+      if (draftCandidates?.stories === stories) draftCandidates = undefined;
+    });
+  }
+  return draftCandidates.stories;
+}
+
+// « Projets en relation »: the editor's `projets_lies` selection when there is one (uncapped — the
+// editor's call), else the most similar projects, so the cartouche offers the band on every project
+// that has a neighbour.
+export async function getRelatedProjects(blok: ProjectBlok): Promise<ProjectSummary[]> {
+  const chosen = resolveRelated(blok);
+  if (chosen.length > 0) return chosen;
+  return rankSimilar(blok, await getSimilarCandidates());
 }

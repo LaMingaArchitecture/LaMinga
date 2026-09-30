@@ -20,8 +20,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <style>
   .notfound {
     max-width: 40rem;
-    margin: 0 auto;
-    padding: var(--space-8) var(--space-4);
+    margin: 0;
+    padding: var(--space-8) var(--page-x);
     min-height: 60svh;
     display: flex;
     flex-direction: column;
@@ -52,9 +52,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-top: var(--space-2);
   }
   .notfound__link {
+    --brand-box-line: var(--color-cartouche-line);
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: var(--touch-min);
     padding: var(--space-2) var(--space-4);
     color: var(--accent);
     text-decoration: none;
@@ -62,6 +63,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     touch-action: manipulation;
   }
   .notfound__link:hover {
-    --brand-box-fill: color-mix(in srgb, var(--accent) 10%, transparent);
+    --brand-box-fill: var(--brand-box-fill-hover);
   }
 </style>

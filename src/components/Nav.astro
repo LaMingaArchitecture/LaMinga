@@ -83,7 +83,6 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     justify-self: start;
     display: flex;
     flex-direction: column;
-    /* Cartouches hang directly off the logotype's bottom rule, as drawn. */
     gap: 0;
     min-width: 0;
   }
@@ -112,13 +111,9 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     align-items: center;
     gap: var(--space-3);
   }
-  /* Header social row: desktop only (the burger panel carries social on mobile). The header floats
-     over photos and the marks must stay plate-less outlines, so a paper halo lifts them off dark
-     images instead of a backing badge. */
+  /* Header social row: desktop only (the burger panel carries social on mobile). */
   .nav__right :global(.nav__social) {
     display: none;
-    filter: drop-shadow(0 0 1px var(--color-paper)) drop-shadow(0 0 1px var(--color-paper))
-      drop-shadow(0 0 6px var(--color-paper));
   }
 
   /* Stacked outlined nav cartouches — hidden on mobile (the burger takes over). */
@@ -133,6 +128,7 @@ const activeSection = activeSectionFor(Astro.url.pathname);
   /* Box outline comes from the .brand-box utility (open-corner edges). Set background-color (not the
      background shorthand) so hover/active fills don't wipe the edge gradients. */
   .nav__btn {
+    --brand-box-line: var(--color-cartouche-line);
     /* min-height, not padding alone: --nav-brand-h reserves exactly two of these (+ the row gap). */
     display: flex;
     align-items: center;
@@ -142,16 +138,12 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     font-size: 0.9375rem;
     text-decoration: none;
     text-align: left;
-    /* The fill swaps via --brand-box-fill (a gradient layer), which can't transition; only the text
-       colour animates. */
-    transition: color var(--transition);
   }
   .nav__btn:hover {
     --brand-box-fill: var(--brand-box-fill-hover);
   }
   .nav__btn[aria-current='page'] {
-    --brand-box-fill: var(--color-beige);
-    color: var(--color-ink);
+    --brand-box-fill: var(--brand-box-fill-active);
     font-weight: 600;
   }
 
@@ -173,10 +165,43 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     }
     .nav__brand {
       width: var(--nav-brand-w);
+      gap: var(--nav-logo-gap);
     }
     .nav__logo-img {
       height: auto;
       width: 100%;
+    }
+  }
+
+  /* Mouse devices: only the logotype shows; the cartouches appear while the pointer is over the
+     brand column (the logo gap is inside it, so the path down to them keeps the hover) or while
+     keyboard focus is anywhere in the header. Faded, not hidden: the links stay focusable and in the
+     accessibility tree, and the boxes keep their room so nothing below shifts. Touch tablets have
+     no hover and keep them visible. */
+  @media (min-width: 48rem) and (hover: hover) and (pointer: fine) {
+    .nav__buttons {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .nav__brand:hover .nav__buttons,
+    .nav:focus-within .nav__buttons {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  /* From tablet up the transparent header box spans the full width down to the bottom of the brand
+     block — over the Projets filter rows level with the cartouches, and over the carousels — so it
+     lets clicks through and only its two zones catch them. Not where the header has a paper ground
+     (prose pages; the scrolled Atelier, whose band stays in portrait): content scrolled under it is
+     hidden there and must not be clickable. */
+  @media (min-width: 48rem) {
+    :global(body:not([data-scroll]):not([data-atelier-scrolled])) .site-header {
+      pointer-events: none;
+    }
+    :global(body:not([data-scroll]):not([data-atelier-scrolled])) :is(.nav__brand, .nav__right) {
+      pointer-events: auto;
     }
   }
 </style>

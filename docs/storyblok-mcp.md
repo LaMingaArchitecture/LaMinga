@@ -54,6 +54,7 @@ pas seulement pour ce dépôt.
 
 - La région de l'espace est **EU**.
 - Déroulé attendu de l'assistant : `search` → `describe` → exécution (lecture seule d'abord).
+- Mise à jour des médias d'un projet : [`procedure-medias.md`](procedure-medias.md).
 - Accorder uniquement l'espace LaMinga et les permissions nécessaires.
 - Si un token personnel a été exposé (terminal, capture, commit) : le **révoquer** dans Storyblok
   (Mon compte → Personal access tokens).

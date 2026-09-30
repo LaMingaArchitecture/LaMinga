@@ -167,28 +167,27 @@ const programmesForThematique = (value: string) =>
     transition: color var(--transition);
   }
   .explorer__chip:hover {
-    --brand-box-line: var(--accent);
+    --brand-box-fill: var(--brand-box-fill-hover);
   }
   .explorer__chip[hidden] {
     display: none;
   }
 
-  /* Programme chips (row 1): one flat corail fill when selected, the same for every programme —
-     the V3 boards abandoned the per-programme colour. The label is violet nuit (4.84:1 on corail);
-     the aubergine the boards draw would be 2.56:1. `font-weight: 600` is the non-colour cue. */
+  /* Programme chips (row 1): rose hairlines, one flat corail fill when selected, the same for every
+     programme. The label stays aubergine on corail as the client board draws it (2.56:1, a client-
+     accepted exception — tokens.css); `font-weight: 600` is the non-colour cue. */
   .explorer__chip--programme {
-    --brand-box-line: var(--color-line);
+    --brand-box-line: var(--color-cartouche-line);
   }
   .explorer__chip--programme[aria-pressed='true'] {
     --brand-box-line: var(--color-coral);
     --brand-box-fill: var(--color-coral);
-    color: var(--color-ink);
     font-weight: 600;
   }
 
   /* Thematique chips (row 2) are serif italic; selected = rose fill per the V3 boards. */
   .explorer__chip--thematique {
-    --brand-box-line: var(--color-line);
+    --brand-box-line: var(--color-cartouche-line);
     font-family: var(--font-serif);
     font-style: italic;
   }
@@ -199,7 +198,7 @@ const programmesForThematique = (value: string) =>
     font-weight: 600;
   }
 
-  /* Tool row — plain serif-italic text links; active view / open search = corail upright. Reserve
+  /* Tool row — plain serif-italic text links; active view / open search = corail. Reserve
      the search field's height at all times (align-items:center keeps the links centred) so revealing
      the input never grows the row / sticky bar and shifts the grid ("clipping" jump). */
   .explorer__tools {
@@ -219,21 +218,19 @@ const programmesForThematique = (value: string) =>
     color: var(--accent);
     cursor: var(--cursor-link);
   }
-  /* Active view / open search: violet nuit upright + 600. The V3 boards draw this corail, but
-     corail on beige is 2.61:1 — below AA and below the 3:1 large-text floor — so the active state
-     takes violet nuit (12.64:1) and keeps the italic → upright flip as its non-colour cue. */
+  /* Active view / open search: corail as the client board draws it (2.61:1 on beige, a client-
+     accepted exception — tokens.css); weight 600 is the non-colour cue. */
   .explorer__tool[aria-pressed='true'],
   .explorer__tool[aria-expanded='true'] {
-    color: var(--color-ink);
-    font-style: normal;
+    color: var(--color-coral);
     font-weight: 600;
   }
   /* Search field shares the .brand-box open-corner outline (like the filter chips + nav buttons).
      Reset the native <input> chrome so only the brand-box gradients show. The open-corner edge is
-     the focus affordance here: grey (--color-line) at rest → aubergine (--accent) on focus, and the
+     the focus affordance here: rose at rest → aubergine (--accent) on focus, and the
      default focus ring is suppressed so the colour change alone signals focus (per design). */
   .explorer__search {
-    --brand-box-line: var(--color-line);
+    --brand-box-line: var(--color-cartouche-line);
     appearance: none;
     -webkit-appearance: none;
     border: 0;
@@ -268,11 +265,11 @@ const programmesForThematique = (value: string) =>
   }
   /* Tablet up: the filter block clears the brand column, so the cartouches hanging out of the
      floating header into column 1 never overlap the chips. Row 1 sits level with « Projets »:
-     both begin at the logotype's bottom edge, which is where <main> starts (--nav-clear). */
+     <main> starts at the logotype's bottom edge (--nav-clear), and both then leave the logo gap. */
   @media (min-width: 48rem) {
     .explorer__sticky {
       padding-left: calc(var(--nav-brand-w) + var(--grid-gap));
-      padding-block-start: 0;
+      padding-block-start: var(--nav-logo-gap);
     }
     /* Chip rows share the cartouches' height and gap, so each row lines up with the one beside it. */
     .explorer__filters,

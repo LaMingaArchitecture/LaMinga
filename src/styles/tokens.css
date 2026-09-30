@@ -8,15 +8,25 @@
 
    PALETTE (charte name — hex — role)
      Beige clair       #f9f7f2  page background
-     Rouge corail      #ff6c4f  logotype, home accent (social/links/arrows), display titles only.
+     Rouge corail      #ff6c4f  logotype, home accent, social discs + mobile burger/drawer on every
+                                page, carousel cursors, display titles.
                                 Below AA on every light ground here — 1.87:1 on bleu clair, 2.61:1
                                 on beige, ~2.19:1 over photos — so it never carries running text.
-                                One client-mandated exception: the project cartouche values.
+                                Client-mandated exceptions: the project cartouche values; the
+                                social discs; the mobile burger and drawer (title, close button,
+                                Projets/Atelier links, « mentions légales »); the active Projets
+                                view / search tool (2.61:1); and the aubergine label on a selected
+                                (corail) programme chip (2.56:1).
+                                Also client-decided: no visible carousel arrows — touch users step
+                                by swiping, keyboard users get focus-only buttons.
      Violet aubergine  #7e4080  inner-page accent + all panel ink and hairlines
-     Violet nuit       #32255b  primary dark text; label on a selected (corail) chip
+     Violet nuit       #32255b  primary dark text
      Bleu clair        #bbd5fd  panels: project HUD, info pop-up, related band, atelier
-     Taupe clair       #d0b8b0  active nav tint + related-band label ground
-     Rose              #fec9d7  selected thématique chip fill
+     Taupe clair       #d0b8b0  related-band label ground
+     Rose              #fec9d7  selected thématique chip fill; hairlines of the nav, mobile drawer
+                                and footer cartouches, the Projets filter chips and search field
+     Blanc             #ffffff  off the charte, drawn on the client boards: hover/active fill of the
+                                cartouches, mobile burger ground, glyph of the social discs
      Gris / Violet vif / Vert citron / Olive / Turquoise / Jaune fluo — in the charte, unused by
                               the UI. The hairline grey drawn on screen is --color-line #d8d0cc, a
                               warm neutral off the charte, kept because it reads on beige.
@@ -85,15 +95,22 @@
   --couleur-rose: #fec9d7;
   --couleur-gris: #c6c6c6;
   --couleur-jaune-fluo: #ffff00;
+  --couleur-blanc: #ffffff;
 
   /* ---- Semantic aliases — component-facing ---------------------------- */
   --color-paper: var(--couleur-beige-clair);
   --color-ink: var(--couleur-violet-nuit);
   --color-violet: var(--couleur-violet-aubergine);
   --color-coral: var(--couleur-corail);
-  --color-beige: var(--couleur-taupe-clair); /* active-button tint + related-band label ground */
+  --color-white: var(--couleur-blanc);
+  --color-cartouche-line: var(
+    --couleur-rose
+  ); /* cartouche hairlines (nav, drawer, footer, filters) */
+  --color-beige: var(--couleur-taupe-clair); /* related-band label ground */
   --color-thematique-fill: var(--couleur-rose); /* selected thématique chip */
-  --color-arrow-edge: var(--couleur-rose); /* carousel arrow hairline (Fleche + public/cursors) */
+  --color-arrow-edge: var(
+    --couleur-rose
+  ); /* carousel arrow hairline (Fleche + --cursor-prev/next*) */
   /* Charte V3 panel (project HUD card, info pop-up, related band, atelier panels): bleu clair with
      aubergine ink and hairlines — measured off the V3 boards, where labels and body copy are
      aubergine and only display titles are corail. Aubergine on bleu clair is 4.79:1 (AA).
@@ -130,8 +147,10 @@
      global.css. When selected, the fill is inset by the same gap so the corners stay open. */
   --brand-box-gap: 3px;
   --brand-box-w: 1px;
-  --brand-box-line: var(--accent);
-  --brand-box-fill-hover: color-mix(in srgb, var(--color-beige) 45%, var(--color-paper));
+  --brand-box-fill-hover: var(--color-white);
+  --brand-box-fill-active: var(
+    --color-white
+  ); /* current page — the client board draws it as hover */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -162,6 +181,8 @@
   --nav-cartouche-h: 2.75rem; /* min-height on .nav__btn, so --nav-brand-h stays true if type grows */
   /* Between the stacked cartouches, and between the filter rows level with them. */
   --nav-row-gap: var(--space-1);
+  /* Between the logotype and the first cartouche, as the client board draws it. */
+  --nav-logo-gap: calc(2 * var(--nav-row-gap));
   --nav-cartouche-font: 0.875rem; /* nav cartouches and the filter chips level with them */
   /* Room page content must leave for the header — on mobile the whole band, set by the burger. */
   --nav-clear: calc(2 * var(--nav-pad-y) + var(--nav-burger-h));
@@ -174,7 +195,9 @@
 
   /* ---- Cursor ----------------------------------------------------------
      Brand cursor: a corail dot, fine pointers only (overridden below). Components write
-     `cursor: var(--cursor-link)` instead of `pointer` so every control shows the same dot. */
+     `cursor: var(--cursor-link)` instead of `pointer` so every control shows the same dot. The
+     carousel arrows (--cursor-prev/next, -clair on light slides) exist only in that fine-pointer
+     block, which is also the only place FullscreenCarousel reads them. */
   --cursor-default: auto;
   --cursor-link: pointer;
 
@@ -184,10 +207,32 @@
   --z-panel: 210;
 }
 
+/* Cursor images are inlined as data URIs so they are ready with the stylesheet: a cursor file is
+   only requested once the cursor is first shown. They cannot read CSS colours, so the corail /
+   papier / rose hexes are written out — keep them in step with the palette above and with the
+   Fleche icon's points. */
 @media (hover: hover) and (pointer: fine) {
   :root {
-    --cursor-default: url('/cursors/point-corail.svg') 14 14, auto;
-    --cursor-link: url('/cursors/point-corail.svg') 14 14, pointer;
+    --cursor-dot: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"%3E%3Ccircle cx="14" cy="14" r="13" fill="%23ff6c4f"/%3E%3C/svg%3E');
+    --cursor-default: var(--cursor-dot) 14 14, auto;
+    --cursor-link: var(--cursor-dot) 14 14, pointer;
+    /* Carousel halves (FullscreenCarousel): corail ink, and papier over a titre_clair slide. */
+    --cursor-prev:
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="87.8 87 3.3 44.9 87.8 2.9" fill="%23ff6c4f" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')
+        4 16,
+      pointer;
+    --cursor-next:
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="3.3 87 87.8 44.9 3.3 2.9" fill="%23ff6c4f" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')
+        28 16,
+      pointer;
+    --cursor-prev-clair:
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="87.8 87 3.3 44.9 87.8 2.9" fill="%23f9f7f2" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')
+        4 16,
+      pointer;
+    --cursor-next-clair:
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="3.3 87 87.8 44.9 3.3 2.9" fill="%23f9f7f2" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')
+        28 16,
+      pointer;
   }
 }
 
@@ -201,7 +246,9 @@
     /* Thin cartouches: the V3 header board draws each one at ~0.43x the logotype's height. The 24px
        floor keeps them at the WCAG 2.5.8 AA target size (the burger replaces them below 48rem). */
     --nav-cartouche-h: max(1.5rem, calc(var(--nav-brand-w) / var(--nav-logo-ratio) * 0.43));
-    --nav-brand-h: calc(var(--nav-clear) + 2 * var(--nav-cartouche-h) + var(--nav-row-gap));
+    --nav-brand-h: calc(
+      var(--nav-clear) + var(--nav-logo-gap) + 2 * var(--nav-cartouche-h) + var(--nav-row-gap)
+    );
   }
 }
 @media (min-width: 64rem) {

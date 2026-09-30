@@ -1,12 +1,9 @@
 ---
 /**
- * Instagram mark — monochrome outline on a TRANSPARENT background (per client feedback: no filled
- * badge/plate). Paints with `currentColor` (= the page --accent: corail on the home header, violet
- * elsewhere), so it themes with no per-page asset swap. Rendered inline (not <img>) so currentColor
- * resolves against the surrounding link colour.
- *
- * The rounded square and the round stroke terminals are Instagram's trademarked geometry, so they
- * are deliberately exempt from the charte's no-rounded-corners rule (tokens.css). Do not square them.
+ * Instagram mark — the client's corail disc (SVG/Insta corail.svg): the disc paints with
+ * `currentColor`, the glyph is filled white so it stays legible over photos. The export's four white
+ * corner fillers are dropped so the disc sits on a transparent square. Rendered inline (not <img>)
+ * so currentColor resolves against the surrounding link colour.
  */
 interface Props {
   size?: number | string;
@@ -18,24 +15,36 @@ const { size = 24, class: className } = Astro.props;
 <svg
   class:list={['icon', className]}
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 24 24"
+  viewBox="0 0 93.6 91.98"
   width={size}
   height={size}
-  fill="none"
-  stroke="currentColor"
-  stroke-width="2"
-  stroke-linecap="round"
-  stroke-linejoin="round"
+  fill="currentColor"
   aria-hidden="true"
   focusable="false"
 >
-  <rect x="2" y="2" width="20" height="20" rx="5.5"></rect>
-  <circle cx="12" cy="12" r="4.25"></circle>
-  <circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none"></circle>
+  <path
+    d="M47.9,0s.15.08.2.08l1.42.03.95.06c10.94.73,21.2,5.37,29.05,12.86l1.01,1c7.25,7.36,11.84,16.9,12.92,27.11l.09,1.55c0,.07.03.26.08.26v6.1s-.07.19-.08.26l-.08,1.55c-1.05,10.14-5.59,19.65-12.76,27-7.84,8.03-18.38,13.05-29.68,13.98l-1.57.08-.35.08h-4.38l-.35-.08-1.66-.09c-11.44-.98-22.09-6.14-29.93-14.35C5.21,69.55.72,59.27.18,48.42l-.08-1.26-.11-.63.02-.99.09-.71.06-1.09c.51-11.05,5.15-21.54,12.93-29.51C21.07,6.05,31.82,1,43.33.18l1.02-.06c.54-.03,1.06-.01,1.55-.1l2-.02ZM64.82,69.17c2.99,0,5.62-2.48,5.62-5.4V28.29c0-2.87-2.56-5.4-5.49-5.4H28.84c-3.08,0-5.5,2.68-5.5,5.63v35.03c0,3.11,2.61,5.64,5.78,5.64h35.7Z"
+  ></path>
+  <path
+    class="icon__glyph"
+    d="M64.82,69.17H29.12c-3.17.01-5.78-2.52-5.78-5.63V28.52c0-2.95,2.42-5.62,5.5-5.62h36.11c2.93,0,5.5,2.53,5.5,5.4v35.49c0,2.92-2.64,5.4-5.63,5.4ZM64.59,35.91v-5.88c0-.82-.76-1.39-1.55-1.39h-5.76c-.79,0-1.54.58-1.54,1.39v6c.1.71.69,1.3,1.45,1.3h5.94c.76,0,1.45-.63,1.45-1.42ZM54.17,51.75c2.96-3.31,2.97-8.16.12-11.49-3.78-4.41-10.78-4.45-14.61-.1-2.99,3.39-2.93,8.38.14,11.7,3.83,4.15,10.56,4.13,14.36-.12ZM64.59,41.68l-3.6.78c1.47,4.78.2,9.81-3.22,13.37-5.83,6.07-15.83,6.07-21.65,0-3.42-3.56-4.69-8.59-3.22-13.37l-3.68-.79v20.45c0,.73.5,1.27,1.28,1.27h32.8c.68,0,1.28-.44,1.29-1.14v-20.58Z"
+  ></path>
+  <path
+    d="M64.59,41.68v20.58c0,.7-.62,1.14-1.29,1.14H30.49c-.78,0-1.28-.55-1.28-1.28v-20.45s3.68.79,3.68.79c-1.47,4.78-.2,9.8,3.22,13.37,5.83,6.07,15.82,6.07,21.65,0,3.42-3.56,4.69-8.59,3.22-13.37l3.6-.78Z"
+  ></path>
+  <path
+    d="M54.17,51.75c-3.79,4.25-10.53,4.26-14.36.12-3.07-3.33-3.13-8.31-.14-11.7,3.83-4.35,10.83-4.31,14.61.1,2.85,3.33,2.84,8.18-.12,11.49Z"
+  ></path>
+  <path
+    d="M64.59,35.91c0,.79-.7,1.42-1.45,1.42h-5.94c-.76,0-1.36-.59-1.46-1.3v-6c0-.81.76-1.39,1.55-1.39h5.76c.79,0,1.54.58,1.54,1.39v5.88Z"
+  ></path>
 </svg>
 
 <style>
   .icon {
     display: block;
+  }
+  .icon__glyph {
+    fill: var(--color-white);
   }
 </style>

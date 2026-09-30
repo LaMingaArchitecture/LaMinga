@@ -50,7 +50,7 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
     align-items: stretch;
     justify-content: flex-start;
     gap: var(--space-2);
-    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+    padding: var(--space-3) var(--page-x) calc(var(--space-3) + env(safe-area-inset-bottom));
     border-top: var(--border-rule);
     background: var(--color-paper);
     font-size: 0.8125rem;
@@ -68,6 +68,7 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
   /* Cartouche cells, same open-corner outline as the nav buttons and the filter chips — the V3
      board draws the footer as six cartouches, not as closed boxes. */
   .site-footer__cell {
+    --brand-box-line: var(--color-cartouche-line);
     display: inline-flex;
     align-items: center;
     padding: var(--space-2) var(--space-3);
@@ -81,7 +82,7 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
   .site-footer__addr {
     white-space: normal;
   }
-  /* Same hover as the nav cartouches: the outline is already --accent, so the affordance is a fill. */
+  /* Same hover as the nav cartouches: a white fill inside the rose outline. */
   a.site-footer__cell:hover {
     --brand-box-fill: var(--brand-box-fill-hover);
   }

@@ -83,25 +83,25 @@ reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté
 
 ### `project` (content type — stories sous `projets/`)
 
-| Champ                   | Type Storyblok | Config                                                                     |
-| ----------------------- | -------------- | -------------------------------------------------------------------------- |
-| `titre`                 | text           | requis                                                                     |
-| `ville`                 | text           |                                                                            |
-| `programme`             | option         | relation story → `programme` (folder `programmes/`, `use_uuid`)            |
-| `thematiques`           | options        | source = datasource `thematique` (valeurs multiples)                       |
-| `description_programme` | text           | une ligne — accueil, fiche projet, colonne Index                           |
-| `maitre_ouvrage`        | text           | « Maîtrise d'ouvrage »                                                     |
-| `equipe`                | textarea       | « Équipe »                                                                 |
-| `statut`                | text           | ex. « Livré 2023 »                                                         |
-| `surface_sdp`           | text           | m² SDP (texte libre : autorise « NC », fourchette)                         |
-| `montant_ht`            | text           | ex. « 8 M€ »                                                               |
-| `divers`                | textarea       |                                                                            |
-| `texte`                 | richtext       | texte descriptif                                                           |
-| `engagements`           | bloks          | whitelist `engagement`, **max 3**                                          |
-| `carrousel`             | bloks          | whitelist `media_slide`                                                    |
-| `vignette_plan`         | asset          | plan-masse N&B (grille « PM » + strip projets liés)                        |
-| `photo_couverture`      | asset          | optionnel — grille « VRAC » + survol Index ; vide → 1re image du carrousel |
-| `projets_lies`          | options        | relations story → `project` (`use_uuid`)                                   |
+| Champ                   | Type Storyblok | Config                                                                                                                |
+| ----------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `titre`                 | text           | requis                                                                                                                |
+| `ville`                 | text           |                                                                                                                       |
+| `programme`             | option         | relation story → `programme` (folder `programmes/`, `use_uuid`)                                                       |
+| `thematiques`           | options        | source = datasource `thematique` (valeurs multiples)                                                                  |
+| `description_programme` | text           | une ligne — accueil, fiche projet, colonne Index                                                                      |
+| `maitre_ouvrage`        | text           | « Maîtrise d'ouvrage »                                                                                                |
+| `equipe`                | textarea       | « Équipe »                                                                                                            |
+| `statut`                | text           | ex. « Livré 2023 »                                                                                                    |
+| `surface_sdp`           | text           | m² SDP (texte libre : autorise « NC », fourchette)                                                                    |
+| `montant_ht`            | text           | ex. « 8 M€ »                                                                                                          |
+| `divers`                | textarea       |                                                                                                                       |
+| `texte`                 | richtext       | texte descriptif                                                                                                      |
+| `engagements`           | bloks          | whitelist `engagement`, **max 3**                                                                                     |
+| `carrousel`             | bloks          | whitelist `media_slide`                                                                                               |
+| `vignette_plan`         | asset          | plan-masse N&B (grille « PM » + strip projets liés)                                                                   |
+| `photo_couverture`      | asset          | optionnel — grille « VRAC » + survol Index ; vide → 1re image du carrousel                                            |
+| `projets_lies`          | options        | relations story → `project` (`use_uuid`) ; vide → repli automatique sur ≤ 5 projets similaires (`getRelatedProjects`) |
 
 ### `project_list` (content type — startpage du dossier `projets`)
 
@@ -210,7 +210,8 @@ Le logo et les icônes (`social_link.icone`, `engagement.icone`) sont rendus dep
 (pas via `sbImage()`, qui rasterise en webp).
 
 Exception : les icônes **Instagram** et **LinkedIn** sont rendues par des composants `currentColor`
-du dépôt (`src/components/icons/`), thémés par `--accent` ; `social_link.icone` n'est utilisé qu'en
+du dépôt (`src/components/icons/`) — pastilles corail fournies par le client, corail sur toutes les
+pages ; `social_link.icone` n'est utilisé qu'en
 repli pour d'autres réseaux.
 
 ## Stories (recette)

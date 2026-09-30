@@ -5,10 +5,11 @@
  * pages), so it owns the scroll-snap track + slide sizing and neither slide type needs to know
  * it's in a carousel.
  * Progressive enhancement: the CSS scroll-snap track works with no JS (native swipe/scroll);
- * `fullscreen-carousel.ts` layers arrows, a split prev/next mouse cursor, keyboard nav, ARIA live
- * announcements, lazy video. The controls render at all times — the arrows ship `disabled`
- * (dimmed) and the script enables them once ready — so they show a loading state instead of
- * popping in after load (with no JS they stay disabled while native swipe still works).
+ * `fullscreen-carousel.ts` layers a split prev/next mouse cursor, keyboard nav, wrap-around stepping,
+ * ARIA live announcements, lazy video. Per client feedback there are no visible arrows: the buttons
+ * stay in the DOM for keyboard and screen-reader users and only appear on keyboard focus, and touch
+ * users step by swiping (tokens.css lists this with the client decisions). They ship `disabled` and
+ * the script enables them (with no JS, native swipe still works).
  */
 import type { HTMLAttributes } from 'astro/types';
 import Fleche from './icons/Fleche.astro';
@@ -16,18 +17,13 @@ import Fleche from './icons/Fleche.astro';
 interface Props extends HTMLAttributes<'section'> {
   /** Accessible name for the carousel region (home: "Projets à la une"; project page: the title). */
   ariaLabel: string;
-  /**
-   * Control layout: 'split' (home) = arrows mid-height at the edges;
-   * 'grouped' (project page) = both arrows side by side in one bottom-right cluster.
-   */
-  controls?: 'split' | 'grouped';
 }
 
-const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.props;
+const { ariaLabel, class: className, ...attrs } = Astro.props;
 ---
 
 <section
-  class:list={['fc', { 'fc--grouped': controls === 'grouped' }, className]}
+  class:list={['fc', className]}
   aria-roledescription="carrousel"
   aria-label={ariaLabel}
   data-fc
@@ -43,35 +39,24 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
   }
   <slot name="overlays" />
 
-  {
-    /* Wrapper is `display:contents` in split mode (children keep their own absolute anchoring) and a
-      flex row bottom-right in grouped mode. */
-  }
-  {
-    /* Rendered visible at all times (never popped in). Both arrows start `disabled` (dimmed) so the
-      carousel shows a loading state; the script enables/updates them per slide position once ready.
-      With no JS they simply stay disabled while the native scroll-snap swipe still works. */
-  }
-  <div class="fc__controls">
-    <button
-      type="button"
-      class="fc__arrow fc__arrow--prev"
-      data-fc-prev
-      aria-label="Diapositive précédente"
-      disabled
-    >
-      <Fleche direction="left" size={28} />
-    </button>
-    <button
-      type="button"
-      class="fc__arrow fc__arrow--next"
-      data-fc-next
-      aria-label="Diapositive suivante"
-      disabled
-    >
-      <Fleche direction="right" size={28} />
-    </button>
-  </div>
+  <button
+    type="button"
+    class="fc__arrow fc__arrow--prev visually-hidden-focusable"
+    data-fc-prev
+    aria-label="Diapositive précédente"
+    disabled
+  >
+    <Fleche direction="left" size={28} />
+  </button>
+  <button
+    type="button"
+    class="fc__arrow fc__arrow--next visually-hidden-focusable"
+    data-fc-next
+    aria-label="Diapositive suivante"
+    disabled
+  >
+    <Fleche direction="right" size={28} />
+  </button>
 
   {
     /* Slide position ("Diapositive X sur N") is announced here only — there is no visual counter. */
@@ -123,14 +108,8 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
     display: block;
   }
 
-  /* Split mode (home): the wrapper is transparent, so its children keep the absolute anchoring
-     below (mid-height arrows at the edges). */
-  .fc__controls {
-    display: contents;
-  }
-
-  /* Controls are absolute overlays shown at ALL times (the arrows ship `disabled`/dimmed and the
-     script enables them once ready), so they never pop in after load. Absolute → zero CLS. */
+  /* Mid-height at the edges, on the logotype's gutter; shown only while keyboard-focused
+     (.visually-hidden-focusable). A mouse user steps with the cursor halves, a touch user swipes. */
   .fc__arrow {
     display: grid;
     position: absolute;
@@ -138,8 +117,8 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
     z-index: 2;
     transform: translateY(-50%);
     place-items: center;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: var(--touch-min);
+    min-height: var(--touch-min);
     padding: var(--space-2);
     border: 0;
     background: none;
@@ -149,60 +128,28 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
     touch-action: manipulation;
   }
   .fc__arrow--prev {
-    left: var(--space-2);
+    left: var(--page-x);
   }
   .fc__arrow--next {
-    right: var(--space-2);
-  }
-  .fc__arrow:disabled {
-    opacity: 0.35;
-    cursor: var(--cursor-default);
-  }
-
-  /* Grouped mode (project page): prev + next as one bottom-right cluster. The wrapper becomes the
-     positioned box; its children flow inline. */
-  .fc--grouped .fc__controls {
-    position: absolute;
-    right: var(--space-4);
-    bottom: var(--space-4);
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-  }
-  .fc--grouped .fc__arrow {
-    position: static;
-    inset: auto;
-    transform: none;
-  }
-  .fc--grouped .fc__arrow :global(svg) {
-    width: 1.25rem;
-    height: 1.25rem;
+    right: var(--page-x);
   }
 
   /* Mouse only: the photo itself is the control — each half shows the matching arrow as the cursor
-     and a click there steps (fullscreen-carousel.ts sets data-fc-side, and omits it at either end).
-     CSS cursor images can't read currentColor, hence one file per ink. */
+     and a click there steps (fullscreen-carousel.ts sets data-fc-side; stepping wraps at both ends, so
+     only a single-slide carousel goes without).
+     CSS cursor images can't read currentColor, hence one inlined image per ink (tokens.css). */
   @media (hover: hover) and (pointer: fine) {
     .fc[data-fc-side='prev'] .fc__track {
-      cursor:
-        url('/cursors/fleche-gauche-corail.svg') 4 16,
-        pointer;
+      cursor: var(--cursor-prev);
     }
     .fc[data-fc-side='next'] .fc__track {
-      cursor:
-        url('/cursors/fleche-droite-corail.svg') 28 16,
-        pointer;
+      cursor: var(--cursor-next);
     }
     .fc[data-clair][data-fc-side='prev'] .fc__track {
-      cursor:
-        url('/cursors/fleche-gauche-papier.svg') 4 16,
-        pointer;
+      cursor: var(--cursor-prev-clair);
     }
     .fc[data-clair][data-fc-side='next'] .fc__track {
-      cursor:
-        url('/cursors/fleche-droite-papier.svg') 28 16,
-        pointer;
+      cursor: var(--cursor-next-clair);
     }
     .fc__track :global(a),
     .fc__track :global(button) {

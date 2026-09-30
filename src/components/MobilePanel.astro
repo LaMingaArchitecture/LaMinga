@@ -77,7 +77,11 @@ const tel = telHref(settings?.telephone);
 </div>
 
 <style>
+  /* Burger and drawer are corail on every page, like the logotype and the social discs (client
+     decision; corail on beige is below the AA floors — tokens.css). Scoped here, so the page's own
+     --accent still themes everything else. */
   .mobile-nav {
+    --accent: var(--color-coral);
     display: inline-flex;
   }
 
@@ -90,7 +94,8 @@ const tel = telHref(settings?.telephone);
     width: var(--nav-burger-h);
     height: var(--nav-burger-h);
     border: var(--border-w) solid var(--accent);
-    background: color-mix(in srgb, var(--color-paper) 85%, transparent);
+    /* Same white as the hover fill of the menu cartouches. */
+    background: var(--brand-box-fill-hover);
     cursor: var(--cursor-link);
   }
   .mobile-nav__burger-bars,
@@ -198,16 +203,15 @@ const tel = telHref(settings?.telephone);
   /* Same .brand-box open-corner outline as the desktop nav buttons. Drive the active fill through
      --brand-box-fill (a gradient layer), never a `background` shorthand which would wipe the edges. */
   .mobile-nav__links a {
+    --brand-box-line: var(--color-cartouche-line);
     display: block;
     padding: var(--space-3);
     color: var(--accent);
     font-size: 1.0625rem;
     text-decoration: none;
-    transition: color var(--transition);
   }
   .mobile-nav__links a[aria-current='page'] {
-    --brand-box-fill: var(--color-beige);
-    color: var(--color-ink);
+    --brand-box-fill: var(--brand-box-fill-active);
     font-weight: 600;
   }
 

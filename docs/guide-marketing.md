@@ -95,7 +95,8 @@ Deux notions suffisent :
 Certains champs pointent vers **une autre page** au lieu de contenir du texte :
 
 - **Programme** d'un projet → une story `programme`.
-- **Projets liés** d'un projet → d'autres fiches projet.
+- **Projets liés** d'un projet → d'autres fiches projet. Facultatif : si le champ reste vide, le site
+  propose automatiquement jusqu'à 5 projets proches (même programme, puis thématiques partagées).
 - **Projet mis en avant** d'un slide d'accueil → une fiche projet.
 
 Dans l'éditeur, ces champs ouvrent un **sélecteur** : on cherche et on **sélectionne** la ou les
@@ -147,6 +148,13 @@ donne le **master à fournir** (Storyblok se charge du reste) :
 > couverture, photo d'équipe), Storyblok **recadre** l'image. Pour éviter que le recadrage coupe le
 > sujet, ouvrez l'image dans **Assets** et réglez son **point de focus** (Focal point) sur le sujet.
 > Storyblok centrera automatiquement le recadrage dessus.
+
+> **Photos prises au téléphone : redressez-les avant l'upload.** Un téléphone tenu à la verticale
+> enregistre souvent la photo « couchée » avec une simple consigne de rotation. Votre ordinateur la
+> montre droite, mais le site peut l'afficher **couchée**. Avant d'uploader,
+> ouvrez-la dans **Photopea** et **exportez-la en JPG** (File → Export as → JPG) : Photopea applique
+> la rotation à l'ouverture, l'export enregistre donc l'image vraiment redressée. Si une photo apparaît couchée sur le site, remplacez-la dans **Assets → Replace** par sa
+> version exportée.
 
 **Comment produire ces fichiers (outils gratuits) :**
 
@@ -201,7 +209,7 @@ l'upload** :
 - **Vraiment vectoriels** (pas une photo enregistrée en `.svg`).
 - **Fond transparent**.
 - **Monochromes** (une seule couleur). Pour que l'icône prenne **automatiquement la couleur du site**
-  (corail/violet), le SVG doit utiliser `fill="currentColor"` plutôt qu'une couleur codée en dur.
+  (corail), le SVG doit utiliser `fill="currentColor"` plutôt qu'une couleur codée en dur.
 
 **Outils :**
 
@@ -241,26 +249,26 @@ les gestes dans l'éditeur. **Requis** = à remplir obligatoirement ; les autres
 **Content → dossier `projets` → + Entry → type _Projet_.** Le **nom** de l'entrée forme l'URL
 (_slug_) : ex. `buzenval` → `/projets/buzenval`. **Éviter accents et espaces** dans le slug.
 
-| Champ                     | Sert à…                                                      | Requis |
-| ------------------------- | ------------------------------------------------------------ | ------ |
-| **Titre**                 | le titre du projet                                           | ✅     |
-| **Ville**                 | la ville                                                     |        |
-| **Programme**             | **une** catégorie (relation → story programme)               |        |
-| **Thématiques**           | **plusieurs** (cases à cocher, liste déroulante)             |        |
-| **Description programme** | une ligne (ex. « Restructuration de logements insalubres… ») |        |
-| **Maîtrise d'ouvrage**    | le maître d'ouvrage                                          |        |
-| **Équipe**                | l'équipe (texte libre)                                       |        |
-| **Statut**                | ex. « Livré 2023 »                                           |        |
-| **Surface (m² SDP)**      | texte libre (autorise « NC », une fourchette…)               |        |
-| **Montant HT**            | ex. « 8 M€ »                                                 |        |
-| **Divers**                | détails complémentaires                                      |        |
-| **Texte descriptif**      | le corps de texte (texte riche)                              |        |
-| **Engagements**           | jusqu'à **3** blocs (icône SVG + libellé)                    |        |
-| **Carrousel**             | les **Slides média** (voir ci-dessous), dans l'ordre         |        |
-| **Vignette plan-masse**   | le plan-masse **N&B** affiché dans la grille Projets         |        |
-| **Photo de couverture**   | photo représentative ; si vide → 1ʳᵉ image du carrousel      |        |
-| **Projets liés**          | d'autres fiches projet (relations)                           |        |
-| **SEO** (bloc)            | réglages de partage (facultatif — voir §8)                   |        |
+| Champ                     | Sert à…                                                                                           | Requis |
+| ------------------------- | ------------------------------------------------------------------------------------------------- | ------ |
+| **Titre**                 | le titre du projet                                                                                | ✅     |
+| **Ville**                 | la ville                                                                                          |        |
+| **Programme**             | **une** catégorie (relation → story programme)                                                    |        |
+| **Thématiques**           | **plusieurs** (cases à cocher, liste déroulante)                                                  |        |
+| **Description programme** | une ligne (ex. « Restructuration de logements insalubres… »)                                      |        |
+| **Maîtrise d'ouvrage**    | le maître d'ouvrage                                                                               |        |
+| **Équipe**                | l'équipe (texte libre)                                                                            |        |
+| **Statut**                | ex. « Livré 2023 »                                                                                |        |
+| **Surface (m² SDP)**      | texte libre (autorise « NC », une fourchette…)                                                    |        |
+| **Montant HT**            | ex. « 8 M€ »                                                                                      |        |
+| **Divers**                | détails complémentaires                                                                           |        |
+| **Texte descriptif**      | le corps de texte (texte riche)                                                                   |        |
+| **Engagements**           | jusqu'à **3** blocs (icône SVG + libellé)                                                         |        |
+| **Carrousel**             | les **Slides média** (voir ci-dessous), dans l'ordre                                              |        |
+| **Vignette plan-masse**   | le plan-masse **N&B** affiché dans la grille Projets                                              |        |
+| **Photo de couverture**   | photo représentative ; si vide → 1ʳᵉ image du carrousel                                           |        |
+| **Projets liés**          | d'autres fiches projet (relations) ; si vide → jusqu'à 5 projets proches proposés automatiquement |        |
+| **SEO** (bloc)            | réglages de partage (facultatif — voir §8)                                                        |        |
 
 **Ajouter des slides au carrousel (`media_slide`)** — dans le champ **Carrousel**, cliquer **+**,
 choisir _Slide média_, puis remplir :
@@ -442,13 +450,13 @@ réglées composant par composant.)
 
 ### Où vivent les assets
 
-| Asset                       | Emplacement                                                            |
-| --------------------------- | ---------------------------------------------------------------------- |
-| **Logotype**                | **dépôt** (`public/logo/logo-laminga.svg`)                             |
-| Icônes **Insta / LinkedIn** | **dépôt** (composants `currentColor`, se colorent seuls corail/violet) |
-| Flèches (triangles)         | **dépôt** (composant `Fleche.astro` + curseurs `public/cursors/`)      |
-| Polices                     | **dépôt** auto-hébergées (`public/fonts/`)                             |
-| Icônes engagement           | **Storyblok** `engagement.icone`                                       |
+| Asset                       | Emplacement                                                                        |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| **Logotype**                | **dépôt** (`public/logo/logo-laminga.svg`)                                         |
+| Icônes **Insta / LinkedIn** | **dépôt** (pastilles corail fournies par le client, sur toutes les pages)          |
+| Flèches (triangles)         | **dépôt** (composant `Fleche.astro` + curseurs intégrés à `src/styles/tokens.css`) |
+| Polices                     | **dépôt** auto-hébergées (`public/fonts/`)                                         |
+| Icônes engagement           | **Storyblok** `engagement.icone`                                                   |
 
 > **Le logotype n'est plus modifiable depuis Storyblok.** La charte V3 ne prévoit qu'un seul
 > traitement pour le web (paysage, aplat, corail + rose) et sa règle 1.4 interdit d'en altérer les

@@ -78,5 +78,6 @@ webhook Storyblok → build hook Netlify. Procédure complète (second site, bui
 - [`storyblok/content-model.md`](storyblok/content-model.md) — schéma du modèle de contenu
 - [`docs/deployment.md`](docs/deployment.md) — déploiement Netlify + webhook
 - [`docs/storyblok-mcp.md`](docs/storyblok-mcp.md) — serveur MCP Storyblok pour les assistants IA
+- [`docs/procedure-medias.md`](docs/procedure-medias.md) — mettre à jour les médias d'un projet (optimisation, upload MCP, nettoyage)
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — workflow Git et conventions
 - [`docs/guide-marketing.md`](docs/guide-marketing.md) — guide marketing (créer du contenu & préparer les médias)
