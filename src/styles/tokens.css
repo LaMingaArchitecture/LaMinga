@@ -8,20 +8,25 @@
 
    PALETTE (charte name — hex — role)
      Beige clair       #f9f7f2  page background
-     Rouge corail      #ff6c4f  logotype, home accent (social/links/arrows), display titles only.
+     Rouge corail      #ff6c4f  logotype, home accent, social discs + mobile burger/drawer on every
+                                page, carousel cursors, display titles.
                                 Below AA on every light ground here — 1.87:1 on bleu clair, 2.61:1
                                 on beige, ~2.19:1 over photos — so it never carries running text.
-                                Client-mandated exceptions: the project cartouche values, the
-                                social discs, and the aubergine label on a selected (corail)
-                                programme chip (2.56:1).
+                                Client-mandated exceptions: the project cartouche values; the
+                                social discs; the mobile burger and drawer (title, close button,
+                                Projets/Atelier links, « mentions légales »); the active Projets
+                                view / search tool (2.61:1); and the aubergine label on a selected
+                                (corail) programme chip (2.56:1).
+                                Also client-decided: no visible carousel arrows — touch users step
+                                by swiping, keyboard users get focus-only buttons.
      Violet aubergine  #7e4080  inner-page accent + all panel ink and hairlines
-     Violet nuit       #32255b  primary dark text; label on a selected (corail) chip
+     Violet nuit       #32255b  primary dark text
      Bleu clair        #bbd5fd  panels: project HUD, info pop-up, related band, atelier
-     Taupe clair       #d0b8b0  active nav tint + related-band label ground
-     Rose              #fec9d7  selected thématique chip fill; hairlines of the nav cartouches and
-                                the Projets filter chips
+     Taupe clair       #d0b8b0  related-band label ground
+     Rose              #fec9d7  selected thématique chip fill; hairlines of the nav, mobile drawer
+                                and footer cartouches, the Projets filter chips and search field
      Blanc             #ffffff  off the charte, drawn on the client boards: hover/active fill of the
-                                nav and filter cartouches, glyph of the social discs
+                                cartouches, mobile burger ground, glyph of the social discs
      Gris / Violet vif / Vert citron / Olive / Turquoise / Jaune fluo — in the charte, unused by
                               the UI. The hairline grey drawn on screen is --color-line #d8d0cc, a
                               warm neutral off the charte, kept because it reads on beige.
@@ -98,8 +103,10 @@
   --color-violet: var(--couleur-violet-aubergine);
   --color-coral: var(--couleur-corail);
   --color-white: var(--couleur-blanc);
-  --color-cartouche-line: var(--couleur-rose); /* nav + filter cartouche hairlines */
-  --color-beige: var(--couleur-taupe-clair); /* active-button tint + related-band label ground */
+  --color-cartouche-line: var(
+    --couleur-rose
+  ); /* cartouche hairlines (nav, drawer, footer, filters) */
+  --color-beige: var(--couleur-taupe-clair); /* related-band label ground */
   --color-thematique-fill: var(--couleur-rose); /* selected thématique chip */
   --color-arrow-edge: var(--couleur-rose); /* carousel arrow hairline (Fleche + public/cursors) */
   /* Charte V3 panel (project HUD card, info pop-up, related band, atelier panels): bleu clair with
@@ -138,8 +145,10 @@
      global.css. When selected, the fill is inset by the same gap so the corners stay open. */
   --brand-box-gap: 3px;
   --brand-box-w: 1px;
-  --brand-box-line: var(--accent);
   --brand-box-fill-hover: var(--color-white);
+  --brand-box-fill-active: var(
+    --color-white
+  ); /* current page — the client board draws it as hover */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -170,8 +179,8 @@
   --nav-cartouche-h: 2.75rem; /* min-height on .nav__btn, so --nav-brand-h stays true if type grows */
   /* Between the stacked cartouches, and between the filter rows level with them. */
   --nav-row-gap: var(--space-1);
-  /* Between the logotype and the first cartouche — twice the row gap, as the client board draws it. */
-  --nav-logo-gap: var(--space-2);
+  /* Between the logotype and the first cartouche, as the client board draws it. */
+  --nav-logo-gap: calc(2 * var(--nav-row-gap));
   --nav-cartouche-font: 0.875rem; /* nav cartouches and the filter chips level with them */
   /* Room page content must leave for the header — on mobile the whole band, set by the burger. */
   --nav-clear: calc(2 * var(--nav-pad-y) + var(--nav-burger-h));
