@@ -137,27 +137,19 @@ const { ariaLabel, class: className, ...attrs } = Astro.props;
   /* Mouse only: the photo itself is the control — each half shows the matching arrow as the cursor
      and a click there steps (fullscreen-carousel.ts sets data-fc-side; stepping wraps at both ends, so
      only a single-slide carousel goes without).
-     CSS cursor images can't read currentColor, hence one file per ink. */
+     CSS cursor images can't read currentColor, hence one inlined image per ink (tokens.css). */
   @media (hover: hover) and (pointer: fine) {
     .fc[data-fc-side='prev'] .fc__track {
-      cursor:
-        url('/cursors/fleche-gauche-corail.svg') 4 16,
-        pointer;
+      cursor: var(--cursor-prev);
     }
     .fc[data-fc-side='next'] .fc__track {
-      cursor:
-        url('/cursors/fleche-droite-corail.svg') 28 16,
-        pointer;
+      cursor: var(--cursor-next);
     }
     .fc[data-clair][data-fc-side='prev'] .fc__track {
-      cursor:
-        url('/cursors/fleche-gauche-papier.svg') 4 16,
-        pointer;
+      cursor: var(--cursor-prev-clair);
     }
     .fc[data-clair][data-fc-side='next'] .fc__track {
-      cursor:
-        url('/cursors/fleche-droite-papier.svg') 28 16,
-        pointer;
+      cursor: var(--cursor-next-clair);
     }
     .fc__track :global(a),
     .fc__track :global(button) {

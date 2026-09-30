@@ -443,13 +443,13 @@ réglées composant par composant.)
 
 ### Où vivent les assets
 
-| Asset                       | Emplacement                                                               |
-| --------------------------- | ------------------------------------------------------------------------- |
-| **Logotype**                | **dépôt** (`public/logo/logo-laminga.svg`)                                |
-| Icônes **Insta / LinkedIn** | **dépôt** (pastilles corail fournies par le client, sur toutes les pages) |
-| Flèches (triangles)         | **dépôt** (composant `Fleche.astro` + curseurs `public/cursors/`)         |
-| Polices                     | **dépôt** auto-hébergées (`public/fonts/`)                                |
-| Icônes engagement           | **Storyblok** `engagement.icone`                                          |
+| Asset                       | Emplacement                                                                        |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| **Logotype**                | **dépôt** (`public/logo/logo-laminga.svg`)                                         |
+| Icônes **Insta / LinkedIn** | **dépôt** (pastilles corail fournies par le client, sur toutes les pages)          |
+| Flèches (triangles)         | **dépôt** (composant `Fleche.astro` + curseurs intégrés à `src/styles/tokens.css`) |
+| Polices                     | **dépôt** auto-hébergées (`public/fonts/`)                                         |
+| Icônes engagement           | **Storyblok** `engagement.icone`                                                   |
 
 > **Le logotype n'est plus modifiable depuis Storyblok.** La charte V3 ne prévoit qu'un seul
 > traitement pour le web (paysage, aplat, corail + rose) et sa règle 1.4 interdit d'en altérer les

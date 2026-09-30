@@ -203,10 +203,32 @@
   --z-panel: 210;
 }
 
+/* Cursor images are inlined as data URIs, not files: a file is only requested once the cursor is
+   first needed, so the dot and the arrows arrived after the page and showed the system cursor
+   meanwhile. They cannot read CSS colours, so the corail / papier / rose hexes are written out —
+   keep them in step with the palette above and with the Fleche icon's points. */
 @media (hover: hover) and (pointer: fine) {
   :root {
-    --cursor-default: url('/cursors/point-corail.svg') 14 14, auto;
-    --cursor-link: url('/cursors/point-corail.svg') 14 14, pointer;
+    --cursor-dot: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"%3E%3Ccircle cx="14" cy="14" r="13" fill="%23ff6c4f"/%3E%3C/svg%3E');
+    --cursor-default: var(--cursor-dot) 14 14, auto;
+    --cursor-link: var(--cursor-dot) 14 14, pointer;
+    /* Carousel halves (FullscreenCarousel): corail ink, and papier over a titre_clair slide. */
+    --cursor-prev:
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="87.8 87 3.3 44.9 87.8 2.9" fill="%23ff6c4f" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')
+        4 16,
+      pointer;
+    --cursor-next:
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="3.3 87 87.8 44.9 3.3 2.9" fill="%23ff6c4f" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')
+        28 16,
+      pointer;
+    --cursor-prev-clair:
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="87.8 87 3.3 44.9 87.8 2.9" fill="%23f9f7f2" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')
+        4 16,
+      pointer;
+    --cursor-next-clair:
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="3.3 87 87.8 44.9 3.3 2.9" fill="%23f9f7f2" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')
+        28 16,
+      pointer;
   }
 }
 
