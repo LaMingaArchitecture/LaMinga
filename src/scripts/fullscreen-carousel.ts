@@ -3,11 +3,28 @@
 // swipe, keyboard and buttons all share one source of truth (scroll position, read back via an
 // IntersectionObserver). Adds a split prev/next mouse cursor, ArrowLeft/Right keys, focus-only
 // arrow buttons, per-slide + live-region ARIA, and plays/pauses each slide's <video> by visibility.
-// Stepping wraps (last → first and back); native swipe still stops at the ends. Honors
-// prefers-reduced-motion. Multi-instance.
+// Stepping loops seamlessly (see `loopClone`); a forward swipe off the last slide loops too, a
+// backward swipe off the first still stops. Honors prefers-reduced-motion. Multi-instance.
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 // Inside the Storyblok Visual Editor a click on a slide selects its blok, so it must not also step.
 const inEditor = window.self !== window.top;
+// Quiet period after the last scroll event that counts as "the scroll has settled" (Safari has no
+// `scrollend` event).
+const SCROLL_SETTLE_MS = 120;
+
+// Inert, hidden copy of the first slide parked after the last one, so a wrap can slide onto it with
+// the same smooth animation as any other step and then swap to the real first slide unseen.
+const makeLoopClone = (first: HTMLElement): HTMLElement => {
+  const clone = first.cloneNode(true) as HTMLElement;
+  clone.setAttribute('aria-hidden', 'true');
+  clone.inert = true;
+  clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+  clone.querySelectorAll('video').forEach((video) => {
+    video.removeAttribute('autoplay');
+    video.pause();
+  });
+  return clone;
+};
 
 const enhance = (root: HTMLElement): void => {
   const track = root.querySelector<HTMLElement>('[data-fc-track]');
@@ -24,6 +41,11 @@ const enhance = (root: HTMLElement): void => {
   let index = 0;
   let pointerX: number | null = null;
   let lastPointerType = '';
+
+  // Not in the Storyblok editor: a duplicated blok would confuse its click-to-select overlay, so
+  // there a wrap just jumps.
+  const loopClone = count > 1 && !inEditor ? makeLoopClone(slides[0]) : null;
+  if (loopClone) track.append(loopClone);
 
   slides.forEach((slide, i) => {
     slide.setAttribute('role', 'group');
@@ -50,16 +72,44 @@ const enhance = (root: HTMLElement): void => {
     syncSide();
   };
 
-  // A wrap (last → first or back) jumps instantly rather than smooth-scrolling back past every slide.
-  const goTo = (target: number): void => {
-    const isWrap = target < 0 || target >= count;
-    index = ((target % count) + count) % count;
+  const scrollToPosition = (position: number, isSmooth: boolean): void => {
     track.scrollTo({
-      left: index * track.clientWidth,
-      behavior: reduce.matches || isWrap ? 'auto' : 'smooth',
+      left: position * track.clientWidth,
+      behavior: isSmooth && !reduce.matches ? 'smooth' : 'auto',
     });
+  };
+
+  // Wraps go through the clone (position `count`): forward slides onto it and `settleLoop` swaps to
+  // the real first slide; backward first jumps onto it (identical to slide 1), then slides back.
+  const goTo = (target: number): void => {
+    const wrapsForward = target >= count;
+    const wrapsBackward = target < 0;
+    index = ((target % count) + count) % count;
+    if (loopClone && wrapsForward) {
+      scrollToPosition(count, true);
+    } else if (loopClone && wrapsBackward) {
+      scrollToPosition(count, false);
+      requestAnimationFrame(() => scrollToPosition(index, true));
+    } else {
+      scrollToPosition(index, !wrapsForward && !wrapsBackward);
+    }
     render();
   };
+
+  // Resting on the clone (after a forward wrap or a swipe past the last slide) → swap to slide 1.
+  let settleTimer: number | undefined;
+  const settleLoop = (): void => {
+    if (!loopClone) return;
+    if (track.scrollLeft >= count * track.clientWidth - 1) scrollToPosition(0, false);
+  };
+  track.addEventListener(
+    'scroll',
+    () => {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(settleLoop, SCROLL_SETTLE_MS);
+    },
+    { passive: true },
+  );
 
   // Play only the CURRENT slide's video (the one ≥60% visible) and pause every other, so a
   // barely-visible slide mid-swipe never starts playback and two videos never play at once.
