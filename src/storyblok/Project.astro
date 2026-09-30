@@ -6,11 +6,11 @@ import ProjectHudCard from '../components/ProjectHudCard.astro';
 import ProjectInfoOverlay from '../components/ProjectInfoOverlay.astro';
 import ProjectRelatedBand from '../components/ProjectRelatedBand.astro';
 import ProjectRecapSlide from '../components/ProjectRecapSlide.astro';
-import { resolveRelated } from '../lib/content';
+import { getRelatedProjects } from '../lib/content';
 import type { ProjectBlok } from '../types/storyblok';
 
 const { blok } = Astro.props as { blok: ProjectBlok };
-const related = resolveRelated(blok);
+const related = await getRelatedProjects(blok);
 const slides = blok.carrousel ?? [];
 // The recap mosaic is only worth a slide when there are ≥2 visuals.
 const showRecap = slides.length >= 2;
@@ -95,18 +95,18 @@ const infosHasContent =
     z-index: 1;
     pointer-events: none;
     /* Bounds for the info/related overlays. While one is open the card is stripped back to the
-       bare "−" disc, so the bottom only needs to clear that pill + the arrow row. */
+       bare "−" disc, so the bottom only needs to clear that pill. */
     --band-top: calc(var(--nav-clear) + var(--space-3));
-    /* One source for the bar's bottom reservation: the ◀ ▶ arrow cluster shares this corner, so the
-       bar clears it, and the overlay band in turn clears the bar — otherwise an open panel runs
-       under the close disc, which sits above it and would swallow taps on the panel. */
-    --hud-bar-bottom: calc(2.75rem + max(var(--space-4), env(safe-area-inset-bottom)));
-    --band-bottom: calc(var(--hud-bar-bottom) + 2.75rem + var(--space-3));
-    --band-x: var(--space-4);
+    /* The overlay band clears the bar — otherwise an open panel runs under the close disc, which
+       sits above it and would swallow taps on the panel. */
+    --hud-bar-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+    --band-bottom: calc(var(--hud-bar-bottom) + var(--touch-min) + var(--space-3));
+    /* Side bounds on the logotype's left edge. */
+    --band-x: var(--page-x);
   }
 
-  /* Bottom bar: holds the cartouche, which now carries the disclosure buttons as its last row.
-     z-index keeps them clickable above an open overlay; the carousel arrows sit above all of it. */
+  /* Bottom bar: holds the cartouche, which carries the disclosure buttons as its last column.
+     z-index keeps them clickable above an open overlay. */
   .project-hud__bar {
     position: absolute;
     left: 0;
@@ -116,7 +116,7 @@ const infosHasContent =
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding: var(--space-4);
+    padding: var(--space-4) var(--page-x);
     padding-bottom: var(--hud-bar-bottom);
     pointer-events: none;
   }
@@ -216,15 +216,14 @@ const infosHasContent =
          alone — otherwise the info/related panels tuck under the floating nav in column 1. */
       --band-top: var(--nav-brand-h);
       --hud-bar-bottom: var(--space-6);
-      --band-x: var(--space-6);
     }
-    /* Cartouche centred, with the outer columns reserving the bottom-right arrows' corner. */
+    /* Cartouche centred; the outer columns give the open-state "−" disc a left home. */
     .project-hud__bar {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: end;
       gap: var(--space-4);
-      padding: var(--space-6);
+      padding: var(--space-6) var(--page-x);
       padding-bottom: var(--hud-bar-bottom);
     }
     .project-hud__card {

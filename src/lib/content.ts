@@ -64,6 +64,11 @@ const DATASOURCE_THEMATIQUE = 'thematique';
 
 const MAX_PER_PAGE = 100;
 
+/** Fallback « projets en relation »: one row of the related band (5 columns from tablet up). */
+const MAX_RELATED = 5;
+/** A shared programme outranks any number of shared thématiques a project realistically carries. */
+const SAME_PROGRAMME_WEIGHT = 10;
+
 /**
  * Relations resolved on the shared project list fetch — single source of truth so
  * the delivery call and the SSR preview route never drift. Format `<component>.<field>`.
@@ -254,4 +259,33 @@ export async function getProjectSummaries(): Promise<ProjectSummary[]> {
 export async function getAllProjects(): Promise<Array<{ slug: string; blok: ProjectBlok }>> {
   const stories = await getProjectStories();
   return stories.map((story) => ({ slug: story.slug, blok: story.content as ProjectBlok }));
+}
+
+/** Similarity of `other` to `blok`: shared programme first, then the count of shared thématiques. */
+function similarityScore(blok: ProjectBlok, other: ProjectBlok): number {
+  const programme = toProgramme(blok)?.slug;
+  const sameProgramme = programme !== undefined && toProgramme(other)?.slug === programme;
+  const thematiques = new Set(blok.thematiques ?? []);
+  const shared = (other.thematiques ?? []).filter((value) => thematiques.has(value)).length;
+  return (sameProgramme ? SAME_PROGRAMME_WEIGHT : 0) + shared;
+}
+
+/** The projects most similar to `blok` (itself excluded), best first; unrelated ones dropped. */
+function rankSimilar(blok: ProjectBlok, stories: ISbStoryData[]): ProjectSummary[] {
+  return stories
+    .filter((story) => (story.content as ProjectBlok)._uid !== blok._uid)
+    .map((story) => ({ story, score: similarityScore(blok, story.content as ProjectBlok) }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, MAX_RELATED)
+    .map(({ story }) => toSummary(story.content as ProjectBlok, story.slug));
+}
+
+// « Projets en relation »: the editor's `projets_lies` selection when there is one, else the most
+// similar projects (same programme, shared thématiques), so the cartouche offers the band on every
+// project that has a neighbour.
+export async function getRelatedProjects(blok: ProjectBlok): Promise<ProjectSummary[]> {
+  const chosen = resolveRelated(blok);
+  if (chosen.length > 0) return chosen;
+  return rankSimilar(blok, await getProjectStories());
 }
