@@ -14,6 +14,16 @@
 html {
   height: 100%;
   -webkit-text-size-adjust: 100%;
+  cursor: var(--cursor-default);
+}
+
+a,
+button,
+[role='button'],
+label,
+summary,
+select {
+  cursor: var(--cursor-link);
 }
 
 body {

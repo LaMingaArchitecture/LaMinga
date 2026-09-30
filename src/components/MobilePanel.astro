@@ -91,7 +91,7 @@ const tel = telHref(settings?.telephone);
     height: var(--nav-burger-h);
     border: var(--border-w) solid var(--accent);
     background: color-mix(in srgb, var(--color-paper) 85%, transparent);
-    cursor: pointer;
+    cursor: var(--cursor-link);
   }
   .mobile-nav__burger-bars,
   .mobile-nav__burger-bars::before,
@@ -131,7 +131,7 @@ const tel = telHref(settings?.telephone);
     transition:
       opacity var(--transition),
       visibility var(--transition);
-    cursor: pointer;
+    cursor: var(--cursor-link);
   }
   .mobile-nav__panel {
     position: fixed;
@@ -187,7 +187,7 @@ const tel = telHref(settings?.telephone);
     background: none;
     border: 0;
     color: var(--accent);
-    cursor: pointer;
+    cursor: var(--cursor-link);
   }
 
   .mobile-nav__links {

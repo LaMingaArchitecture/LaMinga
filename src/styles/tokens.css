@@ -171,10 +171,23 @@
   /* ---- Frame ----------------------------------------------------------- */
   --transition: 200ms ease;
 
+  /* ---- Cursor ----------------------------------------------------------
+     Brand cursor: a corail dot, fine pointers only (overridden below). Components write
+     `cursor: var(--cursor-link)` instead of `pointer` so every control shows the same dot. */
+  --cursor-default: auto;
+  --cursor-link: pointer;
+
   /* ---- z-index scale --------------------------------------------------- */
   --z-header: 100;
   --z-scrim: 200;
   --z-panel: 210;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :root {
+    --cursor-default: url('/cursors/point-corail.svg') 14 14, auto;
+    --cursor-link: url('/cursors/point-corail.svg') 14 14, pointer;
+  }
 }
 
 @media (min-width: 48rem) {

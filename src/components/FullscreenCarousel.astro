@@ -144,7 +144,7 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
     border: 0;
     background: none;
     color: var(--hud-ink);
-    cursor: pointer;
+    cursor: var(--cursor-link);
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
     touch-action: manipulation;
   }
@@ -156,7 +156,7 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
   }
   .fc__arrow:disabled {
     opacity: 0.35;
-    cursor: default;
+    cursor: var(--cursor-default);
   }
 
   /* Grouped mode (project page): prev + next as one bottom-right cluster. The wrapper becomes the
@@ -206,7 +206,7 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
     }
     .fc__track :global(a),
     .fc__track :global(button) {
-      cursor: pointer;
+      cursor: var(--cursor-link);
     }
   }
 </style>
