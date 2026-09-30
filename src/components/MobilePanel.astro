@@ -94,7 +94,8 @@ const tel = telHref(settings?.telephone);
     width: var(--nav-burger-h);
     height: var(--nav-burger-h);
     border: var(--border-w) solid var(--accent);
-    background: color-mix(in srgb, var(--color-paper) 85%, transparent);
+    /* Same white as the hover fill of the menu cartouches. */
+    background: var(--brand-box-fill-hover);
     cursor: var(--cursor-link);
   }
   .mobile-nav__burger-bars,
