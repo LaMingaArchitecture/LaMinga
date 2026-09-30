@@ -149,6 +149,13 @@ donne le **master à fournir** (Storyblok se charge du reste) :
 > sujet, ouvrez l'image dans **Assets** et réglez son **point de focus** (Focal point) sur le sujet.
 > Storyblok centrera automatiquement le recadrage dessus.
 
+> **Photos prises au téléphone : redressez-les avant l'upload.** Un téléphone tenu à la verticale
+> enregistre souvent la photo « couchée » avec une simple consigne de rotation. Votre ordinateur la
+> montre droite, mais Storyblok ignore cette consigne et le site l'affiche **couchée**. Avant d'uploader,
+> ouvrez-la dans **Photopea** et **exportez-la en JPG** (File → Export as → JPG) : Photopea applique
+> la rotation à l'ouverture, l'export enregistre donc l'image vraiment redressée. Si une photo apparaît couchée sur le site, remplacez-la dans **Assets → Replace** par sa
+> version exportée.
+
 **Comment produire ces fichiers (outils gratuits) :**
 
 | Besoin                           | Outil gratuit                                   | Comment                                                                                                          |
