@@ -5,6 +5,8 @@
 // scrolls) and the mobile document scroll (the article does not scroll) — an article-rooted observer
 // would never see §1 leave on mobile, so the hero video would decode forever. Honors
 // prefers-reduced-motion; mirrors the fullscreen-carousel island scaffold. Multi-instance.
+import { setupDeferredImages } from './atelier-images';
+
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)');
 // Desktop scroll-snap frame — the SAME breakpoint as AtelierPage.astro's scoped CSS and global.css's
 // frame rules. Parallax runs only here; elsewhere the page is a plain scrolling document.
@@ -144,48 +146,11 @@ const setupHeaderState = (root: HTMLElement): void => {
   update();
 };
 
-// Hand the below-the-fold photos their real source once the hero has had the network to itself,
-// then fetch them all at once rather than as each section nears: the page is a handful of photos,
-// and fetched on approach they were still arriving when their section snapped in. The backgrounds
-// ship with a blank placeholder because `loading="lazy"` does not hold them back: they are
-// overscanned for the parallax (`top: -15%; height: 130%`), so the next section's box crosses the
-// fold and the browser treats it as near-viewport — while the section's own `overflow: hidden`
-// means not one pixel of it is on screen. Fetched alongside the hero they cost the LCP over a
-// second, for nothing visible. The team portraits are plain `loading="lazy"`; promoting them to
-// eager starts their fetch.
-const LAZY_BG_CEILING = 2000;
-const setupLazyBg = (root: HTMLElement): void => {
-  const hydrate = (img: HTMLImageElement): void => {
-    const { src, srcset } = img.dataset;
-    if (!src) return;
-    delete img.dataset.src;
-    delete img.dataset.srcset;
-    if (srcset) img.srcset = srcset;
-    img.src = src;
-  };
-  let started = false;
-  const start = (): void => {
-    if (started) return;
-    started = true;
-    root.querySelectorAll<HTMLImageElement>('img[data-src]').forEach(hydrate);
-    root.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => {
-      img.loading = 'eager';
-    });
-  };
-  // `load` is the signal we want (the hero is done), but it is hostage to every other subresource
-  // on the page — a stalled image holds it forever and the backgrounds would never arrive. Race it.
-  if (document.readyState === 'complete') start();
-  else {
-    window.addEventListener('load', start, { once: true });
-    window.setTimeout(start, LAZY_BG_CEILING);
-  }
-};
-
 const enhance = (root: HTMLElement): void => {
   const sections = Array.from(root.querySelectorAll<HTMLElement>('[data-atelier-sec]'));
   if (sections.length === 0) return;
   // First: the backgrounds ship blank, so this has to run even if a later setup throws.
-  setupLazyBg(root);
+  setupDeferredImages(root, sections, DESKTOP);
   // Reveal + parallax styles apply only once enhanced, so with no JS everything stays visible.
   root.classList.add('atelier--enhanced');
   setupReveal(sections);

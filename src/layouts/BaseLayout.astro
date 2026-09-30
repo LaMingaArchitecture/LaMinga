@@ -38,10 +38,12 @@ interface Props {
    * locks and the page's inner article scroll-snaps between fullscreen sections. Default false.
    */
   immersiveScroll?: boolean;
-  /** Let the page scroll instead of locking to the viewport (Atelier + Mentions). Default false. */
+  /** Let the page scroll instead of locking to the viewport (Mentions légales, 404). Default false. */
   scroll?: boolean;
   /** Accent theme: 'coral' on the immersive home, 'violet' everywhere else. */
   accent?: 'coral' | 'violet';
+  /** Serif italic visible at first paint → preload it. Default true (off on the home). */
+  serif?: boolean;
 }
 
 const {
@@ -58,6 +60,7 @@ const {
   immersiveScroll = false,
   scroll = false,
   accent = 'violet',
+  serif = true,
 } = Astro.props;
 
 const settings = await getSettings();
@@ -122,16 +125,20 @@ const preconnectOrigins = preload.length
       crossorigin
     />
     {
-      /* Same for the serif italic (17 KB): filter chips, cartouche labels, footer and drawer use it
-    above the fold, and discovered late it paints in Georgia first, then swaps visibly. */
+      /* Same for the serif italic (17 KB) on pages that show it at first paint (filter chips,
+    project cartouche labels, footer): discovered late it paints in Georgia first, then swaps. */
     }
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="/fonts/playfair-italic.woff2"
-      crossorigin
-    />
+    {
+      serif && (
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="/fonts/playfair-italic.woff2"
+          crossorigin
+        />
+      )
+    }
     {
       /* The logotype is site chrome: it sits above the fold on every page but is only discovered
     once the header markup parses, and an <img> starts at low priority until layout. Without this it

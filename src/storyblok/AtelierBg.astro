@@ -50,7 +50,7 @@ const imgAttrs = { sizes: SIZES_FULLSCREEN, decoding: 'async' as const };
         />
       ) : (
         <Fragment>
-          {/* Deferred until after the LCP — see the note on setupLazyBg in atelier-scroll.ts. The
+          {/* Deferred until after the LCP — see the note on setupDeferredImages in atelier-scroll.ts. The
               section clips its overscan (`.atelier__sec { overflow: hidden }`), so none of this
               image is on screen while the hero paints, even though its box crosses the fold.
               No `loading`: the src is a data: URI, so there is nothing for it to defer. */}

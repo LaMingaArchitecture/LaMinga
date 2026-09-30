@@ -11,11 +11,14 @@ export interface LayoutChrome {
   immersiveScroll?: boolean;
   scroll?: boolean;
   accent?: 'coral' | 'violet';
+  /** Serif italic visible at first paint → preload it. Default true. */
+  serif?: boolean;
 }
 
 /** Immersive pages own a fullscreen frame; the rest scroll as a document under the floating nav. */
 const CHROME: Record<string, LayoutChrome> = {
-  home_page: { accent: 'coral' },
+  // No serif above the fold: slide titles are sans and the home has no footer.
+  home_page: { accent: 'coral', serif: false },
   project: {},
   project_list: { footer: true },
   atelier_page: { footer: true, immersive: true, immersiveScroll: true },
