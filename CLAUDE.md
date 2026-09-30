@@ -64,6 +64,8 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
   (`getRelatedProjects` : même programme puis thématiques partagées, max 5) ; relations résolues via `PROJECT_RELATIONS` /
   `HOME_RELATIONS` (`src/lib/content.ts`, fetch partagé sans N+1) — combinées par `getPreviewStory()`
   pour `preview/[...slug]`
+- Mise à jour des médias d'un projet via le MCP : `docs/procedure-medias.md` (préparation des
+  fichiers : `scripts/optimize-image.sh`)
 - Assets SVG (logo, icônes) rendus depuis le filename brut (pas `sbImage`) ; vidéo mp4 → CSP `media-src`
 - Schéma détaillé : `storyblok/content-model.md`
 - Nav : Logo · Projets · Atelier · Réseaux Sociaux

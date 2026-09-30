@@ -37,7 +37,8 @@ md5 -r Paysage_Ordi/* Portrait_Mobile/* | sort
 À repérer :
 
 - **Mêmes photos dans les deux dossiers** : un seul upload, renseigné en `image_paysage` seul (le
-  mobile retombe sur l'image paysage, cf. `resolveMediaSources` dans `src/lib/media.ts`).
+  mobile affiche alors l'image paysage : `ResponsiveMedia.astro` n'émet la source mobile que si
+  `image_portrait` est renseigné).
 - **Numéros en double ou absents d'un côté** : à arbitrer avec le client (voir §2).
 - **Basse résolution** (captures d'écran, < ~1100 px de large) : floue en plein écran sur mobile —
   proposer de l'écarter.
@@ -68,8 +69,12 @@ scripts/optimize-image.sh <source> <destination.jpg>        # photos (qualité 8
 scripts/optimize-image.sh <source> <destination.jpg> 90     # dessin au trait
 ```
 
-Le script applique la rotation EXIF aux pixels, passe en sRGB, retire les métadonnées, limite à
-2560 px sur le grand côté et encode en JPEG progressif. Ordres de grandeur obtenus : 400 Ko–1 Mo par
+Le script applique la rotation EXIF aux pixels, convertit les couleurs vers sRGB depuis le profil
+ICC embarqué (Display P3 des iPhone, profil d'écran d'un export Mac…), retire les métadonnées,
+limite à 2560 px sur le grand côté et encode en JPEG progressif. Il refuse une destination qui
+écraserait la source et lit chaque fichier selon son extension : un fichier dont le contenu ne
+correspond pas (capture PNG nommée `.jpg`) est signalé, à renommer puis relancer. Il s'appuie sur
+le profil sRGB de macOS. Ordres de grandeur obtenus : 400 Ko–1 Mo par
 photo (12 Mo → 600 Ko pour la plus lourde).
 
 - **Plan masse fourni en PDF** — rastériser avec Quick Look, puis rogner et passer en niveaux de
@@ -125,7 +130,7 @@ Replace.)
 
    ```bash
    pnpm dev:preview   # contenu draft, port 4322
-   curl -s http://localhost:4322/preview/projets/<slug> | grep -oE 'f/293403884331975/[a-f0-9]+/[a-z0-9-]+\.(jpg|png|mp4)' | sort -u
+   curl -s http://localhost:4322/preview/projets/<slug> | grep -oiE 'f/293403884331975/[a-f0-9x]+/[^/"?]+\.[a-z0-9]+' | sort -u
    ```
 
    Toutes les nouvelles URL doivent apparaître, aucune ancienne.
@@ -166,10 +171,11 @@ rebuild prod ; contrôler le site une fois le déploiement Netlify terminé.
 
 ## Pièges rencontrés
 
-| Symptôme                                             | Cause                                                                                                      | Solution                                                                          |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Photo couchée sur le site, droite sur l'ordinateur   | Photo de téléphone avec orientation EXIF ; le service Storyblok garde l'étiquette, Chrome l'ignore en WebP | Appliquer la rotation aux pixels avant upload (`optimize-image.sh`) et réuploader |
-| Tentation de corriger par `filters:rotate()`         | Certains navigateurs appliquent l'EXIF en WebP → double rotation ; `rotate` tourne en sens anti-horaire    | Ne pas corriger côté code : fichiers source redressés                             |
-| Nom de fichier ne correspondant pas à la section     | Fichiers croisés à l'import                                                                                | Réuploader sous le bon nom (étape 4), relier, publier, supprimer l'ancien         |
-| `magick` échoue sur un PDF (`gs: command not found`) | Ghostscript absent                                                                                         | `qlmanage -t` (étape 3)                                                           |
-| Outils Storyblok absents de la session               | Serveur MCP connecté après le démarrage de la session                                                      | Nouvelle session (cf. [`storyblok-mcp.md`](storyblok-mcp.md))                     |
+| Symptôme                                             | Cause                                                                                                                                                   | Solution                                                                          |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Photo couchée sur le site, droite sur l'ordinateur   | Photo de téléphone avec orientation EXIF : le service Storyblok recopie l'étiquette dans le WebP, que Chrome ignore (d'autres navigateurs l'appliquent) | Appliquer la rotation aux pixels avant upload (`optimize-image.sh`) et réuploader |
+| Tentation de corriger par `filters:rotate()`         | Certains navigateurs appliquent l'EXIF en WebP → double rotation ; `rotate` tourne en sens anti-horaire                                                 | Ne pas corriger côté code : fichiers source redressés                             |
+| Couleurs ternes ou décalées (photos iPhone)          | Profil ICC Display P3 retiré sans conversion (`-strip` seul)                                                                                            | Convertir vers sRGB avant de retirer le profil — ce que fait `optimize-image.sh`  |
+| Nom de fichier ne correspondant pas à la section     | Fichiers croisés à l'import                                                                                                                             | Réuploader sous le bon nom (étape 4), relier, publier, supprimer l'ancien         |
+| `magick` échoue sur un PDF (`gs: command not found`) | Ghostscript absent                                                                                                                                      | `qlmanage -t` (étape 3)                                                           |
+| Outils Storyblok absents de la session               | Serveur MCP connecté après le démarrage de la session                                                                                                   | Nouvelle session (cf. [`storyblok-mcp.md`](storyblok-mcp.md))                     |

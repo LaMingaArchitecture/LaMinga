@@ -108,7 +108,9 @@
   ); /* cartouche hairlines (nav, drawer, footer, filters) */
   --color-beige: var(--couleur-taupe-clair); /* related-band label ground */
   --color-thematique-fill: var(--couleur-rose); /* selected thématique chip */
-  --color-arrow-edge: var(--couleur-rose); /* carousel arrow hairline (Fleche + public/cursors) */
+  --color-arrow-edge: var(
+    --couleur-rose
+  ); /* carousel arrow hairline (Fleche + --cursor-prev/next*) */
   /* Charte V3 panel (project HUD card, info pop-up, related band, atelier panels): bleu clair with
      aubergine ink and hairlines — measured off the V3 boards, where labels and body copy are
      aubergine and only display titles are corail. Aubergine on bleu clair is 4.79:1 (AA).
@@ -193,7 +195,9 @@
 
   /* ---- Cursor ----------------------------------------------------------
      Brand cursor: a corail dot, fine pointers only (overridden below). Components write
-     `cursor: var(--cursor-link)` instead of `pointer` so every control shows the same dot. */
+     `cursor: var(--cursor-link)` instead of `pointer` so every control shows the same dot. The
+     carousel arrows (--cursor-prev/next, -clair on light slides) exist only in that fine-pointer
+     block, which is also the only place FullscreenCarousel reads them. */
   --cursor-default: auto;
   --cursor-link: pointer;
 
@@ -203,10 +207,10 @@
   --z-panel: 210;
 }
 
-/* Cursor images are inlined as data URIs, not files: a file is only requested once the cursor is
-   first needed, so the dot and the arrows arrived after the page and showed the system cursor
-   meanwhile. They cannot read CSS colours, so the corail / papier / rose hexes are written out —
-   keep them in step with the palette above and with the Fleche icon's points. */
+/* Cursor images are inlined as data URIs so they are ready with the stylesheet: a cursor file is
+   only requested once the cursor is first shown. They cannot read CSS colours, so the corail /
+   papier / rose hexes are written out — keep them in step with the palette above and with the
+   Fleche icon's points. */
 @media (hover: hover) and (pointer: fine) {
   :root {
     --cursor-dot: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"%3E%3Ccircle cx="14" cy="14" r="13" fill="%23ff6c4f"/%3E%3C/svg%3E');
