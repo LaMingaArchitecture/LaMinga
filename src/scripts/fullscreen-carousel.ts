@@ -1,8 +1,9 @@
 // Fullscreen carousel — progressive enhancement over the CSS scroll-snap track.
 // Navigates by scrolling the SAME native snap container (never a CSS transform), so scroll-snap,
 // swipe, keyboard and buttons all share one source of truth (scroll position, read back via an
-// IntersectionObserver). Adds arrows, a split prev/next mouse cursor, ArrowLeft/Right keys,
-// per-slide + live-region ARIA, and plays/pauses each slide's <video> by visibility. Honors
+// IntersectionObserver). Adds a split prev/next mouse cursor, ArrowLeft/Right keys, focus-only
+// arrow buttons, per-slide + live-region ARIA, and plays/pauses each slide's <video> by visibility.
+// Stepping wraps (last → first and back); native swipe still stops at the ends. Honors
 // prefers-reduced-motion. Multi-instance.
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 // Inside the Storyblok Visual Editor a click on a slide selects its blok, so it must not also step.
@@ -30,14 +31,12 @@ const enhance = (root: HTMLElement): void => {
     slide.setAttribute('aria-label', `${i + 1} sur ${count}`);
   });
 
-  // Which half of the track the mouse is over → the cursor arrow (CSS reads data-fc-side). A side
-  // with nowhere to go (first/last slide) gets no attribute, so no arrow promises a dead click.
+  // Which half of the track the mouse is over → the cursor arrow (CSS reads data-fc-side). Stepping
+  // wraps, so both sides always lead somewhere — except with a single slide.
   const sideAt = (clientX: number): 'prev' | 'next' | null => {
+    if (count < 2) return null;
     const { left, width } = track.getBoundingClientRect();
-    const side = clientX < left + width / 2 ? 'prev' : 'next';
-    if (side === 'prev' && index === 0) return null;
-    if (side === 'next' && index === count - 1) return null;
-    return side;
+    return clientX < left + width / 2 ? 'prev' : 'next';
   };
 
   const syncSide = (): void => {
@@ -48,19 +47,16 @@ const enhance = (root: HTMLElement): void => {
 
   const render = (): void => {
     if (live) live.textContent = `Diapositive ${index + 1} sur ${count}`;
-    if (prev) prev.disabled = index === 0;
-    if (next) next.disabled = index === count - 1;
-    // Never orphan focus when the focused arrow disables at an end.
-    if (prev?.disabled && document.activeElement === prev) next?.focus();
-    if (next?.disabled && document.activeElement === next) prev?.focus();
     syncSide();
   };
 
+  // A wrap (last → first or back) jumps instantly rather than smooth-scrolling back past every slide.
   const goTo = (target: number): void => {
-    index = Math.max(0, Math.min(count - 1, target));
+    const isWrap = target < 0 || target >= count;
+    index = ((target % count) + count) % count;
     track.scrollTo({
       left: index * track.clientWidth,
-      behavior: reduce.matches ? 'auto' : 'smooth',
+      behavior: reduce.matches || isWrap ? 'auto' : 'smooth',
     });
     render();
   };
@@ -103,7 +99,7 @@ const enhance = (root: HTMLElement): void => {
   next?.addEventListener('click', () => goTo(index + 1));
 
   // Recap/mosaic slide: any <button data-fc-goto="i"> jumps to slide i (delegated; the prev/next
-  // buttons carry no data-fc-goto, so they're unaffected). goTo clamps out-of-range targets.
+  // buttons carry no data-fc-goto, so they're unaffected).
   root.addEventListener('click', (event) => {
     const target = (event.target as HTMLElement).closest<HTMLElement>('[data-fc-goto]');
     if (!target || !root.contains(target)) return;
@@ -151,8 +147,11 @@ const enhance = (root: HTMLElement): void => {
 
   if (reduce.matches) track.querySelectorAll('video').forEach((video) => video.pause());
 
-  // Controls ship visible-but-disabled (see FullscreenCarousel.astro); render() now flips them live
-  // — enabling `next` — so they transition from loading to interactive.
+  // The arrows ship disabled (see FullscreenCarousel.astro); a single slide has nowhere to go.
+  if (count > 1) {
+    if (prev) prev.disabled = false;
+    if (next) next.disabled = false;
+  }
   render();
   syncClair(slides[index]);
 };

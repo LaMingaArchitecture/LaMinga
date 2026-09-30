@@ -5,10 +5,10 @@
  * pages), so it owns the scroll-snap track + slide sizing and neither slide type needs to know
  * it's in a carousel.
  * Progressive enhancement: the CSS scroll-snap track works with no JS (native swipe/scroll);
- * `fullscreen-carousel.ts` layers arrows, a split prev/next mouse cursor, keyboard nav, ARIA live
- * announcements, lazy video. The controls render at all times — the arrows ship `disabled`
- * (dimmed) and the script enables them once ready — so they show a loading state instead of
- * popping in after load (with no JS they stay disabled while native swipe still works).
+ * `fullscreen-carousel.ts` layers a split prev/next mouse cursor, keyboard nav, wrap-around stepping,
+ * ARIA live announcements, lazy video. Per client feedback there are no visible arrows: the buttons
+ * stay in the DOM for keyboard and screen-reader users and only appear on keyboard focus. They ship
+ * `disabled` and the script enables them (with no JS, native swipe still works).
  */
 import type { HTMLAttributes } from 'astro/types';
 import Fleche from './icons/Fleche.astro';
@@ -17,8 +17,8 @@ interface Props extends HTMLAttributes<'section'> {
   /** Accessible name for the carousel region (home: "Projets à la une"; project page: the title). */
   ariaLabel: string;
   /**
-   * Control layout: 'split' (home) = arrows mid-height at the edges;
-   * 'grouped' (project page) = both arrows side by side in one bottom-right cluster.
+   * Where the focus-only arrows appear: 'split' (home) = mid-height at the edges;
+   * 'grouped' (project page) = side by side in one bottom-right cluster.
    */
   controls?: 'split' | 'grouped';
 }
@@ -46,11 +46,6 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
   {
     /* Wrapper is `display:contents` in split mode (children keep their own absolute anchoring) and a
       flex row bottom-right in grouped mode. */
-  }
-  {
-    /* Rendered visible at all times (never popped in). Both arrows start `disabled` (dimmed) so the
-      carousel shows a loading state; the script enables/updates them per slide position once ready.
-      With no JS they simply stay disabled while the native scroll-snap swipe still works. */
   }
   <div class="fc__controls">
     <button
@@ -129,8 +124,8 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
     display: contents;
   }
 
-  /* Controls are absolute overlays shown at ALL times (the arrows ship `disabled`/dimmed and the
-     script enables them once ready), so they never pop in after load. Absolute → zero CLS. */
+  /* Absolute overlays, clipped away until keyboard focus lands on one (visually-hidden recipe, undone
+     by :focus-visible below). A mouse user steps with the cursor halves, a touch user swipes. */
   .fc__arrow {
     display: grid;
     position: absolute;
@@ -154,9 +149,15 @@ const { ariaLabel, controls = 'split', class: className, ...attrs } = Astro.prop
   .fc__arrow--next {
     right: var(--space-2);
   }
-  .fc__arrow:disabled {
-    opacity: 0.35;
-    cursor: var(--cursor-default);
+  .fc__arrow:not(:focus-visible) {
+    width: 1px;
+    height: 1px;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   /* Grouped mode (project page): prev + next as one bottom-right cluster. The wrapper becomes the
