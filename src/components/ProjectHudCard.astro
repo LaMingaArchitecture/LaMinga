@@ -180,10 +180,14 @@ const hasActions = Astro.slots.has('actions');
     min-width: 0;
     flex: 1 1 0;
   }
+  /* Each subgrid declaration follows an explicit track list: a browser without subgrid drops it and
+     keeps the fallback, losing only the cross-row alignment of the values. */
   .hud-card__row {
     grid-column: 1 / -1;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-columns: subgrid;
+    column-gap: var(--space-3);
     align-items: baseline;
     padding: var(--space-2) var(--space-4);
   }
@@ -212,8 +216,12 @@ const hasActions = Astro.slots.has('actions');
   /* From tablet up: label and value side by side, each label on one line, and the description on
      two lines without splitting words. */
   @media (min-width: 48rem) {
-    .hud-card__data {
+    .hud-card__data,
+    .hud-card__row {
       grid-template-columns: max-content minmax(0, 1fr);
+    }
+    .hud-card__row {
+      grid-template-columns: subgrid;
     }
     .hud-card__title {
       padding-inline: var(--space-5);
