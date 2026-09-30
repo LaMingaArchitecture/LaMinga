@@ -122,6 +122,17 @@ const preconnectOrigins = preload.length
       crossorigin
     />
     {
+      /* Same for the serif italic (17 KB): filter chips, cartouche labels, footer and drawer use it
+    above the fold, and discovered late it paints in Georgia first, then swaps visibly. */
+    }
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/playfair-italic.woff2"
+      crossorigin
+    />
+    {
       /* The logotype is site chrome: it sits above the fold on every page but is only discovered
     once the header markup parses, and an <img> starts at low priority until layout. Without this it
     lands after the stylesheets and the hero, so the header draws its cartouches first and the
