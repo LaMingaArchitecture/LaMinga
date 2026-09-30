@@ -81,7 +81,9 @@ const tel = telHref(settings?.telephone);
     display: inline-flex;
   }
 
-  /* Burger button (the label drives the hidden checkbox — works with no JS). */
+  /* Burger button (the label drives the hidden checkbox — works with no JS). Corail on every page,
+     like the logotype and the social discs it sits beside (client decision; below the 3:1 non-text
+     floor on beige — tokens.css). */
   .mobile-nav__burger {
     display: inline-flex;
     align-items: center;
@@ -89,7 +91,7 @@ const tel = telHref(settings?.telephone);
     /* Sets the mobile header's height, which --nav-clear reserves for it (tokens.css). */
     width: var(--nav-burger-h);
     height: var(--nav-burger-h);
-    border: var(--border-w) solid var(--accent);
+    border: var(--border-w) solid var(--color-coral);
     background: color-mix(in srgb, var(--color-paper) 85%, transparent);
     cursor: var(--cursor-link);
   }
@@ -100,7 +102,7 @@ const tel = telHref(settings?.telephone);
     display: block;
     width: 1.25rem;
     height: 2px;
-    background: var(--accent);
+    background: var(--color-coral);
   }
   .mobile-nav__burger-bars {
     position: relative;
@@ -115,7 +117,7 @@ const tel = telHref(settings?.telephone);
   }
   /* Visible focus ring on the burger when the (hidden) checkbox is focused. */
   .mobile-nav__checkbox:focus-visible + .mobile-nav__burger {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--color-coral);
     outline-offset: 2px;
   }
 
