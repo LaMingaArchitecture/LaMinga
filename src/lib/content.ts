@@ -1,5 +1,7 @@
 import type { ISbStoryData, SbBlokData } from '@storyblok/astro';
 import { presentAsset } from './image';
+import { isResolved, toProgrammes } from './programmes';
+import { rankSimilar } from './similarity';
 import { getStoryblokApi, storyblokVersion } from './storyblok';
 import type {
   AtelierPageBlok,
@@ -7,7 +9,6 @@ import type {
   HomePageBlok,
   ProgrammeBlok,
   ProgrammeLink,
-  ProgrammeSummary,
   ProjectBlok,
   ProjectListBlok,
   ProjectSummary,
@@ -73,7 +74,11 @@ const DRAFT_CANDIDATES_TTL_MS = 60_000;
  * Relations resolved on the shared project list fetch — single source of truth so
  * the delivery call and the SSR preview route never drift. Format `<component>.<field>`.
  */
-export const PROJECT_RELATIONS = ['project.programme', 'project.projets_lies'] as const;
+export const PROJECT_RELATIONS = [
+  'project.programmes',
+  'project.programme',
+  'project.projets_lies',
+] as const;
 
 /** Relation resolved on the home_page fetch (each slide's linked project). */
 export const HOME_RELATIONS = ['home_slide.projet'] as const;
@@ -177,21 +182,6 @@ export const getProgrammes = memoizePublished(() =>
   ),
 );
 
-/** True when a relation field arrived resolved (a story object, not a bare uuid). */
-export function isResolved(rel: unknown): rel is ISbStoryData {
-  return typeof rel === 'object' && rel !== null && 'content' in rel;
-}
-
-/** Programme label + slug from a project's resolved `programme` relation. */
-function toProgramme(blok: ProjectBlok): ProgrammeSummary | undefined {
-  const rel = blok.programme;
-  if (isResolved(rel)) {
-    const programme = rel.content as ProgrammeBlok;
-    return { nom: programme.nom, slug: rel.slug };
-  }
-  return undefined;
-}
-
 /** Cover photo for the VRAC grid / Index hover: the explicit field, else the first carousel image. */
 export function coverPhoto(blok: ProjectBlok): StoryblokAsset | undefined {
   const first = blok.carrousel?.find(
@@ -212,16 +202,11 @@ function toSummary(blok: ProjectBlok, slug: string): ProjectSummary {
     description_programme: blok.description_programme,
     maitre_ouvrage: blok.maitre_ouvrage,
     statut: blok.statut,
-    programme: toProgramme(blok),
+    programmes: toProgrammes(blok),
     thematiques: blok.thematiques ?? [],
     vignette: presentAsset(blok.vignette_plan),
     photo: coverPhoto(blok),
   };
-}
-
-/** Programme (label + slug) for the project detail (pure post-resolution narrower). */
-export function resolveProgramme(blok: ProjectBlok): ProgrammeSummary | undefined {
-  return toProgramme(blok);
 }
 
 // Related projects (the `projets_lies` relation, resolved via resolve_relations), else [].
@@ -261,38 +246,6 @@ export async function getAllProjects(): Promise<Array<{ slug: string; blok: Proj
   return stories.map((story) => ({ slug: story.slug, blok: story.content as ProjectBlok }));
 }
 
-interface Similarity {
-  story: ISbStoryData;
-  sameProgramme: boolean;
-  sharedThematiques: number;
-}
-
-/** The projects most similar to `blok` (itself excluded): same programme first, then the most
- *  shared thématiques; projects sharing neither are dropped. */
-function rankSimilar(blok: ProjectBlok, stories: ISbStoryData[]): ProjectSummary[] {
-  const programme = toProgramme(blok)?.slug;
-  const thematiques = new Set(blok.thematiques ?? []);
-  const similarityOf = (story: ISbStoryData): Similarity => {
-    const other = story.content as ProjectBlok;
-    return {
-      story,
-      sameProgramme: programme !== undefined && toProgramme(other)?.slug === programme,
-      sharedThematiques: (other.thematiques ?? []).filter((value) => thematiques.has(value)).length,
-    };
-  };
-  return stories
-    .filter((story) => (story.content as ProjectBlok)._uid !== blok._uid)
-    .map(similarityOf)
-    .filter(({ sameProgramme, sharedThematiques }) => sameProgramme || sharedThematiques > 0)
-    .sort(
-      (a, b) =>
-        Number(b.sameProgramme) - Number(a.sameProgramme) ||
-        b.sharedThematiques - a.sharedThematiques,
-    )
-    .slice(0, MAX_RELATED)
-    .map(({ story }) => toSummary(story.content as ProjectBlok, story.slug));
-}
-
 // Published: the build-wide memoized list. Draft: getProjectStories never caches, so without this
 // every preview page view would refetch the whole list; a neighbour edited in the last minute may
 // be missing from the band until the next refresh.
@@ -316,5 +269,7 @@ function getSimilarCandidates(): Promise<ISbStoryData[]> {
 export async function getRelatedProjects(blok: ProjectBlok): Promise<ProjectSummary[]> {
   const chosen = resolveRelated(blok);
   if (chosen.length > 0) return chosen;
-  return rankSimilar(blok, await getSimilarCandidates());
+  return rankSimilar(blok, await getSimilarCandidates(), MAX_RELATED).map((story) =>
+    toSummary(story.content as ProjectBlok, story.slug),
+  );
 }

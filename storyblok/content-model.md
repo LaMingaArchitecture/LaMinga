@@ -18,7 +18,7 @@ Langue : **FR uniquement, pas d'i18n.** Modélisé d'après le design **LaMinga 
 
 ## Classification à deux niveaux
 
-- **Programme** = catégorie unique par projet (1ʳᵉ ligne de filtres), story `programme`. La charte
+- **Programmes** = une ou plusieurs catégories par projet (1ʳᵉ ligne de filtres), stories `programme`. La charte
   V3 a **supprimé la couleur par programme** : les planches peignent toutes les chips sélectionnées
   du même corail et retirent la bordure colorée des vignettes. Le champ `couleur` n'est donc plus
   lu par le code.
@@ -65,10 +65,11 @@ reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté
 
 ### `engagement` (bloc imbriqué — projet, max 3)
 
-| Champ     | Type  | Config                  |
-| --------- | ----- | ----------------------- |
-| `icone`   | asset | filetypes: images (SVG) |
-| `libelle` | text  | ex. « Mise en valeur… » |
+| Champ         | Type     | Config                                  |
+| ------------- | -------- | --------------------------------------- |
+| `icone`       | asset    | filetypes: images (SVG)                 |
+| `libelle`     | text     | ex. « Mise en valeur… »                 |
+| `description` | textarea | optionnel — explication sous le libellé |
 
 ### `home_slide` (bloc imbriqué — slide du carrousel d'accueil)
 
@@ -87,7 +88,8 @@ reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté
 | ----------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `titre`                 | text           | requis                                                                                                                |
 | `ville`                 | text           |                                                                                                                       |
-| `programme`             | option         | relation story → `programme` (folder `programmes/`, `use_uuid`)                                                       |
+| `programmes`            | options        | relations stories → `programme` (folder `programmes/`, `use_uuid`) — une ou plusieurs                                 |
+| `programme`             | option         | **obsolète** — relation unique, lue seulement si `programmes` est vide ; à retirer                                    |
 | `thematiques`           | options        | source = datasource `thematique` (valeurs multiples)                                                                  |
 | `description_programme` | text           | une ligne — accueil, fiche projet, colonne Index                                                                      |
 | `maitre_ouvrage`        | text           | « Maîtrise d'ouvrage »                                                                                                |
@@ -198,7 +200,7 @@ Ajouté (champ `seo`, type _bloks_, **max 1**) sur `project`, `project_list`, `h
 
 Résolution groupée dans `src/lib/content.ts` via les constantes exportées :
 
-- `PROJECT_RELATIONS = ['project.programme', 'project.projets_lies']` — sur le fetch de liste partagé.
+- `PROJECT_RELATIONS = ['project.programmes', 'project.programme', 'project.projets_lies']` — sur le fetch de liste partagé.
 - `HOME_RELATIONS = ['home_slide.projet']` — sur le fetch de la home.
 
 La route SSR `src/pages/preview/[...slug].astro` passe par `getPreviewStory()` (`content.ts`), qui

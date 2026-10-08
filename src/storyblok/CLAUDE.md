@@ -33,11 +33,12 @@ autoplay loop playsinline>` + `<track kind="captions" />` (a11y lint). Hôtes au
   manquant (404 / liste vide / datasource absente) → `null`/`[]` + placeholder `ContentNotice`
   (le build dégrade sans échouer) ; les erreurs réseau/401/5xx remontent et font échouer le build.
   - `version` : `draft` (preview) vs `published` (prod) — déjà géré par `storyblokVersion`.
-  - Relations : `programme` + `projets_lies` résolues via `PROJECT_RELATIONS`,
+  - Relations : `programmes` (+ `programme` obsolète, repli) + `projets_lies` résolues via `PROJECT_RELATIONS`,
     `home_slide.projet` via `HOME_RELATIONS` (constantes de `content.ts`, combinées par
-    `getPreviewStory()` pour `preview/[...slug].astro`). Narrower pur : `resolveProgramme`.
+    `getPreviewStory()` pour `preview/[...slug].astro`). Logique pure testée (vitest) :
+    `lib/programmes.ts` (`toProgrammes`), `lib/similarity.ts`, `lib/explorer-filter.ts`.
   - Projets en relation : `getRelatedProjects(blok)` (async) — `projets_lies` si renseigné, sinon
-    jusqu'à 5 projets similaires (même programme, puis thématiques partagées).
+    jusqu'à 5 projets similaires (un programme commun, puis thématiques partagées).
   - Filtre projets : datasource `thematique` (`getThematiques`), jamais de valeurs en dur ;
     programmes = stories `programme` (nom).
 - **Blocs de page** (`home_page`, `project_list`) : `home_page` rend son `carrousel` de `home_slide`

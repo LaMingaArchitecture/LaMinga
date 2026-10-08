@@ -37,7 +37,7 @@ const { projects } = Astro.props;
             projects.map((project) => (
               <tr
                 data-filterable
-                data-programme={project.programme?.slug ?? ''}
+                data-programmes={project.programmes.map((p) => p.slug).join(' ')}
                 data-thematiques={project.thematiques.join(' ')}
                 data-search={projectSearchText(project)}
                 data-thumb={project.photo?.filename ? sbImage(project.photo.filename, '800x0') : ''}

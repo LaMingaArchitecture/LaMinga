@@ -37,8 +37,8 @@ const cover = visual?.filename ? sbImage(visual.filename, isVignette ? '600x600'
     {project.titre}{project.ville && <span class="project-card__ville"> — {project.ville}</span>}
   </p>
   {
-    !isVignette && project.programme && (
-      <p class="project-card__programme">{project.programme.nom}</p>
+    !isVignette && project.programmes.length > 0 && (
+      <p class="project-card__programme">{project.programmes.map((p) => p.nom).join(' · ')}</p>
     )
   }
 </a>

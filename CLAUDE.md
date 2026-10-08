@@ -13,6 +13,7 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 - `pnpm lint` / `pnpm lint:fix` — ESLint
 - `pnpm format` / `pnpm format:check` — Prettier
 - `pnpm typecheck` — `astro check` + typage de l'edge function
+- `pnpm test` — tests unitaires (vitest) de la logique pure de `src/lib/`
 - `pnpm audit` — audit des dépendances
 
 ## Stack (versions verrouillées par pnpm-lock.yaml)
@@ -58,7 +59,7 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 - Types : `home_page` (`home_slide`), `project_list`, `project` (`media_slide`, `engagement`),
   `atelier_page` (`team_member`), `programme`, `global_settings` (+ `social_link`)
 - **Noms techniques en `snake_case`** = clés de `components` dans `astro.config.mjs`
-- Classification à 2 niveaux : **`programme`** (relation, 1 par projet) +
+- Classification à 2 niveaux : **`programmes`** (relations, 1 ou plusieurs par projet) +
   **`thematiques`** (datasource `thematique`, plusieurs par projet — jamais de valeurs en dur)
 - Projets liés = relation `projets_lies`, sinon repli automatique sur les projets similaires
   (`getRelatedProjects` : même programme puis thématiques partagées, max 5) ; relations résolues via `PROJECT_RELATIONS` /

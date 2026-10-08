@@ -12,7 +12,7 @@ interface Props {
 const { projects, programmes, thematiques } = Astro.props;
 
 // Only surface programmes / thematiques actually used by published projects.
-const usedProgrammes = new Set(projects.map((p) => p.programme?.slug).filter(Boolean));
+const usedProgrammes = new Set(projects.flatMap((p) => p.programmes.map((prog) => prog.slug)));
 const usedThematiques = new Set(projects.flatMap((p) => p.thematiques));
 const programmeFilters = programmes.filter((p) => usedProgrammes.has(p.slug));
 const thematiqueFilters = thematiques.filter((t) => usedThematiques.has(t.value));
@@ -21,15 +21,16 @@ const thematiqueFilters = thematiques.filter((t) => usedThematiques.has(t.value)
 // thematiques present in the selected programme's projects (all in-use thematiques when none).
 const thematiqueProgrammes = new Map<string, Set<string>>();
 for (const project of projects) {
-  const slug = project.programme?.slug;
-  if (!slug) continue;
-  for (const value of project.thematiques) {
-    let set = thematiqueProgrammes.get(value);
-    if (!set) {
-      set = new Set<string>();
-      thematiqueProgrammes.set(value, set);
+  for (const { slug } of project.programmes) {
+    if (!slug) continue;
+    for (const value of project.thematiques) {
+      let set = thematiqueProgrammes.get(value);
+      if (!set) {
+        set = new Set<string>();
+        thematiqueProgrammes.set(value, set);
+      }
+      set.add(slug);
     }
-    set.add(slug);
   }
 }
 const programmesForThematique = (value: string) =>
