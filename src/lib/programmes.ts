@@ -10,9 +10,7 @@ function toSummary(rel: SbRelation): ProgrammeSummary[] {
   return isResolved(rel) ? [{ nom: (rel.content as ProgrammeBlok).nom, slug: rel.slug }] : [];
 }
 
-/** A project's programmes (label + slug): the `programmes` relations, else the legacy single
- *  `programme` relation; unresolved relations are skipped. */
+/** A project's programmes (label + slug); unresolved relations are skipped. */
 export function toProgrammes(blok: ProjectBlok): ProgrammeSummary[] {
-  if (blok.programmes?.length) return blok.programmes.flatMap(toSummary);
-  return blok.programme ? toSummary(blok.programme) : [];
+  return (blok.programmes ?? []).flatMap(toSummary);
 }

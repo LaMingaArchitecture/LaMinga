@@ -23,20 +23,9 @@ describe('toProgrammes', () => {
     ]);
   });
 
-  test('falls back to the single legacy programme when programmes is empty', () => {
-    const blok = project({
-      programmes: [],
-      programme: programme('habitat-social', 'Habitat social'),
-    });
-    expect(toProgrammes(blok)).toEqual([{ nom: 'Habitat social', slug: 'habitat-social' }]);
-  });
-
-  test('prefers programmes over the legacy field', () => {
-    const blok = project({
-      programmes: [programme('commerce', 'Commerce')],
-      programme: programme('habitat-social', 'Habitat social'),
-    });
-    expect(toProgrammes(blok)).toEqual([{ nom: 'Commerce', slug: 'commerce' }]);
+  test('ignores the retired single programme field', () => {
+    const blok = { ...project({}), programme: programme('habitat-social', 'Habitat social') };
+    expect(toProgrammes(blok)).toEqual([]);
   });
 
   test('ignores unresolved relations (bare uuids)', () => {
