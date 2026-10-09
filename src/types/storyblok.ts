@@ -60,6 +60,8 @@ export interface EngagementBlok extends SbBlokData {
   /** SVG icon — rendered from the raw filename, not the image service. */
   icone?: StoryblokAsset;
   libelle: string;
+  /** Short explanation under the label (line breaks kept). */
+  description?: string;
 }
 
 export interface MediaSlideBlok extends SbBlokData {
@@ -87,7 +89,9 @@ export interface ProjectBlok extends SbBlokData {
   component: 'project';
   titre: string;
   ville?: string;
-  /** Relation to a single `programme` story. */
+  /** Relations to `programme` stories (one or more). */
+  programmes?: SbRelation[];
+  /** Legacy single relation — read only when `programmes` is empty. */
   programme?: SbRelation;
   /** Values from the "thematique" datasource. */
   thematiques?: string[];
@@ -183,7 +187,7 @@ export interface ProjectSummary {
   description_programme?: string;
   maitre_ouvrage?: string;
   statut?: string;
-  programme?: ProgrammeSummary;
+  programmes: ProgrammeSummary[];
   thematiques: string[];
   /** Plan-masse vignette (PM grid + related strip). */
   vignette?: StoryblokAsset;

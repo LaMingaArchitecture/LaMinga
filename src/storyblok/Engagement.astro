@@ -18,7 +18,10 @@ const { blok } = Astro.props as { blok: EngagementBlok };
       />
     )
   }
-  <span class="engagement__label">{blok.libelle}</span>
+  <div class="engagement__text">
+    <span class="engagement__label">{blok.libelle}</span>
+    {blok.description && <p class="engagement__description pre-line">{blok.description}</p>}
+  </div>
 </div>
 
 <style>
@@ -46,5 +49,10 @@ const { blok } = Astro.props as { blok: EngagementBlok };
     color: var(--panel-ink);
     font-weight: 700;
     line-height: 1.25;
+  }
+  .engagement__description {
+    margin: var(--space-1) 0 0;
+    color: var(--panel-ink);
+    line-height: 1.4;
   }
 </style>

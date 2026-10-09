@@ -12,7 +12,7 @@ interface Props {
 const { projects, programmes, thematiques } = Astro.props;
 
 // Only surface programmes / thematiques actually used by published projects.
-const usedProgrammes = new Set(projects.map((p) => p.programme?.slug).filter(Boolean));
+const usedProgrammes = new Set(projects.flatMap((p) => p.programmes.map((prog) => prog.slug)));
 const usedThematiques = new Set(projects.flatMap((p) => p.thematiques));
 const programmeFilters = programmes.filter((p) => usedProgrammes.has(p.slug));
 const thematiqueFilters = thematiques.filter((t) => usedThematiques.has(t.value));
@@ -21,15 +21,16 @@ const thematiqueFilters = thematiques.filter((t) => usedThematiques.has(t.value)
 // thematiques present in the selected programme's projects (all in-use thematiques when none).
 const thematiqueProgrammes = new Map<string, Set<string>>();
 for (const project of projects) {
-  const slug = project.programme?.slug;
-  if (!slug) continue;
-  for (const value of project.thematiques) {
-    let set = thematiqueProgrammes.get(value);
-    if (!set) {
-      set = new Set<string>();
-      thematiqueProgrammes.set(value, set);
+  for (const { slug } of project.programmes) {
+    if (!slug) continue;
+    for (const value of project.thematiques) {
+      let set = thematiqueProgrammes.get(value);
+      if (!set) {
+        set = new Set<string>();
+        thematiqueProgrammes.set(value, set);
+      }
+      set.add(slug);
     }
-    set.add(slug);
   }
 }
 const programmesForThematique = (value: string) =>
@@ -144,6 +145,30 @@ const programmesForThematique = (value: string) =>
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
+  }
+  /* Mobile: each filter family is one swipeable line running to the screen edges, so the sticky
+     block stays two chips tall and leaves the screen to the projects (wrapped, the twelve chips
+     filled half of it and left odd ones stranded on their own line). */
+  @media (max-width: 47.999rem) {
+    .explorer__row {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      margin-inline: calc(-1 * var(--page-x));
+      padding-inline: var(--page-x);
+      scroll-padding-inline: var(--page-x);
+    }
+    .explorer__row::-webkit-scrollbar {
+      display: none;
+    }
+    /* Scoped through the row so it outranks the base chip rule declared further down. */
+    .explorer__row .explorer__chip {
+      flex: 0 0 auto;
+      min-width: 0;
+      max-width: none;
+      white-space: nowrap;
+    }
   }
 
   /* Chips use the .brand-box open-corner outline (same architectural look as the Liste table cells

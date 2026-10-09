@@ -3,6 +3,7 @@
 // back to both, so returning to /projets restores them; the search text is ephemeral (kept out of
 // the URL to keep the deep-link contract simple). Programmes/thematiques come from Storyblok —
 // nothing is hardcoded here.
+import { matchesFilters } from '../lib/explorer-filter';
 import { normalizeSearch } from '../lib/search';
 
 type View = 'grid' | 'index';
@@ -127,11 +128,8 @@ if (root) {
     viewVignettes?.setAttribute('aria-pressed', String(state.view === 'grid'));
     viewIndex?.setAttribute('aria-pressed', String(state.view === 'index'));
     const query = normalizeSearch(state.search);
-    const matches = (item: HTMLElement): boolean =>
-      (!state.programme || item.dataset.programme === state.programme) &&
-      (!state.thematique ||
-        (item.dataset.thematiques ?? '').split(' ').includes(state.thematique)) &&
-      (!query || (item.dataset.search ?? '').includes(query));
+    const filter = { programme: state.programme, thematique: state.thematique, query };
+    const matches = (item: HTMLElement): boolean => matchesFilters(item.dataset, filter);
 
     // Count matches from the grid only (items are duplicated across the two views).
     let visible = 0;

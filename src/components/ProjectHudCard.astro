@@ -3,7 +3,8 @@
  * ProjectHudCard — the persistent bleu-clair project cartouche pinned to the bottom HUD.
  * Per the cartouche board: a title cell (the page's sole <h1>), a stack of "Maîtrise d'ouvrage" /
  * "Programme" rows and, in a third column, the disclosure buttons passed in through the `actions`
- * slot. Below 48rem the actions drop under the rows so « projets en relation » keeps its width.
+ * slot. Below 48rem the three parts stack (title, rows, actions side by side) so a long title can
+ * never squeeze the rows, and the card stays low enough to leave the photo visible.
  * Positioning is owned by the .project-hud bar in Project.astro; this owns only the appearance.
  * "Programme" = description_programme (the one-line description), not the programme relation.
  */
@@ -54,10 +55,11 @@ const hasActions = Astro.slots.has('actions');
   .hud-card {
     pointer-events: auto;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      'title data'
-      'title actions';
+      'title'
+      'data'
+      'actions';
     max-width: min(92vw, 34rem);
     background-color: var(--panel-bg);
     --brand-box-line: var(--panel-line);
@@ -95,31 +97,52 @@ const hasActions = Astro.slots.has('actions');
     position: absolute;
     background: var(--panel-line);
   }
-  /* Vertical: title | data (and, from tablet up, data | actions). */
+  /* Mobile: horizontal under the title, between data rows and above the actions row; vertical
+     between the two side-by-side actions. */
   .hud-card__title::after {
-    top: var(--brand-box-gap);
-    bottom: var(--brand-box-gap);
-    right: 0;
-    width: var(--brand-box-w);
+    left: var(--brand-box-gap);
+    right: var(--brand-box-gap);
+    bottom: 0;
+    height: var(--brand-box-w);
   }
-  /* Horizontal: between data rows, between the stacked action cells and, on mobile, above the
-     actions row. */
   .hud-card__row + .hud-card__row::before,
-  .hud-card__data + .hud-card__actions::before,
-  .hud-card__actions > :global(* + *)::before {
+  .hud-card__data + .hud-card__actions::before {
     top: 0;
     left: var(--brand-box-gap);
     right: var(--brand-box-gap);
     height: var(--brand-box-w);
   }
+  .hud-card__actions > :global(* + *)::before {
+    top: var(--brand-box-gap);
+    bottom: var(--brand-box-gap);
+    left: 0;
+    width: var(--brand-box-w);
+  }
+  /* From tablet up the three parts sit side by side: title | data | actions are vertical, and the
+     data rows and action cells are split by horizontals at the same height. */
   @media (min-width: 48rem) {
+    .hud-card__title::after,
     .hud-card__data + .hud-card__actions::before {
       top: var(--brand-box-gap);
       bottom: var(--brand-box-gap);
-      left: 0;
-      right: auto;
+      left: auto;
       width: var(--brand-box-w);
       height: auto;
+    }
+    .hud-card__title::after {
+      right: 0;
+    }
+    .hud-card__data + .hud-card__actions::before {
+      left: 0;
+      right: auto;
+    }
+    .hud-card__actions > :global(* + *)::before {
+      top: 0;
+      bottom: auto;
+      left: var(--brand-box-gap);
+      right: var(--brand-box-gap);
+      width: auto;
+      height: var(--brand-box-w);
     }
   }
   /* Open state. The hook belongs to Project.astro's .project-hud, but every class it acts on is
@@ -148,53 +171,58 @@ const hasActions = Astro.slots.has('actions');
     border: 0;
   }
 
+  /* Mobile: the title heads the card, flush with the labels below it. */
   .hud-card__title {
     align-self: stretch;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0;
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-2) var(--space-4);
     color: var(--color-coral);
     /* 700 is the non-colour cue that carries the title when corail alone cannot. */
     font-family: var(--font-sans);
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
+    line-height: 1.25;
   }
-  /* The rows are subgrids of this list, so every value starts on the same vertical line. Mobile has
-     one column — each label sits above its value, which keeps the full width to wrap in. */
+  /* The rows are subgrids of this list, so every value starts on the same vertical line. Rows (and,
+     from tablet up, the action cells beside them) share the card's height equally, so the
+     horizontal dividers of both columns land on the same line. */
   .hud-card__data {
     margin: 0;
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: max-content minmax(0, 1fr);
+    grid-auto-rows: 1fr;
     column-gap: var(--space-3);
-    align-content: center;
     min-width: 0;
   }
   .hud-card__actions {
     display: flex;
-    flex-direction: column;
     min-width: 0;
   }
+  /* Mobile: each action is as wide as its label, so « projets en relation » keeps one line. */
   .hud-card__actions > :global(*) {
     min-width: 0;
-    flex: 1 1 0;
+    flex: 1 1 auto;
   }
   /* Each subgrid declaration follows an explicit track list: a browser without subgrid drops it and
      keeps the fallback, losing only the cross-row alignment of the values. */
   .hud-card__row {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: max-content minmax(0, 1fr);
     grid-template-columns: subgrid;
     column-gap: var(--space-3);
     align-items: baseline;
+    align-content: center;
     padding: var(--space-2) var(--space-4);
   }
 
   .hud-card__row dt {
     font-family: var(--font-serif);
     font-style: italic;
+    font-size: 0.875rem;
     color: var(--panel-ink);
   }
   .hud-card__row dd {
@@ -202,33 +230,42 @@ const hasActions = Astro.slots.has('actions');
     color: var(--color-coral);
     font-size: 0.875rem;
   }
-  /* The programme description can be long — cap it (three lines on mobile, two on the wide card). French compound
-     words ("Restructuration") outrun the narrow value column on a 390px screen, and `overflow:hidden`
-     would clip one mid-glyph instead of wrapping it, so hyphenate (html lang="fr") and allow a break. */
-  .hud-card__desc {
+  /* Values are capped at two lines (the full text is in « informations »). French compound words
+     outrun the narrow value column on a phone, and `overflow:hidden` would clip one mid-glyph
+     instead of wrapping it, so hyphenate (html lang="fr") and allow a break. */
+  .hud-card__row dd {
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     hyphens: auto;
     overflow-wrap: break-word;
   }
-  /* From tablet up: label and value side by side, each label on one line, and the description on
-     two lines without splitting words. */
   @media (min-width: 48rem) {
-    .hud-card__data,
-    .hud-card__row {
-      grid-template-columns: max-content minmax(0, 1fr);
-    }
-    .hud-card__row {
-      grid-template-columns: subgrid;
-    }
+    /* A long title wraps rather than widening its column and squeezing the rows. */
     .hud-card__title {
-      padding-inline: var(--space-5);
+      justify-content: center;
+      max-width: 13rem;
+      padding: var(--space-3) var(--space-5);
+      font-size: 1.25rem;
+      text-align: center;
+      text-wrap: balance;
     }
-    .hud-card__desc {
-      -webkit-line-clamp: 2;
+    .hud-card__row dt {
+      font-size: 1rem;
+    }
+    .hud-card__actions {
+      flex-direction: column;
+    }
+    .hud-card__actions > :global(*) {
+      flex: 1 1 0;
+    }
+    /* The wide card has room: the maîtrise d'ouvrage shows whole and words are never split. */
+    .hud-card__row dd {
       hyphens: manual;
+    }
+    .hud-card__row dd:not(.hud-card__desc) {
+      display: block;
     }
   }
 </style>

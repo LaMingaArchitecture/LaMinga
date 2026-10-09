@@ -80,8 +80,9 @@ Deux notions suffisent :
 
 ### Les deux niveaux de classification d'un projet
 
-- **Programme** — **une seule** catégorie par projet (1ʳᵉ ligne de filtres sur la page Projets).
-  On **choisit** le programme dans une liste (c'est une **relation** vers une story `programme`) —
+- **Programmes** — **une ou plusieurs** catégories par projet (1ʳᵉ ligne de filtres sur la page
+  Projets) : un projet à deux programmes apparaît sous chacun des deux filtres. On **choisit** les
+  programmes dans une liste (c'est une **relation** vers une story `programme`) —
   on ne le tape pas. La charte V3 fixe 8 programmes : Habitat social, Multi-sites, Programmation,
   Enseignement, Vitivinicole, Équipement, Commerce, Restauration.
   > **La couleur par programme a été supprimée.** Toutes les chips sélectionnées s'affichent
@@ -94,9 +95,9 @@ Deux notions suffisent :
 
 Certains champs pointent vers **une autre page** au lieu de contenir du texte :
 
-- **Programme** d'un projet → une story `programme`.
+- **Programmes** d'un projet → une ou plusieurs stories `programme`.
 - **Projets liés** d'un projet → d'autres fiches projet. Facultatif : si le champ reste vide, le site
-  propose automatiquement jusqu'à 5 projets proches (même programme, puis thématiques partagées).
+  propose automatiquement jusqu'à 5 projets proches (un programme commun, puis thématiques partagées).
 - **Projet mis en avant** d'un slide d'accueil → une fiche projet.
 
 Dans l'éditeur, ces champs ouvrent un **sélecteur** : on cherche et on **sélectionne** la ou les
@@ -253,7 +254,7 @@ les gestes dans l'éditeur. **Requis** = à remplir obligatoirement ; les autres
 | ------------------------- | ------------------------------------------------------------------------------------------------- | ------ |
 | **Titre**                 | le titre du projet                                                                                | ✅     |
 | **Ville**                 | la ville                                                                                          |        |
-| **Programme**             | **une** catégorie (relation → story programme)                                                    |        |
+| **Programmes**            | une ou plusieurs catégories (relations → stories programme)                                       |        |
 | **Thématiques**           | **plusieurs** (cases à cocher, liste déroulante)                                                  |        |
 | **Description programme** | une ligne (ex. « Restructuration de logements insalubres… »)                                      |        |
 | **Maîtrise d'ouvrage**    | le maître d'ouvrage                                                                               |        |
@@ -263,7 +264,7 @@ les gestes dans l'éditeur. **Requis** = à remplir obligatoirement ; les autres
 | **Montant HT**            | ex. « 8 M€ »                                                                                      |        |
 | **Divers**                | détails complémentaires                                                                           |        |
 | **Texte descriptif**      | le corps de texte (texte riche)                                                                   |        |
-| **Engagements**           | jusqu'à **3** blocs (icône SVG + libellé)                                                         |        |
+| **Engagements**           | jusqu'à **3** blocs (icône SVG + libellé + description)                                           |        |
 | **Carrousel**             | les **Slides média** (voir ci-dessous), dans l'ordre                                              |        |
 | **Vignette plan-masse**   | le plan-masse **N&B** affiché dans la grille Projets                                              |        |
 | **Photo de couverture**   | photo représentative ; si vide → 1ʳᵉ image du carrousel                                           |        |
@@ -285,10 +286,11 @@ choisir _Slide média_, puis remplir :
 
 **Ajouter des engagements (`engagement`, max 3)** — dans le champ **Engagements** :
 
-| Champ       | Sert à…                                                     |
-| ----------- | ----------------------------------------------------------- |
-| **Icône**   | un pictogramme **SVG** (voir §4.3)                          |
-| **Libellé** | le texte, ex. « Mise en valeur de l'existant » — **requis** |
+| Champ           | Sert à…                                                                       |
+| --------------- | ----------------------------------------------------------------------------- |
+| **Icône**       | un pictogramme **SVG** (voir §4.3)                                            |
+| **Libellé**     | le titre, ex. « Mise en valeur de l'existant » — **requis**                   |
+| **Description** | 2–3 lignes d'explication sous le titre (optionnel, retours à la ligne gardés) |
 
 Terminer par **Save** → vérifier l'aperçu → **Publish**.
 
