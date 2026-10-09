@@ -89,7 +89,6 @@ reste **éphémère** : volontairement hors URL / `sessionStorage`. Implémenté
 | `titre`                 | text           | requis                                                                                                                |
 | `ville`                 | text           |                                                                                                                       |
 | `programmes`            | options        | relations stories → `programme` (folder `programmes/`, `use_uuid`) — une ou plusieurs                                 |
-| `programme`             | option         | **obsolète** — relation unique, lue seulement si `programmes` est vide ; à retirer                                    |
 | `thematiques`           | options        | source = datasource `thematique` (valeurs multiples)                                                                  |
 | `description_programme` | text           | une ligne — accueil, fiche projet, colonne Index                                                                      |
 | `maitre_ouvrage`        | text           | « Maîtrise d'ouvrage »                                                                                                |

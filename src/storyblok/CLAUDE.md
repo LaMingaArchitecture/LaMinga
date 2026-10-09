@@ -33,7 +33,7 @@ autoplay loop playsinline>` + `<track kind="captions" />` (a11y lint). Hôtes au
   manquant (404 / liste vide / datasource absente) → `null`/`[]` + placeholder `ContentNotice`
   (le build dégrade sans échouer) ; les erreurs réseau/401/5xx remontent et font échouer le build.
   - `version` : `draft` (preview) vs `published` (prod) — déjà géré par `storyblokVersion`.
-  - Relations : `programmes` (+ `programme` obsolète, repli) + `projets_lies` résolues via `PROJECT_RELATIONS`,
+  - Relations : `programmes` + `projets_lies` résolues via `PROJECT_RELATIONS`,
     `home_slide.projet` via `HOME_RELATIONS` (constantes de `content.ts`, combinées par
     `getPreviewStory()` pour `preview/[...slug].astro`). Logique pure testée (vitest) :
     `lib/programmes.ts` (`toProgrammes`), `lib/similarity.ts`, `lib/explorer-filter.ts`.

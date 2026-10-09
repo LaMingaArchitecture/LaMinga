@@ -74,11 +74,7 @@ const DRAFT_CANDIDATES_TTL_MS = 60_000;
  * Relations resolved on the shared project list fetch — single source of truth so
  * the delivery call and the SSR preview route never drift. Format `<component>.<field>`.
  */
-export const PROJECT_RELATIONS = [
-  'project.programmes',
-  'project.programme',
-  'project.projets_lies',
-] as const;
+export const PROJECT_RELATIONS = ['project.programmes', 'project.projets_lies'] as const;
 
 /** Relation resolved on the home_page fetch (each slide's linked project). */
 export const HOME_RELATIONS = ['home_slide.projet'] as const;

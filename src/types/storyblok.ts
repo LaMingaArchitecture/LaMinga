@@ -91,8 +91,6 @@ export interface ProjectBlok extends SbBlokData {
   ville?: string;
   /** Relations to `programme` stories (one or more). */
   programmes?: SbRelation[];
-  /** Legacy single relation — read only when `programmes` is empty. */
-  programme?: SbRelation;
   /** Values from the "thematique" datasource. */
   thematiques?: string[];
   /** One-line programme description ("Restructuration de logements insalubres…"). */
