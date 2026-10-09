@@ -25,13 +25,13 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@astrojs/netlify": "7.0.13",
-    "@astrojs/sitemap": "3.7.3",
+    "@astrojs/netlify": "8.2.9",
+    "@astrojs/sitemap": "3.7.4",
     "@storyblok/astro": "10.3.2",
-    "astro": "6.4.8"
+    "astro": "7.3.8"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.9",
+    "@astrojs/check": "0.9.10",
     "@commitlint/cli": "21.2.0",
     "@commitlint/config-conventional": "21.2.3",
     "@eslint/js": "10.0.1",
@@ -47,7 +47,12 @@
     "prettier-plugin-astro": "0.14.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.1",
-    "vite": "7.3.5",
+    "vite": "8.3.4",
     "vitest": "5.0.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "tar@^7": "^7.5.22"
+    }
   }
 }
