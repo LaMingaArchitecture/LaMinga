@@ -199,7 +199,7 @@ Ajouté (champ `seo`, type _bloks_, **max 1**) sur `project`, `project_list`, `h
 
 Résolution groupée dans `src/lib/content.ts` via les constantes exportées :
 
-- `PROJECT_RELATIONS = ['project.programmes', 'project.programme', 'project.projets_lies']` — sur le fetch de liste partagé.
+- `PROJECT_RELATIONS = ['project.programmes', 'project.projets_lies']` — sur le fetch de liste partagé.
 - `HOME_RELATIONS = ['home_slide.projet']` — sur le fetch de la home.
 
 La route SSR `src/pages/preview/[...slug].astro` passe par `getPreviewStory()` (`content.ts`), qui
