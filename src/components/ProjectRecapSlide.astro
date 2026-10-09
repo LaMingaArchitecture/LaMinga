@@ -48,11 +48,15 @@ const thumbSrc = (slide: MediaSlideBlok): string => {
 </div>
 
 <style>
+  /* The single track is pinned to the slide width — an auto track would size to the mosaic's
+     content and let auto-fill spill columns off-screen. The bottom padding clears the cartouche
+     so the last row can always be scrolled into view above it. */
   .recap {
     height: 100%;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     place-items: center;
-    padding: calc(var(--nav-brand-h) + var(--space-4)) var(--page-x) 8rem;
+    padding: calc(var(--nav-brand-h) + var(--space-4)) var(--page-x) 15rem;
     background: var(--color-paper);
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -64,7 +68,7 @@ const thumbSrc = (slide: MediaSlideBlok): string => {
     width: 100%;
     max-width: 60rem;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
     gap: var(--space-3);
   }
   .recap__item {
@@ -91,7 +95,10 @@ const thumbSrc = (slide: MediaSlideBlok): string => {
 
   @media (min-width: 48rem) {
     .recap {
-      padding-bottom: 7rem;
+      padding-bottom: 12rem;
+    }
+    .recap__grid {
+      grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
     }
   }
 </style>
