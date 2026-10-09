@@ -1,6 +1,6 @@
 # CLAUDE.md — Site LaMinga
 
-Vitrine d'agence d'architecture. **Astro 6 + Storyblok** (headless), déployé sur **Netlify**.
+Vitrine d'agence d'architecture. **Astro 7 + Storyblok** (headless), déployé sur **Netlify**.
 Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 Éditeurs non-techniques : autonomie d'édition et performance priment.
 
@@ -19,8 +19,8 @@ Prod = statique (SSG). Preview = SSR (contenu `draft`) pour l'éditeur visuel.
 ## Stack (versions verrouillées par pnpm-lock.yaml)
 
 - Node 22 (`.nvmrc`), pnpm 10 (corepack), TypeScript strict
-- Astro 6, `@storyblok/astro` 9 (région EU, bridge activé en `draft` uniquement)
-- Adaptateur `@astrojs/netlify` 7, `@astrojs/sitemap` 3
+- Astro 7, `@storyblok/astro` 10 (région EU, bridge activé en `draft` uniquement)
+- Adaptateur `@astrojs/netlify` 8, `@astrojs/sitemap` 3
 - `vite` épinglé en dépendance directe (utilisé par `loadEnv` dans `astro.config.mjs`)
 - Variables typées via `astro:env` — JAMAIS de secret en dur
 

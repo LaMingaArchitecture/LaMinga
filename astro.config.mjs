@@ -45,6 +45,11 @@ export default defineConfig({
   site: PUBLIC_SITE_URL,
   output: 'static',
   adapter: netlify(),
+  // Templates rely on HTML whitespace between inline elements (e.g. a label span followed by its
+  // value); the v7 'jsx' default would strip those spaces.
+  compressHTML: true,
+  // No code blocks on the site; Shiki's inline styles would also conflict with the hashed CSP.
+  markdown: { syntaxHighlight: false },
   ...securityConfig,
   integrations: [
     storyblok({

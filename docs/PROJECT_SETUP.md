@@ -16,14 +16,14 @@ Pourquoi pas tout en SSR ? Parce qu'une vitrine n'a aucun besoin de rendu serveu
 
 ### Stack épinglée (juin 2026)
 
-| Élément          | Version cible           | Note                                            |
-| ---------------- | ----------------------- | ----------------------------------------------- |
-| Node             | **22 LTS** (`>=22.12`)  | requis par Astro 6                              |
-| Astro            | **^6.0**                | sorti mars 2026 ; **API CSP native**, Fonts API |
-| @storyblok/astro | **^9.0**                | compatible Astro 6                              |
-| @astrojs/netlify | compatible Astro 6      | installé via `astro add`, puis verrouillé       |
-| @astrojs/sitemap | compatible Astro 6      | idem                                            |
-| Gestionnaire     | **pnpm** (via corepack) |                                                 |
+| Élément          | Version cible           | Note                                          |
+| ---------------- | ----------------------- | --------------------------------------------- |
+| Node             | **22 LTS** (`>=22.12`)  | requis par Astro 7                            |
+| Astro            | **^7.0**                | Vite 8, compilateur Rust ; **API CSP native** |
+| @storyblok/astro | **^10.0**               | compatible Astro 7                            |
+| @astrojs/netlify | **^8.0**                | compatible Astro 7, verrouillé                |
+| @astrojs/sitemap | compatible Astro 7      | idem                                          |
+| Gestionnaire     | **pnpm** (via corepack) |                                               |
 
 **Le vrai épinglage = le lockfile.** Installer en versions exactes (`pnpm config set save-exact true`), committer `pnpm-lock.yaml`, fixer Node via `.nvmrc` + `engines`. Les montées de version se feront de façon contrôlée (Dependabot/Renovate), pas au hasard d'un `install`.
 
