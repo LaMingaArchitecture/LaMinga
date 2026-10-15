@@ -37,8 +37,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1(eslint@10.6.0(jiti@2.7.0))
       '@netlify/edge-functions':
-        specifier: 3.0.8
-        version: 3.0.8
+        specifier: 4.0.2
+        version: 4.0.2
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -1018,10 +1018,6 @@ packages:
   '@netlify/edge-functions-dev@2.0.3':
     resolution: {integrity: sha512-BVjkmdOFmqNwsL2Nt8kkfBBbw0Zz9nRT5OedMqvj6nO/x95gq1wuyOXEwfNWV5i2WlNtJrBlOXD4Il1HLLqJ5Q==}
     engines: {node: '>=22.12.0'}
-
-  '@netlify/edge-functions@3.0.8':
-    resolution: {integrity: sha512-ml1oCDsRTTRmZS2nUj8XRD1b6+foEiZT3lPk7qQ4nv/jnxylHJ20ooPzPDH+cJmGjXFrMeR14/91W1o6D2ftBg==}
-    engines: {node: '>=18.0.0'}
 
   '@netlify/edge-functions@4.0.2':
     resolution: {integrity: sha512-DQflkwaC3greGAAZ9v2wE5PU0qkXMeC7xhRnF/8DEGCjWaVLt/uf48nqDkyCxLG84GYMSQSmlMs+O4wPf+FqPw==}
@@ -6103,10 +6099,6 @@ snapshots:
       '@netlify/edge-functions-bootstrap': 2.16.0
       '@netlify/runtime-utils': 3.0.0
       get-port: 7.2.0
-
-  '@netlify/edge-functions@3.0.8':
-    dependencies:
-      '@netlify/types': 2.8.0
 
   '@netlify/edge-functions@4.0.2':
     dependencies:

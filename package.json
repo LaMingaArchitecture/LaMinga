@@ -35,7 +35,7 @@
     "@commitlint/cli": "21.2.0",
     "@commitlint/config-conventional": "21.2.3",
     "@eslint/js": "10.0.1",
-    "@netlify/edge-functions": "3.0.8",
+    "@netlify/edge-functions": "4.0.2",
     "cross-env": "10.1.0",
     "eslint": "10.6.0",
     "eslint-plugin-astro": "3.2.1",
