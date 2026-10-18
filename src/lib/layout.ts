@@ -13,12 +13,14 @@ export interface LayoutChrome {
   accent?: 'coral' | 'violet';
   /** Serif italic visible at first paint → preload it. Default true. */
   serif?: boolean;
+  /** Desktop mouse: the Projets/Atelier cartouches stay faded until the brand column is hovered. */
+  navReveal?: boolean;
 }
 
 /** Immersive pages own a fullscreen frame; the rest scroll as a document under the floating nav. */
 const CHROME: Record<string, LayoutChrome> = {
   // No serif above the fold: slide titles are sans and the home has no footer.
-  home_page: { accent: 'coral', serif: false },
+  home_page: { accent: 'coral', serif: false, navReveal: true },
   project: {},
   project_list: { footer: true },
   atelier_page: { footer: true, immersive: true, immersiveScroll: true },

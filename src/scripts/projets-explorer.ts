@@ -3,7 +3,7 @@
 // back to both, so returning to /projets restores them; the search text is ephemeral (kept out of
 // the URL to keep the deep-link contract simple). Programmes/thematiques come from Storyblok —
 // nothing is hardcoded here.
-import { matchesFilters } from '../lib/explorer-filter';
+import { EXPLORER_STORAGE_KEY, hasActiveFilters, matchesFilters } from '../lib/explorer-filter';
 import { normalizeSearch } from '../lib/search';
 
 type View = 'grid' | 'index';
@@ -14,7 +14,6 @@ interface State {
   search: string;
 }
 
-const KEY = 'projets-explorer';
 const root = document.querySelector<HTMLElement>('[data-explorer]');
 
 if (root) {
@@ -28,6 +27,7 @@ if (root) {
   const viewIndex = root.querySelector<HTMLButtonElement>('[data-view-index]');
   const searchToggle = root.querySelector<HTMLButtonElement>('[data-search-toggle]');
   const searchInput = root.querySelector<HTMLInputElement>('[data-search-input]');
+  const resetButton = root.querySelector<HTMLButtonElement>('[data-filters-reset]');
   const views = Array.from(root.querySelectorAll<HTMLElement>('[data-view]'));
   const gridView = views.find((v) => v.dataset.view === 'grid') ?? null;
   const indexView = views.find((v) => v.dataset.view === 'index') ?? null;
@@ -63,7 +63,7 @@ if (root) {
       view = params.get('vue') === 'index' ? 'index' : 'grid';
     } else {
       try {
-        const saved = JSON.parse(sessionStorage.getItem(KEY) ?? 'null');
+        const saved = JSON.parse(sessionStorage.getItem(EXPLORER_STORAGE_KEY) ?? 'null');
         if (saved) {
           programme = saved.programme ?? null;
           thematique = saved.thematique ?? null;
@@ -84,7 +84,7 @@ if (root) {
   const persist = () => {
     try {
       sessionStorage.setItem(
-        KEY,
+        EXPLORER_STORAGE_KEY,
         JSON.stringify({
           programme: state.programme,
           thematique: state.thematique,
@@ -129,6 +129,7 @@ if (root) {
     viewIndex?.setAttribute('aria-pressed', String(state.view === 'index'));
     const query = normalizeSearch(state.search);
     const filter = { programme: state.programme, thematique: state.thematique, query };
+    if (resetButton) resetButton.hidden = !hasActiveFilters(filter);
     const matches = (item: HTMLElement): boolean => matchesFilters(item.dataset, filter);
 
     // Count matches from the grid only (items are duplicated across the two views).
@@ -176,22 +177,37 @@ if (root) {
   });
 
   // Recherche: the tool-row link reveals the input; typing filters live; closing clears it.
+  const closeSearch = () => {
+    if (!searchInput) return;
+    searchInput.value = '';
+    searchInput.hidden = true;
+    searchToggle?.setAttribute('aria-expanded', 'false');
+    state.search = '';
+  };
   searchToggle?.addEventListener('click', () => {
     if (!searchInput) return;
-    const open = searchInput.hidden;
-    searchInput.hidden = !open;
-    searchToggle.setAttribute('aria-expanded', String(open));
-    if (open) {
+    if (searchInput.hidden) {
+      searchInput.hidden = false;
+      searchToggle.setAttribute('aria-expanded', 'true');
       searchInput.focus();
     } else {
-      searchInput.value = '';
-      state.search = '';
+      closeSearch();
       apply();
     }
   });
   searchInput?.addEventListener('input', () => {
     state.search = searchInput.value;
     apply();
+  });
+
+  // The reset hides itself once used, so focus moves to the first filter instead of the page body.
+  resetButton?.addEventListener('click', () => {
+    state.programme = null;
+    state.thematique = null;
+    closeSearch();
+    apply();
+    persist();
+    (programmeButtons[0] ?? thematiqueButtons[0] ?? viewVignettes)?.focus();
   });
 
   // Liste hover: lay the project's cover thumbnail over the Programme column, from the hovered row

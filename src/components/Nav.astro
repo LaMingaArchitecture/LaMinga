@@ -42,6 +42,7 @@ const activeSection = activeSectionFor(Astro.url.pathname);
           <a
             class="nav__btn brand-box"
             href="/projets"
+            data-projets-reset
             aria-current={activeSection === 'projets' ? 'page' : undefined}
           >
             Projets
@@ -173,19 +174,19 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     }
   }
 
-  /* Mouse devices: only the logotype shows; the cartouches appear while the pointer is over the
-     brand column (the logo gap is inside it, so the path down to them keeps the hover) or while
-     keyboard focus is anywhere in the header. Faded, not hidden: the links stay focusable and in the
-     accessibility tree, and the boxes keep their room so nothing below shifts. Touch tablets have
-     no hover and keep them visible. */
+  /* Home carousel, mouse devices: only the logotype shows over the slides; the cartouches appear
+     while the pointer is over the brand column (the logo gap is inside it, so the path down to them
+     keeps the hover) or while keyboard focus is anywhere in the header. Faded, not hidden: the links
+     stay focusable and in the accessibility tree, and the boxes keep their room so nothing below
+     shifts. Every other page, and touch tablets, keep them visible. */
   @media (min-width: 48rem) and (hover: hover) and (pointer: fine) {
-    .nav__buttons {
+    :global(body[data-nav-reveal]) .nav__buttons {
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--transition);
     }
-    .nav__brand:hover .nav__buttons,
-    .nav:focus-within .nav__buttons {
+    :global(body[data-nav-reveal]) .nav__brand:hover .nav__buttons,
+    :global(body[data-nav-reveal]) .nav:focus-within .nav__buttons {
       opacity: 1;
       pointer-events: auto;
     }
@@ -205,3 +206,7 @@ const activeSection = activeSectionFor(Astro.url.pathname);
     }
   }
 </style>
+
+<script>
+  import '../scripts/projets-reset';
+</script>

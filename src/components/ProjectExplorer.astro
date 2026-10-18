@@ -100,6 +100,9 @@ const programmesForThematique = (value: string) =>
         aria-label="Rechercher un projet"
         hidden
       />
+      <button type="button" class="explorer__tool explorer__reset" data-filters-reset hidden>
+        <span aria-hidden="true">×</span> Tout afficher
+      </button>
     </div>
   </div>
 
@@ -249,6 +252,16 @@ const programmesForThematique = (value: string) =>
   .explorer__tool[aria-expanded='true'] {
     color: var(--color-coral);
     font-weight: 600;
+  }
+  /* Shown only while a filter or search narrows the list (projets-explorer.ts). */
+  .explorer__reset {
+    color: var(--color-coral);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .explorer__reset[hidden] {
+    display: none;
   }
   /* Search field shares the .brand-box open-corner outline (like the filter chips + nav buttons).
      Reset the native <input> chrome so only the brand-box gradients show. The open-corner edge is
