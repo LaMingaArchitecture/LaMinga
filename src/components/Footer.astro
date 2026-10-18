@@ -72,7 +72,9 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
     display: inline-flex;
     align-items: center;
     padding: var(--space-2) var(--space-3);
-    color: var(--color-ink);
+    color: var(--accent);
+    font-family: var(--font-serif);
+    font-style: italic;
     text-decoration: none;
     line-height: 1.25;
     white-space: nowrap;
@@ -87,15 +89,11 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
     --brand-box-fill: var(--brand-box-fill-hover);
   }
 
+  /* Every cell is serif italic like « mentions légales »; only the studio name keeps Sora. */
   .site-footer__name {
+    font-family: var(--font-sans);
+    font-style: normal;
     font-weight: 600;
-    color: var(--accent);
-  }
-
-  .site-footer__mentions {
-    font-style: italic;
-    font-family: var(--font-serif);
-    color: var(--accent);
   }
 
   /* From tablet up: spread the contact group left, legal link right. */
