@@ -11,9 +11,9 @@ const { projects } = Astro.props;
 ---
 
 {
-  /* Vignettes view: a row-major responsive grid of square plan-masse tiles that fills the first row
-    across the width before wrapping (2 cols mobile → up to 5 on wide, capped so tiles stay a
-    comfortable size). Filtering hides non-matching <li>s; the rest regroup left. */
+  /* Vignettes view: a row-major grid of 4:5 portrait plan-masse tiles (2 cols mobile, 4 tablet,
+    6 desktop — the page's 6-column grid, each tile under a filter column). Filtering hides
+    non-matching <li>s; the rest regroup left. */
 }
 <div class="vignettes" data-view="grid">
   <ul class="vignettes__rail">
@@ -51,23 +51,17 @@ const { projects } = Astro.props;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-4) var(--space-3);
-    /* Left-anchored, capped so tiles stay a comfortable size on ultra-wide screens instead of
-       sprawling; the filters above are likewise left-aligned, so the page reads as one column. */
-    max-width: 100rem;
   }
-  @media (min-width: 40rem) {
-    .vignettes__rail {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 64rem) {
+  @media (min-width: 48rem) {
     .vignettes__rail {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
-  @media (min-width: 100rem) {
+  /* Same tracks and gutter as the brand column + the five filter columns above. */
+  @media (min-width: 64rem) {
     .vignettes__rail {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
     }
   }
   .vignettes__item {

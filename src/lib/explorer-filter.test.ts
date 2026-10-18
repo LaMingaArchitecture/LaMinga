@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { matchesFilters } from './explorer-filter';
+import { hasActiveFilters, matchesFilters } from './explorer-filter';
 
 const item = {
   programmes: 'enseignement equipement',
@@ -33,5 +33,17 @@ describe('matchesFilters', () => {
       matchesFilters(item, { programme: 'equipement', thematique: 'ruralite', query: '' }),
     ).toBe(false);
     expect(matchesFilters(item, { ...none, query: 'anglet' })).toBe(false);
+  });
+});
+
+describe('hasActiveFilters', () => {
+  test('is false when nothing narrows the list', () => {
+    expect(hasActiveFilters(none)).toBe(false);
+  });
+
+  test('is true for a programme, a thematique or a search query', () => {
+    expect(hasActiveFilters({ ...none, programme: 'equipement' })).toBe(true);
+    expect(hasActiveFilters({ ...none, thematique: 'reemploi' })).toBe(true);
+    expect(hasActiveFilters({ ...none, query: 'texel' })).toBe(true);
   });
 });

@@ -44,6 +44,8 @@ interface Props {
   accent?: 'coral' | 'violet';
   /** Serif italic visible at first paint → preload it. Default true (off on the home). */
   serif?: boolean;
+  /** Fade the desktop nav cartouches until the logo is hovered (home carousel only). */
+  navReveal?: boolean;
 }
 
 const {
@@ -61,6 +63,7 @@ const {
   scroll = false,
   accent = 'violet',
   serif = true,
+  navReveal = false,
 } = Astro.props;
 
 const settings = await getSettings();
@@ -165,6 +168,7 @@ const preconnectOrigins = preload.length
   </head>
   <body
     data-accent={accent}
+    data-nav-reveal={navReveal ? '' : undefined}
     data-scroll={scroll ? '' : undefined}
     data-immersive={immersive ? '' : undefined}
     data-immersive-scroll={immersiveScroll ? '' : undefined}

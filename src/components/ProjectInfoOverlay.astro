@@ -1,8 +1,8 @@
 ---
 /**
- * ProjectInfoOverlay — the "+ infos" disclosure: three bleu-clair panels laid over the current
- * visual (sheet + data table | descriptive text | engagements). Server-rendered and CSS-hidden
- * (`hidden`) so every fact stays in the static HTML; the pill toggles `hidden` at runtime. Panels
+ * ProjectInfoOverlay — the "+ infos" disclosure: one bleu-clair sheet laid over the current visual,
+ * split into three sections (sheet + data table | descriptive text | engagements). Server-rendered
+ * and CSS-hidden (`hidden`) so every fact stays in the static HTML; the pill toggles `hidden` at runtime. Panels
  * whose source fields are empty are omitted. Occupies the middle band, clearing the header and the
  * bottom HUD (band bounds inherited from .project-hud via --band-*).
  */
@@ -22,49 +22,51 @@ const engagements = blok.engagements ?? [];
 ---
 
 <section id={id} class="info-overlay" aria-label="Informations du projet" hidden={hidden}>
-  <div class="info-panel info-panel--sheet">
-    <p class="info-panel__title">{blok.titre}</p>
-    {blok.ville && <p class="info-panel__ville">{blok.ville}</p>}
+  <div class="info-sheet">
+    <div class="info-panel info-panel--sheet">
+      <p class="info-panel__title">{blok.titre}</p>
+      {blok.ville && <p class="info-panel__ville">{blok.ville}</p>}
+      {
+        blok.description_programme && (
+          <p class="info-panel__programme">
+            <span class="info-panel__programme-label">Programme</span> {blok.description_programme}
+          </p>
+        )
+      }
+      {
+        rows.length > 0 && (
+          <dl class="info-table">
+            {rows.map(([label, value]) => (
+              <div class="info-table__row">
+                <dt>{label}</dt>
+                <dd class="pre-line">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+    </div>
+
     {
-      blok.description_programme && (
-        <p class="info-panel__programme">
-          <span class="info-panel__programme-label">Programme</span> {blok.description_programme}
-        </p>
+      blok.texte && (
+        <div class="info-panel info-panel--texte">
+          <RichText doc={blok.texte} />
+        </div>
       )
     }
+
     {
-      rows.length > 0 && (
-        <dl class="info-table">
-          {rows.map(([label, value]) => (
-            <div class="info-table__row">
-              <dt>{label}</dt>
-              <dd class="pre-line">{value}</dd>
-            </div>
+      engagements.length > 0 && (
+        <ul class="info-panel info-panel--engagements">
+          {engagements.map((engagement) => (
+            <li>
+              <StoryblokComponent blok={engagement} />
+            </li>
           ))}
-        </dl>
+        </ul>
       )
     }
   </div>
-
-  {
-    blok.texte && (
-      <div class="info-panel info-panel--texte">
-        <RichText doc={blok.texte} />
-      </div>
-    )
-  }
-
-  {
-    engagements.length > 0 && (
-      <ul class="info-panel info-panel--engagements">
-        {engagements.map((engagement) => (
-          <li>
-            <StoryblokComponent blok={engagement} />
-          </li>
-        ))}
-      </ul>
-    )
-  }
 </section>
 
 <style>
@@ -167,30 +169,50 @@ const engagements = blok.engagements ?? [];
   }
 
   @media (min-width: 48rem) {
-    /* Desktop: three bleu-clair panels again, but the cluster is vertically centered in the band
-       (align-content) so it sits lower than the header/nav and reads as balanced. */
+    /* Desktop: one bleu-clair sheet, vertically centered in the band (align-content) so it sits
+       lower than the header/nav and reads as balanced. A single ground keeps the bottom edge
+       straight whatever each section's length. */
     .info-overlay {
       bottom: var(--band-bottom);
       max-height: none;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
       /* `safe` falls back to top-alignment (scrollable) if a content-heavy sheet ever exceeds the
          band, so it can never overflow into the header or the bottom controls. */
       align-content: safe center;
-      align-items: start;
-      gap: var(--space-4);
       padding: 0;
       background: none;
       overflow-y: auto;
     }
-    .info-panel {
+    /* Sections share the row (flex, so an omitted section leaves no empty column); the text one is
+       a little wider. Dividers are inset by the sheet's padding, so every junction stays open. */
+    .info-sheet {
+      display: flex;
+      align-items: stretch;
+      padding: var(--space-5) 0;
       background: var(--panel-bg);
-      padding: var(--space-5);
+    }
+    .info-panel {
+      position: relative;
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 0 var(--space-5);
+    }
+    .info-panel--texte {
+      flex-grow: 1.15;
     }
     .info-panel + .info-panel {
       margin-top: 0;
-      padding-top: var(--space-5);
+      padding-top: 0;
       border-top: 0;
+    }
+    .info-panel + .info-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--border-w);
+      background: var(--panel-line);
     }
   }
 </style>

@@ -213,9 +213,10 @@
    Fleche icon's points. */
 @media (hover: hover) and (pointer: fine) {
   :root {
-    --cursor-dot: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"%3E%3Ccircle cx="14" cy="14" r="13" fill="%23ff6c4f"/%3E%3C/svg%3E');
-    --cursor-default: var(--cursor-dot) 14 14, auto;
-    --cursor-link: var(--cursor-dot) 14 14, pointer;
+    /* 12px corail dot in a 2px papier ring: the ring keeps it visible over the corail social discs. */
+    --cursor-dot: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Ccircle cx="8" cy="8" r="8" fill="%23f9f7f2"/%3E%3Ccircle cx="8" cy="8" r="6" fill="%23ff6c4f"/%3E%3C/svg%3E');
+    --cursor-default: var(--cursor-dot) 8 8, auto;
+    --cursor-link: var(--cursor-dot) 8 8, pointer;
     /* Carousel halves (FullscreenCarousel): corail ink, and papier over a titre_clair slide. */
     --cursor-prev:
       url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="2.8 2.4 85.5 85.1"%3E%3Cpolygon points="87.8 87 3.3 44.9 87.8 2.9" fill="%23ff6c4f" stroke="%23fec9d7" stroke-width="3" stroke-miterlimit="10"/%3E%3C/svg%3E')

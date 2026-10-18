@@ -140,13 +140,13 @@ donne le **master à fournir** (Storyblok se charge du reste) :
 | **Image portrait** — version mobile            | **3:4** (portrait) | **≥ 1200 px** (idéal 1600)     |
 | **Fonds Atelier** (image, clients, équipe)     | **16:9** (paysage) | **≥ 1920 px**                  |
 | **Poster de vidéo**                            | comme la vidéo     | **≥ 1600 px**                  |
-| **Vignette plan-masse** (N&B)                  | **1:1** (carré)    | **≥ 1000 px**                  |
+| **Vignette plan-masse** (N&B)                  | **4:5** (portrait) | **≥ 1000 px**                  |
 | **Photo de couverture**                        | **4:3** (paysage)  | **≥ 1200 px**                  |
 | **Photo membre équipe** (N&B)                  | **1:1** (carré)    | **≥ 1000 px**                  |
 | **Image de partage SEO** (`image_partage`)     | **~1,9:1**         | **≥ 1200 px** (idéal 1200×630) |
 
-> **Astuce « point de focus » (recadrage propre).** Pour les emplacements **carrés / 4:3** (vignette,
-> couverture, photo d'équipe), Storyblok **recadre** l'image. Pour éviter que le recadrage coupe le
+> **Astuce « point de focus » (recadrage propre).** Pour les emplacements **4:5 / 4:3 / carrés**
+> (vignette, couverture, photo d'équipe), Storyblok **recadre** l'image. Pour éviter que le recadrage coupe le
 > sujet, ouvrez l'image dans **Assets** et réglez son **point de focus** (Focal point) sur le sujet.
 > Storyblok centrera automatiquement le recadrage dessus.
 

@@ -24,3 +24,11 @@ export function matchesFilters(item: FilterableItem, state: FilterState): boolea
     (!state.query || (item.search ?? '').includes(state.query))
   );
 }
+
+/** Does any filter or search narrow the list? (drives the « Tout afficher » reset). */
+export function hasActiveFilters(state: FilterState): boolean {
+  return state.programme != null || state.thematique != null || state.query !== '';
+}
+
+/** sessionStorage key of the explorer state, cleared by the nav « Projets » links to reset it. */
+export const EXPLORER_STORAGE_KEY = 'projets-explorer';

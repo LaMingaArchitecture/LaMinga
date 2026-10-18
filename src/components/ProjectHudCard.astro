@@ -73,11 +73,14 @@ const hasActions = Astro.slots.has('actions');
   .hud-card__actions {
     grid-area: actions;
   }
+  /* From tablet up the card spans five of the six page-grid columns, so the values get the width
+     to fit their two lines. */
   @media (min-width: 48rem) {
     .hud-card {
       grid-template-columns: auto minmax(0, 1fr) auto;
       grid-template-areas: 'title data actions';
-      max-width: min(92vw, 48rem);
+      width: min(100%, calc(5 * var(--grid-col) + 4 * var(--grid-gap)));
+      max-width: none;
     }
   }
 
@@ -260,12 +263,9 @@ const hasActions = Astro.slots.has('actions');
     .hud-card__actions > :global(*) {
       flex: 1 1 0;
     }
-    /* The wide card has room: the maîtrise d'ouvrage shows whole and words are never split. */
+    /* The wide card has room: words are never split. */
     .hud-card__row dd {
       hyphens: manual;
-    }
-    .hud-card__row dd:not(.hud-card__desc) {
-      display: block;
     }
   }
 </style>
