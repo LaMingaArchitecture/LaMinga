@@ -25,7 +25,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@astrojs/netlify": "8.2.9",
+    "@astrojs/netlify": "8.2.10",
     "@astrojs/sitemap": "3.7.4",
     "@storyblok/astro": "10.3.2",
     "astro": "7.3.8"
