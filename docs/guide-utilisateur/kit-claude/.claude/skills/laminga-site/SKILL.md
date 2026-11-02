@@ -20,15 +20,20 @@ dans [reference-contenu.md](reference-contenu.md).
 
 ## 1. Retrouver les fichiers de la personne
 
-Les dossiers projets sont dans Google Drive, synchronisé sur le Mac par **Google Drive pour
-ordinateur** : `~/Library/CloudStorage/GoogleDrive-*/`. Demander le nom du dossier du projet, le
-retrouver (`ls`, `find -maxdepth 4 -iname '*<nom>*'`), puis confirmer le chemin avec la personne.
+Repérer d'abord le système de l'ordinateur (Mac ou Windows) : les chemins et l'outil photo en
+dépendent.
 
-- **Textes** : un Google Docs apparaît sur le Mac comme un fichier `.gdoc` illisible. Le lire avec le
-  connecteur Google Drive s'il est activé ; sinon demander à la personne de coller le texte dans la
-  conversation (ou d'exporter le document en PDF dans le même dossier).
-- **PDF** (plan masse) : `qlmanage -t -s 2400 -o <dossier>/web <fichier.pdf>` produit un PNG, à passer
-  ensuite dans l'outil photo.
+Les dossiers projets sont dans Google Drive, synchronisé par **Google Drive pour ordinateur** :
+`~/Library/CloudStorage/GoogleDrive-*/` sur Mac, un lecteur `G:\` (« Mon Drive ») sur Windows.
+Demander le nom du dossier du projet, le retrouver (`ls`, `find -maxdepth 4 -iname '*<nom>*'`), puis
+confirmer le chemin avec la personne.
+
+- **Textes** : un Google Docs apparaît sur l'ordinateur comme un fichier `.gdoc` illisible. Le lire
+  avec le connecteur Google Drive s'il est activé ; sinon demander à la personne de coller le texte
+  dans la conversation (ou d'exporter le document en PDF dans le même dossier).
+- **PDF** (plan masse) : sur Mac, `qlmanage -t -s 2400 -o <dossier>/web <fichier.pdf>` produit un
+  PNG, à passer ensuite dans l'outil photo. Sur Windows, demander à la personne d'exporter le plan en
+  PNG ou JPG depuis son logiciel (Acrobat, AutoCAD…), au moins 2400 px de large.
 
 ## 2. Inventorier et poser les questions AVANT tout envoi
 
@@ -36,8 +41,12 @@ Lancer l'outil photo sur le dossier du projet (il écrit les versions web dans d
 `web/`, sans toucher aux originaux) :
 
 ```bash
-osascript -l JavaScript outils/optimiser-photos.js "<dossier du projet>"
+osascript -l JavaScript outils/optimiser-photos.js "<dossier du projet>"                         # Mac
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File outils/optimiser-photos.ps1 "<dossier>"  # Windows
 ```
+
+Sur Windows, une photo iPhone (HEIC) signalée « illisible » demande les extensions HEIF et HEVC de
+Microsoft (Microsoft Store) : le dire à la personne, ou lui proposer d'envoyer ces photos en JPG.
 
 Puis présenter à la personne, en langage simple, un **plan de la fiche** :
 
@@ -101,10 +110,11 @@ d'office).
   (photo noir et blanc carrée).
 - **Dépublier** un projet : `unpublishStory` après accord ; la fiche reste dans Storyblok.
 
-## 7. Installer l'outil photo sur le Mac (si demandé)
+## 7. Installer l'outil photo sur le bureau (si demandé)
 
 ```bash
-osacompile -l JavaScript -o ~/Desktop/"Optimiser pour le web.app" outils/optimiser-photos.js
+osacompile -l JavaScript -o ~/Desktop/"Optimiser pour le web.app" outils/optimiser-photos.js     # Mac
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File outils/optimiser-photos.ps1 -Installer   # Windows
 ```
 
 Dire ensuite : « L'icône « Optimiser pour le web » est sur votre bureau. Glissez-y des photos ou un
