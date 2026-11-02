@@ -31,3 +31,5 @@ public/_headers
 .playwright-mcp/
 .superpowers/
 dist-guide/
+# Rendu au build par scripts/build-guide.sh
+docs/guide-utilisateur/captures/outil-photo-message.png
