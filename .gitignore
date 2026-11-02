@@ -29,3 +29,5 @@ public/_headers
 
 # Playwright MCP scratch output
 .playwright-mcp/
+.superpowers/
+dist-guide/

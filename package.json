@@ -22,7 +22,8 @@
     "typecheck": "astro check && tsc -p netlify/tsconfig.json",
     "typecheck:edge": "tsc -p netlify/tsconfig.json",
     "prepare": "husky",
-    "test": "vitest run"
+    "test": "vitest run",
+    "guide": "scripts/build-guide.sh"
   },
   "dependencies": {
     "@astrojs/netlify": "8.2.9",

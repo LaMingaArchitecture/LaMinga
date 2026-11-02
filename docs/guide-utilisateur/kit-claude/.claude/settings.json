@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(osascript -l JavaScript outils/optimiser-photos.js:*)",
+      "Bash(qlmanage -t:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)"
+    ]
+  }
+}
