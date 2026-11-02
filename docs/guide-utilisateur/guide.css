@@ -1,0 +1,474 @@
+@font-face {
+  font-family: 'Sora';
+  src: url('../../public/fonts/sora-latin-variable.woff2') format('woff2-variations');
+  font-weight: 100 800;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../../public/fonts/playfair-italic.woff2') format('woff2');
+  font-style: italic;
+}
+
+:root {
+  --beige: #f9f7f2;
+  --corail: #ff6c4f;
+  --aubergine: #7e4080;
+  --nuit: #32255b;
+  --bleu: #bbd5fd;
+  --taupe: #d0b8b0;
+  --rose: #fec9d7;
+  --line: #d8d0cc;
+  --page-w: 210mm;
+  --page-h: 297mm;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  background: #e9e5dc;
+  font-family: 'Sora', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 10pt;
+  line-height: 1.5;
+  color: var(--nuit);
+  counter-reset: page;
+}
+
+.page {
+  width: var(--page-w);
+  height: var(--page-h);
+  margin: 10mm auto;
+  background: var(--beige);
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+  counter-increment: page;
+}
+
+@media print {
+  body {
+    background: none;
+  }
+  .page {
+    margin: 0;
+  }
+}
+
+/* Bandeau : parcours en cours + numéro de page */
+.band {
+  background: var(--nuit);
+  color: #fff;
+  height: 13mm;
+  padding: 0 14mm;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9pt;
+}
+.band b {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.band .where::after {
+  content: ' · page ' counter(page);
+  opacity: 0.75;
+}
+.band .mode {
+  display: inline-block;
+  margin-right: 3mm;
+  padding: 0.4mm 2.5mm;
+  border: 1px solid var(--rose);
+  border-radius: 20px;
+  font-size: 7.5pt;
+}
+
+.body {
+  padding: 9mm 14mm 0;
+}
+
+.foot {
+  position: absolute;
+  bottom: 7mm;
+  left: 14mm;
+  right: 14mm;
+  display: flex;
+  justify-content: space-between;
+  font-size: 7.5pt;
+  color: var(--aubergine);
+  border-top: 1px solid var(--rose);
+  padding-top: 2mm;
+}
+.foot .serif {
+  font-size: 9pt;
+}
+
+.serif {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+h1 {
+  font-size: 22pt;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--corail);
+  margin: 0 0 3mm;
+}
+h2 {
+  font-size: 14pt;
+  font-weight: 600;
+  margin: 0 0 3mm;
+}
+h3 {
+  font-size: 11pt;
+  font-weight: 600;
+  margin: 5mm 0 2mm;
+}
+p {
+  margin: 0 0 2.5mm;
+}
+.lead {
+  font-size: 11pt;
+  font-weight: 300;
+  margin-bottom: 6mm;
+}
+.kicker {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  color: var(--aubergine);
+  font-size: 11pt;
+  margin-bottom: 1mm;
+}
+
+ul,
+ol {
+  margin: 0 0 3mm;
+  padding-left: 5mm;
+}
+li {
+  margin-bottom: 1mm;
+}
+
+kbd,
+.ui {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 0.88em;
+  font-weight: 600;
+  padding: 0 1.6mm;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #fff;
+  white-space: nowrap;
+}
+.ui.primary {
+  background: var(--nuit);
+  color: #fff;
+  border-color: var(--nuit);
+}
+
+/* Étape numérotée */
+.step {
+  display: grid;
+  grid-template-columns: 9mm 1fr;
+  gap: 3mm;
+  margin-bottom: 4mm;
+}
+.step .num {
+  width: 8mm;
+  height: 8mm;
+  border-radius: 50%;
+  background: var(--corail);
+  color: #fff;
+  font-weight: 700;
+  font-size: 11pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.step h3 {
+  margin: 0.8mm 0 1mm;
+}
+
+/* Encadrés */
+.box {
+  padding: 3mm 4mm;
+  margin: 3mm 0 4mm;
+  border-left: 1.2mm solid;
+  break-inside: avoid;
+}
+.box b:first-child {
+  display: block;
+  margin-bottom: 0.5mm;
+}
+.box.warn {
+  border-color: var(--corail);
+  background: #fff;
+}
+.box.check {
+  border-color: var(--aubergine);
+  background: var(--rose);
+}
+.box.tip {
+  border-color: var(--nuit);
+  background: var(--bleu);
+}
+.box p:last-child,
+.box ul:last-child {
+  margin-bottom: 0;
+}
+
+/* Captures d'écran */
+figure.shot {
+  margin: 2mm 0 4mm;
+  position: relative;
+  border: 1px solid var(--line);
+  background: #fff;
+  line-height: 0;
+}
+figure.shot .frame {
+  position: relative;
+}
+figure.shot img {
+  width: 100%;
+  display: block;
+}
+figure.shot .hl {
+  position: absolute;
+  border: 0.7mm solid var(--corail);
+  border-radius: 1.5mm;
+}
+figure.shot .pin {
+  position: absolute;
+  width: 6mm;
+  height: 6mm;
+  margin: -3mm 0 0 -3mm;
+  border-radius: 50%;
+  background: var(--corail);
+  color: #fff;
+  font-weight: 700;
+  font-size: 9pt;
+  line-height: 6mm;
+  text-align: center;
+  box-shadow: 0 0 0 0.6mm #fff;
+}
+figure.shot figcaption {
+  line-height: 1.4;
+  font-size: 8pt;
+  color: var(--aubergine);
+  padding: 1.5mm 2.5mm;
+  border-top: 1px solid var(--line);
+  background: var(--beige);
+}
+
+/* Tableaux */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2mm 0 4mm;
+  font-size: 9pt;
+}
+th {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--aubergine);
+  text-align: left;
+  border-bottom: 1px solid var(--aubergine);
+  padding: 1.5mm 2mm;
+}
+td {
+  border-bottom: 1px solid var(--line);
+  padding: 1.5mm 2mm;
+  vertical-align: top;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6mm;
+}
+
+/* Bulles de conversation avec Claude */
+.chat {
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 4mm;
+  margin: 2mm 0 4mm;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5mm;
+  font-size: 9pt;
+}
+.chat .me,
+.chat .claude {
+  max-width: 85%;
+  padding: 2.5mm 3.5mm;
+  border-radius: 3mm;
+}
+.chat .me {
+  align-self: flex-end;
+  background: var(--bleu);
+  border-bottom-right-radius: 0.5mm;
+}
+.chat .claude {
+  align-self: flex-start;
+  background: var(--beige);
+  border: 1px solid var(--rose);
+  border-bottom-left-radius: 0.5mm;
+}
+.chat .who {
+  display: block;
+  font-size: 7pt;
+  font-weight: 600;
+  color: var(--aubergine);
+  margin-bottom: 0.5mm;
+}
+.chat .allow {
+  align-self: flex-start;
+  border: 1px dashed var(--aubergine);
+  padding: 2mm 3mm;
+  font-size: 8pt;
+}
+
+/* Couverture */
+.cover {
+  background: var(--corail);
+  color: #fff;
+}
+.cover .inner {
+  position: absolute;
+  inset: 0;
+  padding: 22mm 18mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.cover .logo {
+  width: 62mm;
+  filter: brightness(0) invert(1);
+}
+.cover h1 {
+  color: #fff;
+  font-size: 46pt;
+  line-height: 1;
+  margin: 0;
+}
+.cover .sub {
+  font-size: 15pt;
+  font-weight: 300;
+  margin-top: 6mm;
+}
+.cover .chips span {
+  display: inline-block;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  padding: 1mm 5mm;
+  margin-right: 3mm;
+  font-size: 10pt;
+}
+.cover .meta {
+  font-size: 8.5pt;
+  opacity: 0.9;
+}
+
+/* Sommaire */
+.toc {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.toc li {
+  display: flex;
+  align-items: baseline;
+  gap: 3mm;
+  padding: 2.4mm 0;
+  border-bottom: 1px solid var(--line);
+}
+.toc .n {
+  color: var(--corail);
+  font-weight: 700;
+  width: 9mm;
+}
+.toc .t {
+  flex: 1;
+}
+.toc .t small {
+  display: block;
+  color: var(--aubergine);
+  font-size: 8pt;
+}
+.toc .p {
+  font-weight: 600;
+}
+
+/* Page d'ouverture de partie */
+.part {
+  background: var(--nuit);
+  color: #fff;
+}
+.part .inner {
+  position: absolute;
+  inset: 0;
+  padding: 0 18mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.part .big {
+  font-size: 80pt;
+  font-weight: 700;
+  color: var(--corail);
+  line-height: 1;
+}
+.part h1 {
+  color: #fff;
+  font-size: 30pt;
+}
+.part p {
+  font-size: 12pt;
+  font-weight: 300;
+  max-width: 140mm;
+}
+
+.flow {
+  display: flex;
+  gap: 2mm;
+  align-items: stretch;
+  margin: 3mm 0 5mm;
+}
+.flow div {
+  flex: 1;
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 3mm;
+  font-size: 8.5pt;
+}
+.flow div b {
+  display: block;
+  color: var(--corail);
+  font-size: 10pt;
+}
+.flow .arrow {
+  flex: 0 0 auto;
+  background: none;
+  border: 0;
+  padding: 0;
+  align-self: center;
+  color: var(--aubergine);
+  font-size: 14pt;
+}

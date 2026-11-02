@@ -15,4 +15,17 @@ export default defineConfig([
       globals: { ...globals.node, ...globals.browser },
     },
   },
+  {
+    // JavaScript for Automation (macOS) : run et openDocuments sont appelés par le système.
+    files: ['docs/guide-utilisateur/kit-claude/outils/*.js'],
+    languageOptions: {
+      globals: { ObjC: 'readonly', $: 'readonly', Ref: 'readonly', Application: 'readonly' },
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { varsIgnorePattern: '^(run|openDocuments)$' },
+      ],
+    },
+  },
 ]);

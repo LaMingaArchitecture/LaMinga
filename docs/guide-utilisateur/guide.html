@@ -1,0 +1,1381 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>LaMinga — Guide de publication</title>
+    <link rel="stylesheet" href="guide.css" />
+  </head>
+  <body>
+    <!-- ============ COUVERTURE ============ -->
+    <section class="page cover">
+      <div class="inner">
+        <img class="logo" src="../../public/logo/logo-laminga.svg" alt="LaMinga" />
+        <div>
+          <div class="serif" style="font-size: 16pt; margin-bottom: 4mm">Guide de publication</div>
+          <h1>Montrer<br />nos projets</h1>
+          <div class="sub">Mettre à jour le site LaMinga, pas à pas</div>
+        </div>
+        <div>
+          <div class="chips"><span>À la main dans Storyblok</span><span>Avec Claude</span></div>
+          <p class="meta" style="margin-top: 8mm">Version 1 · novembre 2026</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SOMMAIRE ============ -->
+    <section class="page">
+      <div class="band"><b>Sommaire</b><span class="where">Guide LaMinga</span></div>
+      <div class="body">
+        <div class="kicker">À qui s'adresse ce guide</div>
+        <p class="lead">
+          À toute l'équipe LaMinga. Aucune connaissance technique n'est nécessaire : chaque tâche
+          est découpée en étapes courtes, avec une capture d'écran et ce qu'il faut vérifier.
+        </p>
+
+        <p>Deux façons de travailler, au choix :</p>
+        <div class="cols" style="margin-bottom: 6mm">
+          <div class="box tip" style="margin: 0">
+            <b>À la main</b>Vous remplissez vous-même les fiches dans Storyblok. Idéal pour une
+            petite correction ou pour bien comprendre le site.
+          </div>
+          <div class="box check" style="margin: 0">
+            <b>Avec Claude</b>Vous indiquez à Claude le dossier du projet ; il prépare les photos,
+            remplit la fiche et vous demande votre accord avant la mise en ligne.
+          </div>
+        </div>
+
+        <ol class="toc">
+          <li>
+            <span class="n">0</span
+            ><span class="t"
+              >Avant de commencer<small>Le principe, le vocabulaire, les règles d'or</small></span
+            ><span class="p">3</span>
+          </li>
+          <li>
+            <span class="n">1</span
+            ><span class="t"
+              >Préparer ses fichiers<small>L'outil photo, les formats, les vidéos</small></span
+            ><span class="p">5</span>
+          </li>
+          <li>
+            <span class="n">2</span
+            ><span class="t"
+              >À la main dans Storyblok<small>Créer, modifier, publier, dépublier</small></span
+            ><span class="p">8</span>
+          </li>
+          <li>
+            <span class="n">3</span
+            ><span class="t"
+              >Avec Claude<small>Installation (une fois), puis publier en conversation</small></span
+            ><span class="p">17</span>
+          </li>
+          <li>
+            <span class="n">A</span
+            ><span class="t"
+              >En cas de problème<small>Les situations courantes et quoi faire</small></span
+            ><span class="p">22</span>
+          </li>
+          <li>
+            <span class="n">B</span
+            ><span class="t">Aide-mémoire<small>Une page à garder sous la main</small></span
+            ><span class="p">23</span>
+          </li>
+        </ol>
+      </div>
+      <div class="foot">
+        <span>Une question ? Contactez votre référent technique.</span
+        ><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <!-- ============ 0 · AVANT DE COMMENCER ============ -->
+    <section class="page">
+      <div class="band"><b>0 · Avant de commencer</b><span class="where">Le principe</span></div>
+      <div class="body">
+        <h1>Le principe en une minute</h1>
+        <p class="lead">
+          Tout le contenu du site (projets, textes, photos) vit dans <b>Storyblok</b>, un outil en
+          ligne. Le site public se reconstruit automatiquement chaque fois que vous <b>publiez</b>.
+        </p>
+
+        <h3>La méthode, pour chaque modification</h3>
+        <div class="flow">
+          <div><b>1. Préparer</b>Passer les photos dans l'outil photo</div>
+          <div class="arrow">→</div>
+          <div>
+            <b>2. Enregistrer</b><span class="ui">Save</span> = brouillon, invisible du public
+          </div>
+          <div class="arrow">→</div>
+          <div><b>3. Vérifier</b>Regarder l'aperçu, sur ordinateur et téléphone</div>
+          <div class="arrow">→</div>
+          <div>
+            <b>4. Publier</b><span class="ui primary">Publish</span> = en ligne en 2 à 5 minutes
+          </div>
+        </div>
+
+        <div class="box warn">
+          <b>⚠ Publier, c'est mettre en ligne</b>
+          <p>
+            Tant que vous n'avez pas cliqué sur <span class="ui primary">Publish</span>, personne
+            d'autre que l'équipe ne voit vos changements. Enregistrez souvent avec
+            <span class="ui">Save</span>, publiez une fois que tout est vérifié.
+          </p>
+        </div>
+
+        <h3>Storyblok est en anglais : le petit lexique</h3>
+        <table>
+          <tr>
+            <th>À l'écran</th>
+            <th>Ce que ça veut dire</th>
+          </tr>
+          <tr>
+            <td><span class="ui">Content</span></td>
+            <td>La liste de toutes les pages du site (« fiches »)</td>
+          </tr>
+          <tr>
+            <td><span class="ui">Story</span></td>
+            <td>Une fiche : un projet, la page d'accueil, la page Atelier…</td>
+          </tr>
+          <tr>
+            <td><span class="ui">Assets</span></td>
+            <td>La photothèque : toutes les images et vidéos envoyées</td>
+          </tr>
+          <tr>
+            <td><span class="ui">Create new</span></td>
+            <td>Créer une nouvelle fiche</td>
+          </tr>
+          <tr>
+            <td><span class="ui">Save</span></td>
+            <td>Enregistrer le brouillon</td>
+          </tr>
+          <tr>
+            <td><span class="ui primary">Publish</span></td>
+            <td>Mettre en ligne</td>
+          </tr>
+          <tr>
+            <td><span class="ui">Unpublish</span></td>
+            <td>Retirer du site (la fiche reste dans Storyblok)</td>
+          </tr>
+          <tr>
+            <td><span class="ui">Add Asset</span> / <span class="ui">Upload files</span></td>
+            <td>Ajouter une image / envoyer un fichier depuis l'ordinateur</td>
+          </tr>
+          <tr>
+            <td>Slide média</td>
+            <td>Une image du carrousel (version ordinateur + version téléphone)</td>
+          </tr>
+        </table>
+      </div>
+      <div class="foot"><span>Avant de commencer</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <b>0 · Avant de commencer</b><span class="where">Règles d'or et accès</span>
+      </div>
+      <div class="body">
+        <h1>Trois règles d'or</h1>
+
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <h3>Toute photo passe par l'outil photo</h3>
+            <p>
+              Une photo d'appareil ou de téléphone pèse souvent 5 à 15 Mo. L'outil la ramène à moins
+              de 1 Mo sans perte visible, la remet à l'endroit et corrige ses couleurs. C'est ce qui
+              garde le site rapide et net (chapitre 1).
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <h3>On vérifie l'aperçu avant de publier</h3>
+            <p>
+              L'aperçu montre la page exactement comme elle sera en ligne. Regardez aussi la version
+              téléphone : c'est là que la plupart des visiteurs découvriront vos projets.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">3</span>
+          <div>
+            <h3>On ne supprime rien sans être sûr</h3>
+            <p>
+              Pour retirer un projet du site, on le <b>dépublie</b>, on ne le supprime pas. Une
+              image supprimée reste récupérable dans <span class="ui">Assets</span> →
+              <span class="ui">Deleted assets</span> : ne videz jamais cette corbeille.
+            </p>
+          </div>
+        </div>
+
+        <h1 style="margin-top: 8mm">Vos accès</h1>
+        <table>
+          <tr>
+            <th>Quoi</th>
+            <th>Où</th>
+            <th>Pour</th>
+          </tr>
+          <tr>
+            <td><b>Storyblok</b></td>
+            <td>app.storyblok.com — votre adresse e-mail et votre mot de passe</td>
+            <td>Modifier le contenu</td>
+          </tr>
+          <tr>
+            <td><b>Aperçu</b></td>
+            <td>Un identifiant et un mot de passe dédiés, fournis par votre référent technique</td>
+            <td>Voir les brouillons dans Storyblok (une fois par navigateur, page 14)</td>
+          </tr>
+          <tr>
+            <td><b>Site public</b></td>
+            <td>laminga.netlify.app</td>
+            <td>Vérifier après publication</td>
+          </tr>
+          <tr>
+            <td><b>Claude</b></td>
+            <td>Application Claude Desktop, compte Pro de l'agence</td>
+            <td>Publier avec Claude (chapitre 3)</td>
+          </tr>
+        </table>
+
+        <div class="box tip">
+          <b>Bon à savoir</b>
+          <p>
+            Gardez les identifiants dans le trousseau de votre Mac ou un gestionnaire de mots de
+            passe, jamais dans un document partagé.
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span>Avant de commencer</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <!-- ============ 1 · PRÉPARER ============ -->
+    <section class="page part">
+      <div class="inner">
+        <div class="big">1</div>
+        <h1>Préparer ses fichiers</h1>
+        <p>
+          Une étape commune aux deux façons de travailler. Les photos d'un projet doivent être
+          allégées avant d'arriver sur le site : c'est la condition pour qu'il reste rapide et que
+          les images restent belles.
+        </p>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">Commun</span><b>L'outil photo</b></span
+        ><span class="where">Préparer ses fichiers</span>
+      </div>
+      <div class="body">
+        <h1>« Optimiser pour le web »</h1>
+        <p class="lead">
+          Une petite application posée sur votre bureau. Vous y glissez des photos ou un dossier
+          entier ; elle produit des copies prêtes pour le site. Vos originaux ne sont jamais
+          modifiés.
+        </p>
+
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <h3>L'installer (une seule fois)</h3>
+            <p>
+              Dans Claude Desktop, ouvrez le dossier « LaMinga-Claude » (page 19) et écrivez :
+              <i>« Installe l'outil photo LaMinga sur mon bureau. »</i> L'icône
+              <b>Optimiser pour le web</b> apparaît sur le bureau.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <h3>Glisser les photos sur l'icône</h3>
+            <p>
+              Depuis le Finder, glissez une ou plusieurs photos, ou le dossier complet du projet,
+              sur l'icône. Formats acceptés : JPG, PNG, HEIC (iPhone), TIFF, WebP.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">3</span>
+          <div>
+            <h3>Lire le message de fin</h3>
+            <p>
+              Une fenêtre indique combien d'images sont prêtes, et signale celles qui posent
+              problème.
+            </p>
+            <figure class="shot" style="width: 105mm">
+              <div class="frame">
+                <img src="captures/outil-photo-message.png" alt="Message de fin de l'outil photo" />
+              </div>
+              <figcaption>
+                Exemple : 14 images prêtes, une photo trop petite à remplacer.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">4</span>
+          <div>
+            <h3>Utiliser les fichiers du dossier « web »</h3>
+            <p>
+              À côté de chaque photo, un dossier <b>web</b> contient la version allégée (en .jpg,
+              nom sans accents ni espaces).
+              <b>C'est uniquement ce fichier-là que vous envoyez dans Storyblok.</b>
+            </p>
+          </div>
+        </div>
+
+        <div class="box warn">
+          <b>⚠ « Trop petite »</b>
+          <p>
+            Une image signalée trop petite (capture d'écran, image récupérée sur internet) sera
+            floue en plein écran. Demandez l'original au photographe, ou écartez-la.
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span>Préparer ses fichiers</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">Commun</span><b>Formats et vidéos</b></span
+        ><span class="where">Préparer ses fichiers</span>
+      </div>
+      <div class="body">
+        <h2>La bonne forme pour chaque emplacement</h2>
+        <p>
+          Storyblok recadre et adapte les images tout seul, mais il ne peut pas agrandir une image
+          trop petite. Visez ces tailles minimales (le plus grand côté de la photo) :
+        </p>
+        <table>
+          <tr>
+            <th>Emplacement</th>
+            <th>Forme</th>
+            <th>Taille minimale</th>
+          </tr>
+          <tr>
+            <td>Carrousel — image paysage (ordinateur)</td>
+            <td>16:9, à l'horizontale</td>
+            <td>1920 px</td>
+          </tr>
+          <tr>
+            <td>Carrousel — image portrait (téléphone)</td>
+            <td>3:4, à la verticale</td>
+            <td>1200 px</td>
+          </tr>
+          <tr>
+            <td>Photo de couverture</td>
+            <td>4:3</td>
+            <td>1200 px</td>
+          </tr>
+          <tr>
+            <td>Plan masse (noir et blanc)</td>
+            <td>4:5</td>
+            <td>1000 px</td>
+          </tr>
+          <tr>
+            <td>Fonds de la page Atelier</td>
+            <td>16:9</td>
+            <td>1920 px</td>
+          </tr>
+          <tr>
+            <td>Portrait d'un membre de l'équipe (N&amp;B)</td>
+            <td>carré</td>
+            <td>1000 px</td>
+          </tr>
+        </table>
+        <div class="box tip">
+          <b>Bon à savoir</b>
+          <p>
+            Inutile de convertir en WebP ou de réduire vous-même : l'outil photo et Storyblok s'en
+            chargent. Ne recadrez que si la composition l'exige.
+          </p>
+        </div>
+
+        <h2 style="margin-top: 7mm">Les vidéos</h2>
+        <p>
+          Les vidéos du site sont muettes et tournent en boucle. Storyblok ne les compresse pas : il
+          faut le faire avant l'envoi avec <b>HandBrake</b> (gratuit, handbrake.fr).
+        </p>
+        <table>
+          <tr>
+            <th>Réglage HandBrake</th>
+            <th>Valeur</th>
+          </tr>
+          <tr>
+            <td>Summary → Format</td>
+            <td>MP4, case <b>Web Optimized</b> cochée</td>
+          </tr>
+          <tr>
+            <td>Dimensions</td>
+            <td>largeur maximale 1920</td>
+          </tr>
+          <tr>
+            <td>Video</td>
+            <td>H.264 (x264), Constant Quality <b>RF 24</b></td>
+          </tr>
+          <tr>
+            <td>Audio</td>
+            <td>supprimer la piste (<span class="ui">Remove</span>)</td>
+          </tr>
+          <tr>
+            <td>Poids visé</td>
+            <td><b>5 Mo maximum</b> : sinon monter le RF à 26–28 ou raccourcir</td>
+          </tr>
+        </table>
+        <div class="box warn">
+          <b>⚠ Chaque vidéo a besoin d'une image fixe (« poster »)</b>
+          <p>
+            Prenez une image du même plan (capture de la vidéo en pause) et passez-la dans l'outil
+            photo. Elle s'affiche pendant le chargement et sur les téléphones en mode économie.
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span>Préparer ses fichiers</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <!-- ============ 2 · À LA MAIN ============ -->
+    <section class="page part">
+      <div class="inner">
+        <div class="big">2</div>
+        <h1>À la main dans Storyblok</h1>
+        <p>
+          Créer un projet, le modifier, le mettre en avant sur la page d'accueil, le retirer du
+          site. Chaque fiche pratique tient sur une ou deux pages.
+        </p>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">À la main</span><b>Se repérer</b></span
+        ><span class="where">Storyblok</span>
+      </div>
+      <div class="body">
+        <h1>Se connecter et se repérer</h1>
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <h3>Se connecter</h3>
+            <p>
+              Ouvrez <b>app.storyblok.com</b>, connectez-vous, puis cliquez sur l'espace
+              <b>LaMinga</b>.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <h3>Ouvrir le contenu</h3>
+            <p>Dans le menu de gauche, cliquez sur <span class="ui">Content</span>.</p>
+            <figure class="shot">
+              <div class="frame">
+                <img src="captures/sb-contenu.jpg" alt="Liste du contenu dans Storyblok" />
+                <span class="pin" style="left: 3.5%; top: 24.5%">1</span>
+                <span class="hl" style="left: 24.5%; top: 32.5%; width: 70.5%; height: 40%"></span>
+              </div>
+              <figcaption>
+                À gauche, le menu (<b>1</b> : Content). Au centre, les fiches du site.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+        <table>
+          <tr>
+            <th>Fiche</th>
+            <th>Ce qu'elle contient</th>
+          </tr>
+          <tr>
+            <td><b>Accueil</b></td>
+            <td>Le carrousel de la page d'accueil</td>
+          </tr>
+          <tr>
+            <td><b>Projets</b> (dossier)</td>
+            <td>Une fiche par projet, plus la page « Projets » elle-même</td>
+          </tr>
+          <tr>
+            <td><b>Atelier</b></td>
+            <td>La page Atelier : manifeste, clients, équipe</td>
+          </tr>
+          <tr>
+            <td><b>Programmes</b> (dossier)</td>
+            <td>Les catégories de projets (Habitat social, Enseignement…)</td>
+          </tr>
+          <tr>
+            <td><b>Réglages</b></td>
+            <td>Coordonnées, adresses, réseaux sociaux, mentions légales</td>
+          </tr>
+        </table>
+      </div>
+      <div class="foot"><span>À la main · Se repérer</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">À la main</span><b>Créer un projet</b></span
+        ><span class="where">Étapes 1 à 3</span>
+      </div>
+      <div class="body">
+        <h1>Créer un projet</h1>
+        <p class="lead">
+          Avant de commencer : les photos du projet sont passées dans l'outil photo, et le texte est
+          prêt (titre, ville, descriptif, cartouche).
+        </p>
+
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <h3>Ouvrir le dossier Projets</h3>
+            <p><span class="ui">Content</span> → cliquez sur le dossier <b>Projets</b>.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <h3>Créer une fiche</h3>
+            <p>
+              En haut à droite : <span class="ui">Create new</span> → <span class="ui">Story</span>.
+            </p>
+            <figure class="shot">
+              <div class="frame">
+                <img src="captures/sb-create-new.jpg" alt="Menu Create new" />
+                <span class="hl" style="left: 75%; top: 9.5%; width: 20.5%; height: 18.5%"></span>
+              </div>
+              <figcaption>Le menu <b>Create new</b> : choisir <b>Story</b>, pas Folder.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">3</span>
+          <div>
+            <h3>Nommer et choisir le type « Projet »</h3>
+            <ul>
+              <li><b>Name</b> : le nom du projet, tel qu'il s'affichera (« École Buzenval »).</li>
+              <li>
+                <b>Slug</b> : se remplit tout seul ; c'est la fin de l'adresse du projet. Vérifiez
+                qu'il n'a ni accent ni espace (« ecole-buzenval »).
+              </li>
+              <li><b>Content type</b> : <b>remplacez « Page » par « Projet »</b>.</li>
+            </ul>
+            <p>Puis cliquez sur <span class="ui primary">Create</span>.</p>
+          </div>
+        </div>
+
+        <div class="box warn">
+          <b>⚠ Le piège du « Content type »</b>
+          <p>
+            Storyblok propose « Page » par défaut. Une fiche créée en « Page » n'a pas les champs
+            d'un projet et n'apparaîtra pas sur le site. Si c'est arrivé : supprimez cette fiche
+            vide et recommencez.
+          </p>
+        </div>
+      </div>
+      <div class="foot">
+        <span>À la main · Créer un projet</span><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">À la main</span><b>Créer un projet</b></span
+        ><span class="where">Étape 4</span>
+      </div>
+      <div class="body">
+        <figure class="shot" style="width: 100mm">
+          <div class="frame">
+            <img src="captures/sb-nouvelle-fiche.jpg" alt="Fenêtre de création d'une fiche" />
+            <span class="hl" style="left: 4%; top: 70.5%; width: 92%; height: 7.5%"></span>
+          </div>
+          <figcaption>
+            La fenêtre de création : le <b>Content type</b> (entouré) doit indiquer <b>Projet</b>.
+          </figcaption>
+        </figure>
+
+        <div class="step">
+          <span class="num">4</span>
+          <div>
+            <h3>Découvrir l'éditeur</h3>
+            <p>
+              La fiche s'ouvre : à gauche l'<b>aperçu</b> de la page, à droite le <b>formulaire</b>.
+              En haut à droite, <span class="ui">Save</span> et
+              <span class="ui primary">Publish</span>.
+            </p>
+            <figure class="shot" style="width: 135mm">
+              <div class="frame">
+                <img src="captures/sb-editeur.jpg" alt="L'éditeur d'une fiche projet" />
+                <span class="pin" style="left: 30%; top: 50%">1</span>
+                <span class="pin" style="left: 82%; top: 40%">2</span>
+                <span class="hl" style="left: 85%; top: 0.6%; width: 14.2%; height: 5%"></span>
+              </div>
+              <figcaption>
+                <b>1</b> aperçu · <b>2</b> formulaire · entouré : Save et Publish.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <span>À la main · Créer un projet</span><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">À la main</span><b>Créer un projet</b></span
+        ><span class="where">Étapes 5 à 7</span>
+      </div>
+      <div class="body">
+        <div class="step">
+          <span class="num">5</span>
+          <div>
+            <h3>Remplir les textes</h3>
+            <p>
+              Titre, Ville, Description du programme (une ligne), Maîtrise d'ouvrage, Équipe (un
+              intervenant par ligne), Statut, Surface, Montant HT, Divers (crédits photos), puis le
+              Texte descriptif. Sous chaque champ, une aide grise donne un exemple.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="num">6</span>
+          <div>
+            <h3>Classer le projet</h3>
+            <ul>
+              <li>
+                <b>Programmes</b> : <span class="ui">Choose one or more…</span> → cochez une ou
+                plusieurs catégories. Le projet apparaîtra sous chacun de ces filtres de la page
+                Projets.
+              </li>
+              <li><b>Thématiques</b> : même principe (Réemploi, Biosourcé…).</li>
+            </ul>
+            <figure class="shot" style="width: 75mm">
+              <div class="frame">
+                <img src="captures/sb-classement.jpg" alt="Champs Programmes et Thématiques" />
+              </div>
+              <figcaption>
+                Programmes et Thématiques se choisissent dans une liste : on ne tape rien.
+              </figcaption>
+            </figure>
+            <div class="box tip">
+              <b>Bon à savoir</b>
+              <p>
+                Il manque une thématique ? Demandez à votre référent technique : une nouvelle
+                thématique ne se met en ligne qu'avec la publication suivante d'une fiche.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">7</span>
+          <div>
+            <h3>Engagements, plan masse, couverture</h3>
+            <ul>
+              <li>
+                <b>Engagements</b> (3 maximum) : <span class="ui">+</span> → Engagement → icône,
+                libellé, description.
+              </li>
+              <li>
+                <b>Vignette plan masse</b> : <span class="ui">Add Asset</span> → le plan en noir et
+                blanc.
+              </li>
+              <li>
+                <b>Photo de couverture</b> : une photo du bâtiment livré. Laissée vide, c'est la
+                première image du carrousel qui sert.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <span>À la main · Créer un projet</span><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">À la main</span><b>Créer un projet</b></span
+        ><span class="where">Étapes 8 et 9 · le carrousel</span>
+      </div>
+      <div class="body">
+        <div class="step">
+          <span class="num">8</span>
+          <div>
+            <h3>Ajouter une slide au carrousel</h3>
+            <p>
+              Dans le champ <b>Carrousel</b>, cliquez sur <span class="ui">+</span> →
+              <b>Slide média</b>. Chaque slide associe :
+            </p>
+            <ul>
+              <li><b>Image paysage</b> : la version ordinateur (photo horizontale) ;</li>
+              <li>
+                <b>Image portrait</b> : la version téléphone (photo verticale). Facultative : sans
+                elle, le téléphone affiche l'image paysage recadrée ;
+              </li>
+              <li><b>Vidéo</b> et <b>Poster vidéo</b> : facultatifs (page 16) ;</li>
+              <li>
+                <b>Titre clair</b> : à cocher si la photo est sombre, pour que le texte passe en
+                blanc.
+              </li>
+            </ul>
+            <figure class="shot" style="width: 58mm">
+              <div class="frame">
+                <img src="captures/sb-slide.jpg" alt="Une slide du carrousel" />
+              </div>
+              <figcaption>
+                Une slide : image paysage, image portrait, puis vidéo et poster facultatifs.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">9</span>
+          <div>
+            <h3>Envoyer et choisir l'image</h3>
+            <p>
+              <span class="ui">+ Add Asset</span> → <span class="ui">Upload files</span> →
+              choisissez le fichier dans le dossier <b>web</b> → cliquez sur l'image pour la
+              sélectionner. Remplissez ensuite la description (« Buzenval — façade sur rue, Paris
+              20e ») : elle est lue par les malvoyants et par Google.
+            </p>
+            <figure class="shot">
+              <div class="frame">
+                <img
+                  src="captures/sb-assets.jpg"
+                  alt="La photothèque avec le bouton Upload files"
+                />
+                <span class="hl" style="left: 83.5%; top: 10.5%; width: 10.4%; height: 9.5%"></span>
+              </div>
+              <figcaption>
+                La photothèque : <b>Upload files</b> (entouré) envoie un fichier depuis le Mac.
+              </figcaption>
+            </figure>
+            <div class="box check">
+              <b>✓ Vérifier</b>
+              <p>
+                L'ordre des slides = l'ordre du carrousel. Glissez une slide par sa poignée pour la
+                déplacer.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <span>À la main · Créer un projet</span><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">À la main</span><b>Enregistrer, vérifier, publier</b></span
+        ><span class="where">Étapes 10 à 12</span>
+      </div>
+      <div class="body">
+        <div class="step">
+          <span class="num">10</span>
+          <div>
+            <h3>Enregistrer le brouillon</h3>
+            <p>
+              Cliquez sur <span class="ui">Save</span>. Faites-le souvent : rien n'est encore
+              visible du public.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">11</span>
+          <div>
+            <h3>Vérifier l'aperçu</h3>
+            <p>
+              L'aperçu à gauche se met à jour. Utilisez les icônes au-dessus pour passer en vue
+              <b>téléphone</b> ou en <b>plein écran</b>.
+            </p>
+            <div class="box warn">
+              <b>⚠ L'aperçu affiche « Authentication required »</b>
+              <p>
+                C'est normal la première fois. Cliquez sur l'icône <span class="ui">↗</span> (ouvrir
+                dans un nouvel onglet), saisissez l'identifiant et le mot de passe de l'aperçu, puis
+                revenez dans Storyblok et rechargez la page. Votre navigateur s'en souviendra.
+              </p>
+            </div>
+            <figure class="shot">
+              <div class="frame">
+                <img src="captures/sb-apercu.jpg" alt="Barre d'outils de l'aperçu" />
+              </div>
+              <figcaption>
+                Au-dessus de l'aperçu : vue ordinateur, vue téléphone, plein écran, et l'adresse de
+                la page.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">12</span>
+          <div>
+            <h3>Publier</h3>
+            <p>
+              Tout est bon ? Cliquez sur <span class="ui primary">Publish</span>. Le site public se
+              met à jour en 2 à 5 minutes.
+            </p>
+            <div class="box check">
+              <b>✓ Vérifier</b>
+              <p>
+                Ouvrez laminga.netlify.app/projets : le projet apparaît dans la grille et sous ses
+                filtres.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>À la main · Publier</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">À la main</span><b>Modifier</b></span
+        ><span class="where">Projet existant, page d'accueil</span>
+      </div>
+      <div class="body">
+        <h1>Modifier un projet</h1>
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <h3>Ouvrir la fiche</h3>
+            <p>
+              <span class="ui">Content</span> → Projets → cliquez sur le projet. La recherche en
+              haut de la liste aide à le retrouver.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <h3>Corriger, puis Save → vérifier → Publish</h3>
+            <p>Comme pour une création (pages 13 et 14).</p>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 6mm">Remplacer une photo</h2>
+        <p>
+          Ouvrez la slide → survolez l'image → bouton de suppression de l'image (dans le champ, pas
+          dans la photothèque) → <span class="ui">+ Add Asset</span> → envoyez la nouvelle version
+          préparée.
+        </p>
+        <div class="box tip">
+          <b>Bon à savoir</b>
+          <p>
+            L'ancienne image reste dans la photothèque : c'est voulu, elle peut encore servir
+            ailleurs. Le ménage se fait de temps en temps, avec votre référent technique.
+          </p>
+        </div>
+
+        <h2 style="margin-top: 6mm">Mettre un projet sur la page d'accueil</h2>
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <p>
+              Ouvrez la fiche <b>Accueil</b> → champ <b>Carrousel</b> → <span class="ui">+</span> →
+              slide d'accueil.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <p>
+              Choisissez les images (paysage + portrait), puis dans <b>Projet</b> sélectionnez le
+              projet : son titre et sa ville s'affichent automatiquement sur la photo.
+            </p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="num">3</span>
+          <div>
+            <p>
+              Glissez la slide à la bonne place, <span class="ui">Save</span>, vérifiez,
+              <span class="ui primary">Publish</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>À la main · Modifier</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">À la main</span><b>Atelier, vidéos, dépublier</b></span
+        ><span class="where">Les autres tâches</span>
+      </div>
+      <div class="body">
+        <h2>La page Atelier</h2>
+        <p>
+          Fiche <b>Atelier</b> : quatre sections qui défilent (vidéo, manifeste, clients, équipe).
+        </p>
+        <ul>
+          <li><b>Textes</b> du manifeste : se modifient directement dans le formulaire.</li>
+          <li>
+            <b>Clients</b> : un client par ligne dans chaque liste (collectivités, OPH, maîtres
+            d'ouvrage).
+          </li>
+          <li>
+            <b>Équipe</b> : <span class="ui">+</span> → membre → nom, photo carrée en noir et blanc,
+            rôle.
+          </li>
+        </ul>
+
+        <h2 style="margin-top: 6mm">Envoyer une vidéo</h2>
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <p>Compressez-la avec HandBrake (page 7), et préparez son poster avec l'outil photo.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <p>
+              Dans la slide : champ <b>Vidéo (mp4)</b> → <span class="ui">+ Add Asset</span> →
+              <span class="ui">Upload files</span>. Puis <b>Poster vidéo</b> → l'image fixe.
+            </p>
+          </div>
+        </div>
+        <div class="box warn">
+          <b>⚠ Plus de 5 Mo ?</b>
+          <p>
+            Recompressez avant l'envoi : une vidéo lourde ralentit tout le site, surtout sur
+            téléphone.
+          </p>
+        </div>
+
+        <h2 style="margin-top: 6mm">Retirer un projet du site</h2>
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <p>
+              Ouvrez la fiche → flèche à droite de <span class="ui primary">Publish</span> →
+              <span class="ui">Unpublish</span>.
+            </p>
+            <figure class="shot" style="width: 50mm">
+              <div class="frame">
+                <img src="captures/sb-unpublish.jpg" alt="Menu de publication avec Unpublish" />
+              </div>
+              <figcaption>
+                Unpublish retire la page du site ; la fiche reste dans Storyblok.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="box check">
+          <b>✓ Vérifier</b>
+          <p>
+            Après quelques minutes, le projet n'apparaît plus sur laminga.netlify.app/projets. Pour
+            le remettre : <span class="ui primary">Publish</span>.
+          </p>
+        </div>
+      </div>
+      <div class="foot">
+        <span>À la main · Autres tâches</span><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <!-- ============ 3 · AVEC CLAUDE ============ -->
+    <section class="page part">
+      <div class="inner">
+        <div class="big">3</div>
+        <h1>Avec Claude</h1>
+        <p>
+          Claude lit le dossier du projet, prépare les photos, remplit la fiche en brouillon et vous
+          envoie le lien d'aperçu. Rien n'est mis en ligne sans votre « oui ». L'installation se
+          fait une seule fois, en une vingtaine de minutes.
+        </p>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">Avec Claude</span><b>Installation 1/2</b></span
+        ><span class="where">Une seule fois</span>
+      </div>
+      <div class="body">
+        <h1>Installer les outils</h1>
+
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <h3>Claude Desktop</h3>
+            <p>
+              Téléchargez l'application sur <b>claude.ai/download</b>, installez-la, et
+              connectez-vous avec le compte Pro de l'agence.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <h3>Google Drive pour ordinateur</h3>
+            <p>
+              Pour que Claude accède aux photos des projets, le Drive doit apparaître dans le
+              Finder. Installez <b>Google Drive pour ordinateur</b> (google.com/drive/download),
+              connectez-vous : un emplacement « Google Drive » apparaît dans la barre latérale du
+              Finder.
+            </p>
+            <div class="box tip">
+              <b>Bon à savoir</b>
+              <p>
+                Les textes en Google Docs, eux, sont lus par le connecteur Google Drive de Claude
+                (étape 3). À défaut, il suffit de copier-coller le texte dans la conversation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">3</span>
+          <div>
+            <h3>Connecter Claude à Storyblok (et à Google Drive)</h3>
+            <ol>
+              <li>
+                Dans Claude Desktop : <b>Réglages → Connecteurs</b> →
+                <span class="ui">Parcourir</span>.
+              </li>
+              <li>Cherchez <b>Storyblok</b> → <span class="ui">Connecter</span>.</li>
+              <li>
+                Une page Storyblok s'ouvre : connectez-vous, puis n'autorisez que l'espace
+                <b>LaMinga</b>.
+              </li>
+              <li>Faites de même pour <b>Google Drive</b>.</li>
+            </ol>
+            <div class="box check">
+              <b>✓ Vérifier</b>
+              <p>
+                Dans Réglages → Connecteurs, Storyblok et Google Drive apparaissent comme connectés.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <span>Avec Claude · Installation</span><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">Avec Claude</span><b>Installation 2/2</b></span
+        ><span class="where">Une seule fois</span>
+      </div>
+      <div class="body">
+        <h1>Le dossier « LaMinga-Claude »</h1>
+        <p class="lead">
+          Ce dossier contient les consignes qui font de Claude un assistant LaMinga : le ton, les
+          règles de sécurité, la façon de remplir une fiche, et l'outil photo.
+        </p>
+
+        <div class="step">
+          <span class="num">4</span>
+          <div>
+            <h3>Récupérer le dossier</h3>
+            <p>
+              Téléchargez <b>LaMinga-Claude.zip</b> (transmis par votre référent technique),
+              double-cliquez dessus, et rangez le dossier obtenu dans <b>Documents</b>.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">5</span>
+          <div>
+            <h3>L'ouvrir dans Claude</h3>
+            <p>
+              Dans Claude Desktop, ouvrez l'onglet <b>Code</b>, choisissez le dossier
+              <b>Documents › LaMinga-Claude</b>, puis démarrez une conversation. Faites-le à chaque
+              fois que vous travaillez sur le site.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">6</span>
+          <div>
+            <h3>Faire le test</h3>
+            <div class="chat">
+              <div class="me">
+                <span class="who">Vous</span>Bonjour, peux-tu me lister les projets en ligne sur le
+                site ?
+              </div>
+              <div class="claude">
+                <span class="who">Claude</span>Bien sûr. Il y a 14 projets en ligne : Buzenval,
+                Texel, REM, Salle du Conseil… et 3 fiches en brouillon (Europan, Habiter la Gare,
+                Groupe scolaire).
+              </div>
+            </div>
+            <p>
+              Si Claude répond qu'il n'a pas accès à Storyblok : revenez à l'étape 3, puis ouvrez
+              une <b>nouvelle</b> conversation.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">7</span>
+          <div>
+            <h3>Installer l'outil photo</h3>
+            <p>Écrivez : <i>« Installe l'outil photo LaMinga sur mon bureau. »</i> (page 6).</p>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <span>Avec Claude · Installation</span><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">Avec Claude</span><b>Publier un projet</b></span
+        ><span class="where">La conversation type</span>
+      </div>
+      <div class="body">
+        <h1>Publier un projet avec Claude</h1>
+        <div class="chat">
+          <div class="me">
+            <span class="who">Vous</span>Je voudrais mettre en ligne le projet Halle de Bayonne. Les
+            fichiers sont dans le Drive, dossier « Projets / Halle Bayonne ».
+          </div>
+          <div class="claude">
+            <span class="who">Claude</span>J'ai trouvé le dossier : 18 photos (paysage et portrait),
+            un plan masse en PDF et le texte. J'ai préparé les photos pour le web. Voici ce que je
+            propose : 9 slides dans le carrousel, la photo 03 en couverture, programme « Équipement
+            », thématiques « Réemploi » et « Biosourcé ». Deux photos sont trop petites, je propose
+            de les écarter. Il me manque le montant HT. Je continue ainsi ?
+          </div>
+          <div class="me">
+            <span class="who">Vous</span>Oui. Montant : 2,4 M€. Garde quand même la photo 12.
+          </div>
+          <div class="allow">
+            Claude Desktop demande : <b>Autoriser</b> l'envoi des images vers Storyblok ? → cliquez
+            sur <span class="ui">Autoriser</span>
+          </div>
+          <div class="claude">
+            <span class="who">Claude</span>C'est prêt, en brouillon. Ouvrez ce lien pour vérifier,
+            aussi en vue téléphone : app.storyblok.com/…/halle-bayonne. Dites-moi « publie » quand
+            c'est bon.
+          </div>
+          <div class="me"><span class="who">Vous</span>C'est parfait, publie.</div>
+          <div class="claude">
+            <span class="who">Claude</span>C'est en ligne. Le site se met à jour d'ici 2 à 5
+            minutes. Voulez-vous aussi l'ajouter au carrousel de la page d'accueil ?
+          </div>
+        </div>
+        <div class="box check">
+          <b>✓ Vérifier</b>
+          <p>
+            Ouvrez toujours le lien d'aperçu avant de dire « publie » : Claude peut se tromper sur
+            l'ordre des photos ou une légende.
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span>Avec Claude · Publier</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <span><span class="mode">Avec Claude</span><b>Autres demandes</b></span
+        ><span class="where">Et les limites</span>
+      </div>
+      <div class="body">
+        <h2>Ce que vous pouvez demander</h2>
+        <table>
+          <tr>
+            <th>Vous dites</th>
+            <th>Claude fait</th>
+          </tr>
+          <tr>
+            <td>« Remplace les photos de Texel par celles du dossier Texel-v2. »</td>
+            <td>Prépare, envoie, relie les nouvelles photos en brouillon.</td>
+          </tr>
+          <tr>
+            <td>« Corrige la surface de Buzenval : 210 m². »</td>
+            <td>Modifie le champ, en brouillon.</td>
+          </tr>
+          <tr>
+            <td>« Mets Brise-Lames en premier sur la page d'accueil. »</td>
+            <td>Réordonne le carrousel d'accueil, en brouillon.</td>
+          </tr>
+          <tr>
+            <td>« Ajoute Marie Dupont à l'équipe, photo dans le dossier Équipe. »</td>
+            <td>Ajoute le membre sur la page Atelier, en brouillon.</td>
+          </tr>
+          <tr>
+            <td>« Retire le projet Europan du site. »</td>
+            <td>Vous demande confirmation, puis le dépublie.</td>
+          </tr>
+        </table>
+
+        <h2 style="margin-top: 6mm">Les demandes d'autorisation</h2>
+        <p>
+          Claude Desktop affiche une demande avant certaines actions (lire un dossier, envoyer une
+          image, modifier une fiche). Claude vous dit juste avant ce qu'il s'apprête à faire : si
+          cela correspond, cliquez sur <span class="ui">Autoriser</span>. Dans le doute, refusez et
+          posez la question.
+        </p>
+
+        <h2 style="margin-top: 6mm">Ce que Claude ne fera pas</h2>
+        <ul>
+          <li>
+            <b>Publier sans votre accord</b> : il attend un « publie » explicite, fiche par fiche.
+          </li>
+          <li><b>Supprimer</b> une fiche ou une image sans confirmation.</li>
+          <li><b>Inventer</b> un chiffre, un texte ou un crédit photo : il vous le demande.</li>
+          <li>
+            <b>Envoyer une vidéo</b> : Storyblok la refuse par ce chemin. Claude vous guide pour
+            l'envoyer à la main (page 16), puis la relie à la fiche.
+          </li>
+        </ul>
+        <div class="box warn">
+          <b>⚠ Une conversation par sujet</b>
+          <p>
+            Pour un nouveau projet, ouvrez une nouvelle conversation (toujours dans le dossier «
+            LaMinga-Claude ») : Claude reste plus précis.
+          </p>
+        </div>
+      </div>
+      <div class="foot">
+        <span>Avec Claude · Autres demandes</span><span class="serif">LaMinga</span>
+      </div>
+    </section>
+
+    <!-- ============ ANNEXES ============ -->
+    <section class="page">
+      <div class="band"><b>A · En cas de problème</b><span class="where">Annexes</span></div>
+      <div class="body">
+        <h1>En cas de problème</h1>
+        <table>
+          <tr>
+            <th style="width: 38%">Ce que vous voyez</th>
+            <th>Quoi faire</th>
+          </tr>
+          <tr>
+            <td>L'aperçu affiche « Authentication required »</td>
+            <td>
+              Ouvrir l'aperçu dans un onglet (icône ↗), saisir les identifiants de l'aperçu,
+              recharger Storyblok.
+            </td>
+          </tr>
+          <tr>
+            <td>J'ai publié mais le site n'a pas changé</td>
+            <td>
+              Attendre 5 minutes, puis recharger la page (Cmd + Maj + R). Toujours rien après 15
+              minutes : prévenir le référent technique.
+            </td>
+          </tr>
+          <tr>
+            <td>Ma fiche projet n'a pas les bons champs</td>
+            <td>Elle a été créée en « Page » : la supprimer et recréer en « Projet » (page 10).</td>
+          </tr>
+          <tr>
+            <td>Une photo apparaît couchée ou aux couleurs ternes</td>
+            <td>Elle n'est pas passée par l'outil photo : la préparer et la renvoyer.</td>
+          </tr>
+          <tr>
+            <td>Une photo est floue en plein écran</td>
+            <td>Elle est trop petite : demander l'original.</td>
+          </tr>
+          <tr>
+            <td>L'outil photo affiche « illisible »</td>
+            <td>
+              Format non pris en charge (PDF, Photoshop…) : exporter en JPG, ou demander à Claude.
+            </td>
+          </tr>
+          <tr>
+            <td>Le Mac refuse d'ouvrir l'outil photo</td>
+            <td>Clic droit sur l'icône → Ouvrir → Ouvrir.</td>
+          </tr>
+          <tr>
+            <td>Claude dit ne pas avoir accès à Storyblok</td>
+            <td>Réglages → Connecteurs → vérifier Storyblok, puis nouvelle conversation.</td>
+          </tr>
+          <tr>
+            <td>Claude ne trouve pas le dossier du projet</td>
+            <td>
+              Vérifier que Google Drive pour ordinateur est ouvert (icône dans la barre de menus) et
+              lui donner le nom exact du dossier.
+            </td>
+          </tr>
+          <tr>
+            <td>J'ai publié une erreur</td>
+            <td>
+              Corriger et republier tout de suite. Pour revenir à une version précédente :
+              <span class="ui">History</span> en haut de la fiche, ou le référent technique.
+            </td>
+          </tr>
+          <tr>
+            <td>J'ai supprimé une image par erreur</td>
+            <td>
+              <span class="ui">Assets</span> → <span class="ui">Deleted assets</span> → la
+              restaurer.
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="foot"><span>Annexes</span><span class="serif">LaMinga</span></div>
+    </section>
+
+    <section class="page">
+      <div class="band">
+        <b>B · Aide-mémoire</b><span class="where">À garder sous la main</span>
+      </div>
+      <div class="body">
+        <h1>Aide-mémoire</h1>
+        <div class="cols">
+          <div>
+            <h3>Toujours</h3>
+            <div class="flow" style="flex-direction: column">
+              <div><b>1. Préparer</b>Photos → outil photo → dossier « web »</div>
+              <div><b>2. Save</b>Brouillon, invisible du public</div>
+              <div><b>3. Vérifier</b>Aperçu ordinateur + téléphone</div>
+              <div><b>4. Publish</b>En ligne en 2 à 5 minutes</div>
+            </div>
+          </div>
+          <div>
+            <h3>Créer un projet à la main</h3>
+            <ol>
+              <li>Content → Projets → Create new → Story</li>
+              <li>Name + Content type <b>Projet</b> → Create</li>
+              <li>Textes, Programmes, Thématiques</li>
+              <li>Carrousel : + Slide média → Add Asset → Upload files</li>
+              <li>Plan masse, couverture, engagements</li>
+              <li>Save → aperçu → Publish</li>
+            </ol>
+            <h3>Avec Claude</h3>
+            <ol>
+              <li>Claude Desktop → onglet Code → dossier « LaMinga-Claude »</li>
+              <li>« Mets en ligne le projet X, dossier Y du Drive »</li>
+              <li>Valider le plan proposé</li>
+              <li>Vérifier le lien d'aperçu</li>
+              <li>« Publie »</li>
+            </ol>
+          </div>
+        </div>
+        <div class="box warn">
+          <b>⚠ Les trois règles d'or</b>
+          <p>
+            Toute photo passe par l'outil photo · on vérifie l'aperçu avant de publier · on
+            dépublie, on ne supprime pas.
+          </p>
+        </div>
+      </div>
+      <div class="foot"><span>Annexes</span><span class="serif">LaMinga</span></div>
+    </section>
+  </body>
+</html>
