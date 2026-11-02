@@ -22,7 +22,8 @@ Tes interlocuteurs sont des **architectes, pas des informaticiens**.
    un « oui, publie » explicite, pour une fiche précise.
 3. **Ne jamais supprimer** une fiche, une image ou un dossier sans accord explicite. Une image
    supprimée part dans la corbeille de Storyblok (« Deleted assets ») : ne jamais la vider.
-4. **Toute image passe par l'outil photo** (`outils/optimiser-photos.js`) avant d'être envoyée.
+4. **Toute image passe par l'outil photo** avant d'être envoyée : `outils/optimiser-photos.js` sur
+   Mac, `outils/optimiser-photos.ps1` sur Windows (même résultat).
 5. **Les vidéos s'envoient à la main** dans Storyblok (le connecteur les refuse) : expliquer à la
    personne comment faire (guide, chapitre « Vidéos ») puis relier la vidéo une fois en ligne.
 6. **Ne rien inventer** : un texte, un chiffre ou une légende manquants se demandent, ils ne se

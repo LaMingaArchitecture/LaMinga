@@ -3,13 +3,15 @@
 Guide de publication destiné à l'équipe LaMinga (non technique), et kit qui permet de publier avec
 Claude Desktop via le connecteur Storyblok.
 
-| Fichier                                 | Rôle                                                                     |
-| --------------------------------------- | ------------------------------------------------------------------------ |
-| `guide.html` + `guide.css`              | Source du PDF : pages A4 fixes, charte LaMinga (`src/styles/tokens.css`) |
-| `captures/`                             | Captures Storyblok (JPEG, 1440×900 @2x, recadrées)                       |
-| `illustrations/`                        | Fenêtres reproduites en HTML, rendues en PNG au build                    |
-| `kit-claude/`                           | Dossier remis aux architectes (zippé sous `LaMinga-Claude.zip`)          |
-| `kit-claude/outils/optimiser-photos.js` | Outil photo sans installation (JXA + Core Image)                         |
+| Fichier                                  | Rôle                                                                     |
+| ---------------------------------------- | ------------------------------------------------------------------------ |
+| `guide.html` + `guide.css`               | Source du PDF : pages A4 fixes, charte LaMinga (`src/styles/tokens.css`) |
+| `captures/`                              | Captures Storyblok (JPEG, 1440×900 @2x, recadrées)                       |
+| `illustrations/`                         | Fenêtres reproduites en HTML, rendues en PNG au build                    |
+| `kit-claude/`                            | Dossier remis aux architectes (zippé sous `LaMinga-Claude.zip`)          |
+| `kit-claude/outils/optimiser-photos.js`  | Outil photo Mac sans installation (JXA + Core Image)                     |
+| `kit-claude/outils/optimiser-photos.ps1` | Outil photo Windows sans installation (PowerShell + WPF/WIC)             |
+| `tests-outil-photo/`                     | Images de test et vérifications de l'outil Windows (CI Windows)          |
 
 ## Produire le PDF et le zip
 
@@ -33,6 +35,20 @@ pixels, conversion sRGB, métadonnées retirées, grand côté ≤ 2560 px, tran
 osascript -l JavaScript docs/guide-utilisateur/kit-claude/outils/optimiser-photos.js <dossier>
 osacompile -l JavaScript -o "Optimiser pour le web.app" docs/guide-utilisateur/kit-claude/outils/optimiser-photos.js
 ```
+
+Sous Windows, même traitement avec le moteur image intégré (WPF / WIC), dans Windows PowerShell
+5.1. `-Installer` copie l'outil dans `%LOCALAPPDATA%\LaMinga\` et pose un raccourci « Optimiser pour
+le web » sur le bureau, sur lequel on glisse photos ou dossiers. Différences avec le Mac : JPEG non
+progressif, et les photos HEIC demandent les extensions HEIF et HEVC du Microsoft Store.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File docs\guide-utilisateur\kit-claude\outils\optimiser-photos.ps1 <dossier>
+powershell -NoProfile -ExecutionPolicy Bypass -File docs\guide-utilisateur\kit-claude\outils\optimiser-photos.ps1 -Installer
+```
+
+Le fichier `.ps1` doit rester en **UTF-8 avec BOM** (sinon PowerShell 5.1 abîme les accents). Il
+n'est testable que sous Windows : le workflow `.github/workflows/outil-photo-windows.yml` lance
+`tests-outil-photo/test.ps1` sur un runner Windows à chaque modification.
 
 ## Mettre à jour les captures
 
