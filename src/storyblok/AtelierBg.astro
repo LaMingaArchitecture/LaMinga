@@ -34,37 +34,28 @@ const imgAttrs = { sizes: SIZES_FULLSCREEN, decoding: 'async' as const };
 ---
 
 <div class="atelier__bg" data-atelier-bg>
-  {
-    video?.filename ? (
-      <ResponsiveMedia video={video} poster={poster} alt="" loading="eager" />
+  {video?.filename ? (
+    <ResponsiveMedia video={video} poster={poster} alt="" loading="eager" />
+  ) : (
+    src &&
+    (eager ? (
+      <img src={src} srcset={srcset} alt={alt} loading="eager" fetchpriority="high" {...imgAttrs} />
     ) : (
-      src &&
-      (eager ? (
-        <img
-          src={src}
-          srcset={srcset}
-          alt={alt}
-          loading="eager"
-          fetchpriority="high"
-          {...imgAttrs}
-        />
-      ) : (
-        <Fragment>
-          {/* Deferred until after the LCP — see the note on setupDeferredImages in atelier-images.ts. The
+      <Fragment>
+        {/* Deferred until after the LCP — see the note on setupDeferredImages in atelier-images.ts. The
               section clips its overscan (`.atelier__sec { overflow: hidden }`), so none of this
               image is on screen while the hero paints, even though its box crosses the fold.
               No `loading`: the src is a data: URI, so there is nothing for it to defer. */}
-          <img data-src={src} data-srcset={srcset} src={BLANK} alt={alt} {...imgAttrs} />
-          {/* No-JS path. Relies on the layer's children being absolutely positioned: this paints
+        <img data-src={src} data-srcset={srcset} src={BLANK} alt={alt} {...imgAttrs} />
+        {/* No-JS path. Relies on the layer's children being absolutely positioned: this paints
               over the placeholder instead of being laid out below it, where the section would
               clip it away entirely. */}
-          <noscript>
-            <img src={src} srcset={srcset} alt={alt} loading="lazy" {...imgAttrs} />
-          </noscript>
-        </Fragment>
-      ))
-    )
-  }
+        <noscript>
+          <img src={src} srcset={srcset} alt={alt} loading="lazy" {...imgAttrs} />
+        </noscript>
+      </Fragment>
+    ))
+  )}
 </div>
 
 <style>

@@ -26,46 +26,38 @@ const engagements = blok.engagements ?? [];
     <div class="info-panel info-panel--sheet">
       <p class="info-panel__title">{blok.titre}</p>
       {blok.ville && <p class="info-panel__ville">{blok.ville}</p>}
-      {
-        blok.description_programme && (
-          <p class="info-panel__programme">
-            <span class="info-panel__programme-label">Programme</span> {blok.description_programme}
-          </p>
-        )
-      }
-      {
-        rows.length > 0 && (
-          <dl class="info-table">
-            {rows.map(([label, value]) => (
-              <div class="info-table__row">
-                <dt>{label}</dt>
-                <dd class="pre-line">{value}</dd>
-              </div>
-            ))}
-          </dl>
-        )
-      }
+      {blok.description_programme && (
+        <p class="info-panel__programme">
+          <span class="info-panel__programme-label">Programme</span> {blok.description_programme}
+        </p>
+      )}
+      {rows.length > 0 && (
+        <dl class="info-table">
+          {rows.map(([label, value]) => (
+            <div class="info-table__row">
+              <dt>{label}</dt>
+              <dd class="pre-line">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
     </div>
 
-    {
-      blok.texte && (
-        <div class="info-panel info-panel--texte">
-          <RichText doc={blok.texte} />
-        </div>
-      )
-    }
+    {blok.texte && (
+      <div class="info-panel info-panel--texte">
+        <RichText doc={blok.texte} />
+      </div>
+    )}
 
-    {
-      engagements.length > 0 && (
-        <ul class="info-panel info-panel--engagements">
-          {engagements.map((engagement) => (
-            <li>
-              <StoryblokComponent blok={engagement} />
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    {engagements.length > 0 && (
+      <ul class="info-panel info-panel--engagements">
+        {engagements.map((engagement) => (
+          <li>
+            <StoryblokComponent blok={engagement} />
+          </li>
+        ))}
+      </ul>
+    )}
   </div>
 </section>
 

@@ -15,13 +15,11 @@ const { blok } = Astro.props;
 const isDraft = storyblokVersion === 'draft';
 ---
 
-{
-  isDraft && (
-    <div class="sb-fallback" role="note" {...storyblokEditable(blok)}>
-      Bloc non pris en charge : <code>{blok.component}</code>
-    </div>
-  )
-}
+{isDraft && (
+  <div class="sb-fallback" role="note" {...storyblokEditable(blok)}>
+    Bloc non pris en charge : <code>{blok.component}</code>
+  </div>
+)}
 
 <style>
   .sb-fallback {

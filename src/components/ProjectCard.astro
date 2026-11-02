@@ -19,28 +19,23 @@ const cover = visual?.filename ? sbImage(visual.filename, isVignette ? '480x600'
   class:list={['project-card', { 'project-card--vignette': isVignette }]}
   href={`/projets/${project.slug}`}
 >
-  {
-    cover ? (
-      <img
-        class="project-card__cover"
-        src={cover}
-        alt={visual?.alt || project.titre}
-        loading="lazy"
-      />
-    ) : (
-      isVignette && (
-        <span class="project-card__cover project-card__cover--empty" aria-hidden="true" />
-      )
-    )
-  }
+  {cover ? (
+    <img
+      class="project-card__cover"
+      src={cover}
+      alt={visual?.alt || project.titre}
+      loading="lazy"
+    />
+  ) : (
+    isVignette && <span class="project-card__cover project-card__cover--empty" aria-hidden="true" />
+  )}
   <p class="project-card__title">
-    {project.titre}{project.ville && <span class="project-card__ville"> — {project.ville}</span>}
+    {project.titre}
+    {project.ville && <span class="project-card__ville"> — {project.ville}</span>}
   </p>
-  {
-    !isVignette && project.programmes.length > 0 && (
-      <p class="project-card__programme">{project.programmes.map((p) => p.nom).join(' · ')}</p>
-    )
-  }
+  {!isVignette && project.programmes.length > 0 && (
+    <p class="project-card__programme">{project.programmes.map((p) => p.nom).join(' · ')}</p>
+  )}
 </a>
 
 <style>

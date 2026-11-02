@@ -23,27 +23,25 @@ const thumbSrc = (slide: MediaSlideBlok): string => {
 
 <div class="recap">
   <ul class="recap__grid">
-    {
-      slides.map((slide, index) => {
-        const src = thumbSrc(slide);
-        return (
-          <li>
-            <button
-              type="button"
-              class="recap__item"
-              data-fc-goto={index}
-              aria-label={`Aller à la diapositive ${index + 1}`}
-            >
-              {src ? (
-                <img src={src} alt="" loading="lazy" />
-              ) : (
-                <span class="recap__placeholder" aria-hidden="true" />
-              )}
-            </button>
-          </li>
-        );
-      })
-    }
+    {slides.map((slide, index) => {
+      const src = thumbSrc(slide);
+      return (
+        <li>
+          <button
+            type="button"
+            class="recap__item"
+            data-fc-goto={index}
+            aria-label={`Aller à la diapositive ${index + 1}`}
+          >
+            {src ? (
+              <img src={src} alt="" loading="lazy" />
+            ) : (
+              <span class="recap__placeholder" aria-hidden="true" />
+            )}
+          </button>
+        </li>
+      );
+    })}
   </ul>
 </div>
 

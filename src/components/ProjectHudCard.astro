@@ -20,31 +20,27 @@ const hasActions = Astro.slots.has('actions');
 
 <div class="hud-card brand-box">
   <h1 class="hud-card__title">{titre}</h1>
-  {
-    (maitreOuvrage || programme) && (
-      <dl class="hud-card__data">
-        {maitreOuvrage && (
-          <div class="hud-card__row">
-            <dt>Maîtrise d'ouvrage</dt>
-            <dd>{maitreOuvrage}</dd>
-          </div>
-        )}
-        {programme && (
-          <div class="hud-card__row">
-            <dt>Programme</dt>
-            <dd class="hud-card__desc">{programme}</dd>
-          </div>
-        )}
-      </dl>
-    )
-  }
-  {
-    hasActions && (
-      <div class="hud-card__actions">
-        <slot name="actions" />
-      </div>
-    )
-  }
+  {(maitreOuvrage || programme) && (
+    <dl class="hud-card__data">
+      {maitreOuvrage && (
+        <div class="hud-card__row">
+          <dt>Maîtrise d'ouvrage</dt>
+          <dd>{maitreOuvrage}</dd>
+        </div>
+      )}
+      {programme && (
+        <div class="hud-card__row">
+          <dt>Programme</dt>
+          <dd class="hud-card__desc">{programme}</dd>
+        </div>
+      )}
+    </dl>
+  )}
+  {hasActions && (
+    <div class="hud-card__actions">
+      <slot name="actions" />
+    </div>
+  )}
 </div>
 
 <style>

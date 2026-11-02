@@ -20,20 +20,16 @@ const addrAnglet = oneLine(settings?.adresse_anglet);
 <footer class="site-footer">
   <div class="site-footer__group">
     {nomAtelier && <span class="site-footer__cell brand-box site-footer__name">{nomAtelier}</span>}
-    {
-      settings?.email && (
-        <a class="site-footer__cell brand-box" href={`mailto:${settings.email}`}>
-          {settings.email}
-        </a>
-      )
-    }
-    {
-      tel && (
-        <a class="site-footer__cell brand-box" href={tel}>
-          {settings?.telephone}
-        </a>
-      )
-    }
+    {settings?.email && (
+      <a class="site-footer__cell brand-box" href={`mailto:${settings.email}`}>
+        {settings.email}
+      </a>
+    )}
+    {tel && (
+      <a class="site-footer__cell brand-box" href={tel}>
+        {settings?.telephone}
+      </a>
+    )}
     {addrAnglet && <span class="site-footer__cell brand-box site-footer__addr">{addrAnglet}</span>}
     {addrParis && <span class="site-footer__cell brand-box site-footer__addr">{addrParis}</span>}
   </div>

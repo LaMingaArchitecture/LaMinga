@@ -6,18 +6,16 @@ const { blok } = Astro.props as { blok: EngagementBlok };
 ---
 
 <div class="engagement" {...storyblokEditable(blok)}>
-  {
-    blok.icone?.filename && (
-      <img
-        class="engagement__icon"
-        src={blok.icone.filename}
-        alt=""
-        width="48"
-        height="48"
-        loading="lazy"
-      />
-    )
-  }
+  {blok.icone?.filename && (
+    <img
+      class="engagement__icon"
+      src={blok.icone.filename}
+      alt=""
+      width="48"
+      height="48"
+      loading="lazy"
+    />
+  )}
   <div class="engagement__text">
     <span class="engagement__label">{blok.libelle}</span>
     {blok.description && <p class="engagement__description pre-line">{blok.description}</p>}

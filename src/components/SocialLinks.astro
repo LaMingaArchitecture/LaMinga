@@ -39,35 +39,33 @@ const platformOf = (url: string): Platform | null => {
 };
 ---
 
-{
-  safe.length > 0 && (
-    <ul class:list={['social-links', className]} aria-label={label}>
-      {safe.map((link) => {
-        const platform = platformOf(link.url);
-        // Always non-empty: trimmed editor label, else the detected network name, else a generic.
-        const linkLabel =
-          link.plateforme?.trim() || (platform ? DISPLAY_NAME[platform] : 'Réseau social');
-        return (
-          <li>
-            <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={linkLabel}>
-              {platform === 'instagram' ? (
-                <Instagram />
-              ) : platform === 'linkedin' ? (
-                <LinkedIn />
-              ) : link.icone?.filename ? (
-                // Raw filename (the image service rasterizes SVG); decorative — the link is labelled.
-                <img src={link.icone.filename} alt="" width="24" height="24" />
-              ) : (
-                // Text fallback: the computed label (never empty), consistent with aria-label.
-                linkLabel
-              )}
-            </a>
-          </li>
-        );
-      })}
-    </ul>
-  )
-}
+{safe.length > 0 && (
+  <ul class:list={['social-links', className]} aria-label={label}>
+    {safe.map((link) => {
+      const platform = platformOf(link.url);
+      // Always non-empty: trimmed editor label, else the detected network name, else a generic.
+      const linkLabel =
+        link.plateforme?.trim() || (platform ? DISPLAY_NAME[platform] : 'Réseau social');
+      return (
+        <li>
+          <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={linkLabel}>
+            {platform === 'instagram' ? (
+              <Instagram />
+            ) : platform === 'linkedin' ? (
+              <LinkedIn />
+            ) : link.icone?.filename ? (
+              // Raw filename (the image service rasterizes SVG); decorative — the link is labelled.
+              <img src={link.icone.filename} alt="" width="24" height="24" />
+            ) : (
+              // Text fallback: the computed label (never empty), consistent with aria-label.
+              linkLabel
+            )}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+)}
 
 <style>
   .social-links {

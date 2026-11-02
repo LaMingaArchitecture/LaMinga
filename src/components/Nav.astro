@@ -18,18 +18,14 @@ const activeSection = activeSectionFor(Astro.url.pathname);
 
 <header class="site-header">
   <nav class="nav" aria-label="Navigation principale">
-    {
-      /* Brand column (grid column 1 on the V3 boards): logotype, then the two cartouches stacked
-        directly beneath it — Projets first, matching the boards' reading order. */
-    }
+    {/* Brand column (grid column 1 on the V3 boards): logotype, then the two cartouches stacked
+        directly beneath it — Projets first, matching the boards' reading order. */}
     <div class="nav__brand">
       <a href="/" class="nav__logo">
-        {
-          /* High priority + the <head> preload: the logotype is above the fold on every page, and at
+        {/* High priority + the <head> preload: the logotype is above the fold on every page, and at
           the default image priority it is fetched behind the stylesheets and the hero.
           The alt is the link's only accessible name — an aria-label on the <a> as well would give
-          screen readers two competing names for one link. */
-        }
+          screen readers two competing names for one link. */}
         <img
           class="nav__logo-img"
           src={LOGO_SRC}

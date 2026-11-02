@@ -32,7 +32,9 @@ const infosHasContent =
 ---
 
 <FullscreenCarousel ariaLabel={blok.titre} {...storyblokEditable(blok)}>
-  {slides.map((slide, i) => <StoryblokComponent blok={slide} first={i === 0} />)}
+  {slides.map((slide, i) => (
+    <StoryblokComponent blok={slide} first={i === 0} />
+  ))}
   {showRecap && <ProjectRecapSlide slides={slides} />}
 
   <div class="project-hud" data-project-overlays slot="overlays">
@@ -46,36 +48,34 @@ const infosHasContent =
           maitreOuvrage={blok.maitre_ouvrage}
           programme={blok.description_programme}
         >
-          {
-            (infosHasContent || hasRelated) && (
-              <Fragment slot="actions">
-                {infosHasContent && (
-                  <button
-                    type="button"
-                    class="pill"
-                    aria-expanded="false"
-                    aria-controls="project-infos"
-                    data-overlay-pill="infos"
-                  >
-                    <span class="pill__badge" aria-hidden="true" />
-                    <span class="pill__label">informations</span>
-                  </button>
-                )}
-                {hasRelated && (
-                  <button
-                    type="button"
-                    class="pill"
-                    aria-expanded="false"
-                    aria-controls="project-similaires"
-                    data-overlay-pill="similaires"
-                  >
-                    <span class="pill__badge" aria-hidden="true" />
-                    <span class="pill__label">projets en relation</span>
-                  </button>
-                )}
-              </Fragment>
-            )
-          }
+          {(infosHasContent || hasRelated) && (
+            <Fragment slot="actions">
+              {infosHasContent && (
+                <button
+                  type="button"
+                  class="pill"
+                  aria-expanded="false"
+                  aria-controls="project-infos"
+                  data-overlay-pill="infos"
+                >
+                  <span class="pill__badge" aria-hidden="true" />
+                  <span class="pill__label">informations</span>
+                </button>
+              )}
+              {hasRelated && (
+                <button
+                  type="button"
+                  class="pill"
+                  aria-expanded="false"
+                  aria-controls="project-similaires"
+                  data-overlay-pill="similaires"
+                >
+                  <span class="pill__badge" aria-hidden="true" />
+                  <span class="pill__label">projets en relation</span>
+                </button>
+              )}
+            </Fragment>
+          )}
         </ProjectHudCard>
       </div>
     </div>
