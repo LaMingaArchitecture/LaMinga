@@ -11,16 +11,14 @@ const mentions = settings?.mentions_legales;
 <BaseLayout title="Mentions légales — LaMinga" footer scroll noindex={!mentions}>
   <section class="mentions">
     <h1 class="mentions__title">Mentions légales</h1>
-    {
-      mentions ? (
-        <RichText doc={mentions} />
-      ) : (
-        <ContentNotice
-          title="Mentions légales indisponibles"
-          message="Les mentions légales n'ont pas encore été publiées dans Storyblok."
-        />
-      )
-    }
+    {mentions ? (
+      <RichText doc={mentions} />
+    ) : (
+      <ContentNotice
+        title="Mentions légales indisponibles"
+        message="Les mentions légales n'ont pas encore été publiées dans Storyblok."
+      />
+    )}
   </section>
 </BaseLayout>
 

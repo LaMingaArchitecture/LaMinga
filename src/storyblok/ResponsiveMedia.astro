@@ -38,40 +38,36 @@ const { videoSrc, posterSrc, portrait, paysage } = resolveMediaSources({
 });
 ---
 
-{
-  videoSrc && (
-    <video
-      class:list={['responsive-media', 'responsive-media--video', className]}
-      src={videoSrc}
-      poster={posterSrc}
-      muted
-      autoplay
-      loop
-      playsinline
-      preload={loading === 'eager' ? 'auto' : 'none'}
-      aria-label={alt || undefined}
-    >
-      {/* Decorative, muted loop with no dialogue — a valid empty VTT captions track
+{videoSrc && (
+  <video
+    class:list={['responsive-media', 'responsive-media--video', className]}
+    src={videoSrc}
+    poster={posterSrc}
+    muted
+    autoplay
+    loop
+    playsinline
+    preload={loading === 'eager' ? 'auto' : 'none'}
+    aria-label={alt || undefined}
+  >
+    {/* Decorative, muted loop with no dialogue — a valid empty VTT captions track
           satisfies jsx-a11y while keeping the markup HTML-valid (track needs a src). */}
-      <track kind="captions" src="/media/empty.vtt" srclang="fr" label="Sans paroles" />
-    </video>
-  )
-}
-{
-  !videoSrc && paysage && (
-    <picture class:list={['responsive-media', className]}>
-      {portrait && (
-        <source media="(max-width: 640px)" srcset={sbSrcset(portrait)} sizes={SIZES_FULLSCREEN} />
-      )}
-      <img
-        src={sbImageW(paysage, HERO_IMG_WIDTH)}
-        srcset={sbSrcset(paysage)}
-        sizes={SIZES_FULLSCREEN}
-        alt={alt}
-        loading={loading}
-        fetchpriority={eager ? 'high' : undefined}
-        decoding="async"
-      />
-    </picture>
-  )
-}
+    <track kind="captions" src="/media/empty.vtt" srclang="fr" label="Sans paroles" />
+  </video>
+)}
+{!videoSrc && paysage && (
+  <picture class:list={['responsive-media', className]}>
+    {portrait && (
+      <source media="(max-width: 640px)" srcset={sbSrcset(portrait)} sizes={SIZES_FULLSCREEN} />
+    )}
+    <img
+      src={sbImageW(paysage, HERO_IMG_WIDTH)}
+      srcset={sbSrcset(paysage)}
+      sizes={SIZES_FULLSCREEN}
+      alt={alt}
+      loading={loading}
+      fetchpriority={eager ? 'high' : undefined}
+      decoding="async"
+    />
+  </picture>
+)}

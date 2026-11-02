@@ -28,16 +28,14 @@ const alt = blok.image_paysage?.alt || content?.titre || '';
     alt={alt}
     loading={first ? 'eager' : 'lazy'}
   />
-  {
-    titre &&
-      (href ? (
-        <a class="home-slide__title" href={href}>
-          {titre}
-        </a>
-      ) : (
-        <p class="home-slide__title">{titre}</p>
-      ))
-  }
+  {titre &&
+    (href ? (
+      <a class="home-slide__title" href={href}>
+        {titre}
+      </a>
+    ) : (
+      <p class="home-slide__title">{titre}</p>
+    ))}
 </article>
 
 <style>

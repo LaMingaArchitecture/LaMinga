@@ -56,8 +56,6 @@ const ogImageUrl = absoluteImageUrl(ogImage, PUBLIC_SITE_URL);
 {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
 {/* Structured data — is:inline keeps Astro from bundling/altering the JSON. */}
-{
-  jsonLd.map((node) => (
-    <script type="application/ld+json" is:inline set:html={serializeJsonLd(node)} />
-  ))
-}
+{jsonLd.map((node) => (
+  <script type="application/ld+json" is:inline set:html={serializeJsonLd(node)} />
+))}

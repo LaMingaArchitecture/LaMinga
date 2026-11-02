@@ -16,10 +16,8 @@ const tel = telHref(settings?.telephone);
 ---
 
 <div class="mobile-nav">
-  {
-    /* Visually-hidden but focusable checkbox = the no-JS open control (the burger label toggles
-      it). Its accessible name comes from that label ("Ouvrir le menu") — no aria-label override. */
-  }
+  {/* Visually-hidden but focusable checkbox = the no-JS open control (the burger label toggles
+      it). Its accessible name comes from that label ("Ouvrir le menu") — no aria-label override. */}
   <input
     class="mobile-nav__checkbox visually-hidden"
     type="checkbox"
@@ -56,13 +54,17 @@ const tel = telHref(settings?.telephone);
         class="brand-box"
         href="/projets"
         data-projets-reset
-        aria-current={activeSection === 'projets' ? 'page' : undefined}>Projets</a
+        aria-current={activeSection === 'projets' ? 'page' : undefined}
       >
+        Projets
+      </a>
       <a
         class="brand-box"
         href="/atelier"
-        aria-current={activeSection === 'atelier' ? 'page' : undefined}>Atelier</a
+        aria-current={activeSection === 'atelier' ? 'page' : undefined}
       >
+        Atelier
+      </a>
     </nav>
 
     <div class="mobile-nav__contact">
@@ -70,7 +72,9 @@ const tel = telHref(settings?.telephone);
       {tel && <a href={tel}>{settings?.telephone}</a>}
       {settings?.adresse_paris && <address class="pre-line">{settings.adresse_paris}</address>}
       {settings?.adresse_anglet && <address class="pre-line">{settings.adresse_anglet}</address>}
-      <a class="mobile-nav__mentions" href="/mentions-legales">Mentions légales</a>
+      <a class="mobile-nav__mentions" href="/mentions-legales">
+        Mentions légales
+      </a>
     </div>
 
     <SocialLinks links={social} class="mobile-nav__social" />

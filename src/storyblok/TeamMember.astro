@@ -8,20 +8,18 @@ const { blok } = Astro.props as { blok: TeamMemberBlok };
 ---
 
 <figure class="team-member" {...storyblokEditable(blok)}>
-  {
-    blok.photo?.filename && (
-      <div class="team-member__frame brand-box">
-        <img
-          class="team-member__photo"
-          src={sbImage(blok.photo.filename, '500x500')}
-          alt={blok.photo.alt || blok.nom}
-          width="500"
-          height="500"
-          loading="lazy"
-        />
-      </div>
-    )
-  }
+  {blok.photo?.filename && (
+    <div class="team-member__frame brand-box">
+      <img
+        class="team-member__photo"
+        src={sbImage(blok.photo.filename, '500x500')}
+        alt={blok.photo.alt || blok.nom}
+        width="500"
+        height="500"
+        loading="lazy"
+      />
+    </div>
+  )}
   <figcaption class="team-member__caption">
     <span class="team-member__name">{blok.nom}</span>
     {blok.role && <span class="team-member__role">{blok.role}</span>}

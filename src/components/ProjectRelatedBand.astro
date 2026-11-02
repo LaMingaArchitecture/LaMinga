@@ -20,13 +20,11 @@ const { id, related, hidden = true } = Astro.props;
 <section id={id} class="related-band" aria-label="Projets similaires" hidden={hidden}>
   <p class="related-band__label">Sélection de projets en relation</p>
   <ul class="related-band__grid">
-    {
-      related.map((project) => (
-        <li>
-          <ProjectCard project={project} variant="vignette" />
-        </li>
-      ))
-    }
+    {related.map((project) => (
+      <li>
+        <ProjectCard project={project} variant="vignette" />
+      </li>
+    ))}
   </ul>
 </section>
 
