@@ -32,24 +32,24 @@
     "astro": "7.3.8"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.10",
-    "@commitlint/cli": "21.2.0",
-    "@commitlint/config-conventional": "21.2.3",
+    "@astrojs/check": "0.9.12",
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
     "@eslint/js": "10.0.1",
     "@netlify/edge-functions": "3.0.8",
     "cross-env": "10.1.0",
-    "eslint": "10.6.0",
+    "eslint": "10.13.0",
     "eslint-plugin-astro": "3.2.1",
     "eslint-plugin-jsx-a11y": "6.10.2",
-    "globals": "17.7.0",
+    "globals": "17.13.0",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
-    "prettier": "3.9.4",
+    "prettier": "3.9.10",
     "prettier-plugin-astro": "0.14.1",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.71.1",
-    "vite": "8.3.4",
-    "vitest": "5.0.3"
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
   },
   "pnpm": {
     "overrides": {
