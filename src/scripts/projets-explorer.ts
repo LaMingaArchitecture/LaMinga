@@ -3,7 +3,12 @@
 // back to both, so returning to /projets restores them; the search text is ephemeral (kept out of
 // the URL to keep the deep-link contract simple). Programmes/thematiques come from Storyblok —
 // nothing is hardcoded here.
-import { EXPLORER_STORAGE_KEY, hasActiveFilters, matchesFilters } from '../lib/explorer-filter';
+import {
+  EXPLORER_STORAGE_KEY,
+  hasActiveFilters,
+  hasToken,
+  matchesFilters,
+} from '../lib/explorer-filter';
 import { normalizeSearch } from '../lib/search';
 
 type View = 'grid' | 'index';
@@ -104,8 +109,7 @@ if (root) {
 
   // Is this thematique present in the selected programme's projects? (row 2 availability)
   const thematiqueAvailable = (button: HTMLButtonElement): boolean =>
-    !state.programme ||
-    (button.dataset.thematiqueProgrammes ?? '').split(' ').includes(state.programme);
+    !state.programme || hasToken(button.dataset.thematiqueProgrammes, state.programme);
 
   const apply = () => {
     // Any filter/search/view change dismisses the floating hover preview: hiding the hovered row

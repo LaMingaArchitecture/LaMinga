@@ -18,8 +18,6 @@ export function sbImage(filename: string, size = '1200x0'): string {
   return `${filename}/m/${size}/filters:format(webp):quality(80)`;
 }
 
-export type SbFormat = 'webp' | 'avif';
-
 /** Responsive width ladder for edge-to-edge visuals — single source of truth (img + preload). */
 export const FULLSCREEN_WIDTHS = [640, 960, 1280, 1600, 1920] as const;
 
@@ -34,23 +32,12 @@ export const HERO_IMG_WIDTH = 1280;
 export const POSTER_WIDTH = 1600;
 
 /** One image-service URL at an explicit width (height auto via `0`). */
-export function sbImageW(
-  filename: string,
-  width: number,
-  format: SbFormat = 'webp',
-  quality = 80,
-): string {
-  if (!filename) return '';
-  return `${filename}/m/${width}x0/filters:format(${format}):quality(${quality})`;
+export function sbImageW(filename: string, width: number): string {
+  return sbImage(filename, `${width}x0`);
 }
 
-/** A `srcset` string across widths for one format (w-descriptors). */
-export function sbSrcset(
-  filename: string,
-  widths: readonly number[] = FULLSCREEN_WIDTHS,
-  format: SbFormat = 'webp',
-  quality = 80,
-): string {
+/** A `srcset` string across the full-bleed width ladder (w-descriptors). */
+export function sbSrcset(filename: string): string {
   if (!filename) return '';
-  return widths.map((w) => `${sbImageW(filename, w, format, quality)} ${w}w`).join(', ');
+  return FULLSCREEN_WIDTHS.map((w) => `${sbImageW(filename, w)} ${w}w`).join(', ');
 }

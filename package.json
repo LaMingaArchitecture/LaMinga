@@ -14,13 +14,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "audit": "pnpm audit",
-    "astro": "astro",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "astro check && tsc -p netlify/tsconfig.json",
-    "typecheck:edge": "tsc -p netlify/tsconfig.json",
     "prepare": "husky",
     "test": "vitest run",
     "guide": "scripts/build-guide.sh"

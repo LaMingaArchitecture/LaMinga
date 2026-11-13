@@ -19,8 +19,6 @@ interface Props {
   ogImage?: string;
   /** Open Graph type: 'article' for project pages, 'website' elsewhere. */
   ogType?: 'website' | 'article';
-  /** Canonical override (defaults to the current pathname on PUBLIC_SITE_URL). */
-  canonical?: string;
   /** Page-specific JSON-LD nodes appended after the site-wide Organization node. */
   jsonLd?: object[];
   /** LCP image(s) to preload in <head> (see src/lib/media.ts `lcpPreload`). */
@@ -54,7 +52,6 @@ const {
   noindex = false,
   ogImage,
   ogType = 'website',
-  canonical: canonicalProp,
   jsonLd = [],
   preload = [],
   footer = false,
@@ -71,7 +68,7 @@ const settings = await getSettings();
 // The header floats over the hero on footer-less pages and sits as a solid bar otherwise; the
 // Atelier opts into a floating header while keeping its footer, so allow an explicit override.
 const immersive = immersiveProp ?? !footer;
-const canonicalHref = canonicalProp ?? new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
+const canonicalHref = new URL(Astro.url.pathname, PUBLIC_SITE_URL).href;
 
 // Preview builds (draft) must never be indexed — layered on top of Basic-Auth + robots Disallow.
 const forceNoindex = STORYBLOK_VERSION === 'draft';
@@ -116,8 +113,10 @@ const preconnectOrigins = preload.length
       siteName={siteName(settings)}
       jsonLd={allJsonLd}
     />
-    {/* Sora carries every body string, so discovering it only after the CSS parses would cost a
-    visible swap. Preloaded ahead of the LCP image: it is 33 KB and same-origin, the image is not. */}
+    {
+      /* Sora carries every body string, so discovering it only after the CSS parses would cost a
+    visible swap. Preloaded ahead of the LCP image: it is 33 KB and same-origin, the image is not. */
+    }
     <link
       rel="preload"
       as="font"
@@ -125,37 +124,43 @@ const preconnectOrigins = preload.length
       href="/fonts/sora-latin-variable.woff2"
       crossorigin
     />
-    {/* Same for the serif italic (17 KB) on pages that show it at first paint (filter chips,
-    project cartouche labels, footer): discovered late it paints in Georgia first, then swaps. */}
-    {serif && (
-      <link
-        rel="preload"
-        as="font"
-        type="font/woff2"
-        href="/fonts/playfair-italic.woff2"
-        crossorigin
-      />
-    )}
-    {/* The logotype is site chrome: it sits above the fold on every page but is only discovered
+    {
+      /* Same for the serif italic (17 KB) on pages that show it at first paint (filter chips,
+    project cartouche labels, footer): discovered late it paints in Georgia first, then swaps. */
+    }
+    {
+      serif && (
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="/fonts/playfair-italic.woff2"
+          crossorigin
+        />
+      )
+    }
+    {
+      /* The logotype is site chrome: it sits above the fold on every page but is only discovered
     once the header markup parses, and an <img> starts at low priority until layout. Without this it
     lands after the stylesheets and the hero, so the header draws its cartouches first and the
-    logotype drops in afterwards. Cached for every subsequent page. */}
+    logotype drops in afterwards. Cached for every subsequent page. */
+    }
     <link rel="preload" as="image" type="image/svg+xml" href={LOGO_SRC} fetchpriority="high" />
     {/* Warm the Storyblok image origin(s) the LCP uses before the hero fetch. */}
-    {preconnectOrigins.map((origin) => (
-      <link rel="preconnect" href={origin} />
-    ))}
-    {preload.map((p) => (
-      <link
-        rel="preload"
-        as="image"
-        fetchpriority="high"
-        href={p.href}
-        imagesrcset={p.srcset}
-        imagesizes={p.sizes}
-        media={p.media}
-      />
-    ))}
+    {preconnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
+    {
+      preload.map((p) => (
+        <link
+          rel="preload"
+          as="image"
+          fetchpriority="high"
+          href={p.href}
+          imagesrcset={p.srcset}
+          imagesizes={p.sizes}
+          media={p.media}
+        />
+      ))
+    }
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body

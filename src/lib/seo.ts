@@ -70,7 +70,7 @@ export function resolveSeo(input: SeoInput): ResolvedSeo {
 export function projectSeoInput(blok: ProjectBlok): SeoInput {
   const ville = blok.ville ? ` — ${blok.ville}` : '';
   const description =
-    blok.description_programme ??
+    blok.description_programme?.trim() ||
     `${blok.titre}${blok.ville ? `, ${blok.ville}` : ''} — projet de l'atelier d'architecture LaMinga.`;
   return {
     seo: firstSeo(blok.seo),

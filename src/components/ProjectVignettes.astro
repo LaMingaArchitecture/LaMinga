@@ -1,5 +1,6 @@
 ---
 import ProjectCard from './ProjectCard.astro';
+import { TOKEN_SEPARATOR } from '../lib/explorer-filter';
 import { projectSearchText } from '../lib/search';
 import type { ProjectSummary } from '../types/storyblok';
 
@@ -10,22 +11,26 @@ interface Props {
 const { projects } = Astro.props;
 ---
 
-{/* Vignettes view: a row-major grid of 4:5 portrait plan-masse tiles (2 cols mobile, 4 tablet,
+{
+  /* Vignettes view: a row-major grid of 4:5 portrait plan-masse tiles (2 cols mobile, 4 tablet,
     6 desktop — the page's 6-column grid, each tile under a filter column). Filtering hides
-    non-matching <li>s; the rest regroup left. */}
+    non-matching <li>s; the rest regroup left. */
+}
 <div class="vignettes" data-view="grid">
   <ul class="vignettes__rail">
-    {projects.map((project) => (
-      <li
-        class="vignettes__item"
-        data-filterable
-        data-programmes={project.programmes.map((p) => p.slug).join(' ')}
-        data-thematiques={project.thematiques.join(' ')}
-        data-search={projectSearchText(project)}
-      >
-        <ProjectCard project={project} variant="vignette" />
-      </li>
-    ))}
+    {
+      projects.map((project) => (
+        <li
+          class="vignettes__item"
+          data-filterable
+          data-programmes={project.programmes.map((p) => p.slug).join(TOKEN_SEPARATOR)}
+          data-thematiques={project.thematiques.join(TOKEN_SEPARATOR)}
+          data-search={projectSearchText(project)}
+        >
+          <ProjectCard project={project} variant="vignette" />
+        </li>
+      ))
+    }
   </ul>
 </div>
 
