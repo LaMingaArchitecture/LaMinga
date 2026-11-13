@@ -165,12 +165,6 @@ export interface GlobalSettings extends SbBlokData {
   reseaux_sociaux?: SocialLinkBlok[];
 }
 
-/** Resolved programme label + story slug. */
-export interface ProgrammeSummary {
-  nom: string;
-  slug?: string;
-}
-
 /** Programme surfaced to the UI: label + story slug (filter hook + deep-link). */
 export interface ProgrammeLink {
   nom: string;
@@ -185,7 +179,7 @@ export interface ProjectSummary {
   description_programme?: string;
   maitre_ouvrage?: string;
   statut?: string;
-  programmes: ProgrammeSummary[];
+  programmes: ProgrammeLink[];
   thematiques: string[];
   /** Plan-masse vignette (PM grid + related strip). */
   vignette?: StoryblokAsset;

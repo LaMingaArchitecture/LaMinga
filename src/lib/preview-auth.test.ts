@@ -7,13 +7,13 @@ const stubEnv = (env: Record<string, string>): void => {
   vi.stubGlobal('Netlify', { env: { get: (key: string) => env[key] } });
 };
 
-const request = (credentials?: string): Request => {
+const request = (credentials?: string, path = '/'): Request => {
   const headers = new Headers();
   if (credentials !== undefined) {
     const bytes = new TextEncoder().encode(credentials);
     headers.set('authorization', `basic ${btoa(String.fromCharCode(...bytes))}`);
   }
-  return new Request('https://preview.example/', { headers });
+  return new Request(`https://preview.example${path}`, { headers });
 };
 
 afterEach(() => vi.unstubAllGlobals());
@@ -38,6 +38,19 @@ describe('previewAuth', () => {
 
   test('lets the right password through', () => {
     stubEnv({ PREVIEW_BASIC_AUTH: SECRET });
-    expect(previewAuth(request(SECRET))).toBeUndefined();
+    expect(previewAuth(request(SECRET, '/preview/home'))).toBeUndefined();
+    expect(previewAuth(request(SECRET, '/mentions-legales'))).toBeUndefined();
+  });
+
+  test.each([
+    ['/', '/preview/home'],
+    ['/atelier/', '/preview/atelier'],
+    ['/projets?programme=logement', '/preview/projets?programme=logement'],
+    ['/projets/tardets', '/preview/projets/tardets'],
+  ])('sends the static page %s to its live draft', (path, target) => {
+    stubEnv({ PREVIEW_BASIC_AUTH: SECRET });
+    const response = previewAuth(request(SECRET, path));
+    expect(response?.status).toBe(302);
+    expect(response?.headers.get('location')).toBe(`https://preview.example${target}`);
   });
 });

@@ -178,7 +178,8 @@ export const getProgrammes = memoizePublished(() =>
   ),
 );
 
-/** Cover photo for the VRAC grid / Index hover: the explicit field, else the first carousel image. */
+/** Cover photo for the VRAC grid / Index hover: the explicit field, else the first carousel image,
+ *  else the first video poster. */
 export function coverPhoto(blok: ProjectBlok): StoryblokAsset | undefined {
   const first = blok.carrousel?.find(
     (slide) => presentAsset(slide.image_paysage) ?? presentAsset(slide.image_portrait),
@@ -186,7 +187,8 @@ export function coverPhoto(blok: ProjectBlok): StoryblokAsset | undefined {
   return (
     presentAsset(blok.photo_couverture) ??
     presentAsset(first?.image_paysage) ??
-    presentAsset(first?.image_portrait)
+    presentAsset(first?.image_portrait) ??
+    blok.carrousel?.map((slide) => presentAsset(slide.poster)).find(Boolean)
   );
 }
 
