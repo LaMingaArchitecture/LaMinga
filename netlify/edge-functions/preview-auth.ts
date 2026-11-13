@@ -29,13 +29,24 @@ export default function previewAuth(request: Request): Response | undefined {
   // The auth scheme is case-insensitive (RFC 7235).
   const encoded = /^Basic\s+(\S+)$/i.exec(request.headers.get('authorization') ?? '')?.[1];
   if (encoded && safeEqual(decodeBase64(encoded), expected)) {
-    return undefined; // authenticated — continue to the origin
+    return liveDraftRedirect(new URL(request.url)); // authenticated — continue to the origin
   }
 
   return new Response('Authentication required.', {
     status: 401,
     headers: { 'WWW-Authenticate': 'Basic realm="LaMinga preview", charset="UTF-8"' },
   });
+}
+
+// The site's own links point at the static pages, which on the preview site date from the last
+// build; send them to the SSR route so an editor always sees the current draft.
+function liveDraftRedirect(url: URL): Response | undefined {
+  const path = url.pathname.replace(/\/+$/, '');
+  const isDraftPage =
+    path === '' || path === '/atelier' || path === '/projets' || path.startsWith('/projets/');
+  if (!isDraftPage) return undefined;
+  url.pathname = `/preview${path || '/home'}`;
+  return Response.redirect(url, 302);
 }
 
 function decodeBase64(value: string): string {
