@@ -1,5 +1,5 @@
 ---
-import { telHref } from '../lib/url';
+import { collapseWhitespace, telHref } from '../lib/url';
 import type { GlobalSettings } from '../types/storyblok';
 
 interface Props {
@@ -12,9 +12,8 @@ const tel = telHref(settings?.telephone);
 // Collapse the textarea line breaks so each address sits on a single line — the footer stays a slim,
 // even bar of cartouche cells, one per address as on the V3 board. The mobile panel, by contrast,
 // keeps the line breaks (via .pre-line) since it has vertical room.
-const oneLine = (value?: string) => value?.replace(/\s*\n\s*/g, ' ').trim() || undefined;
-const addrParis = oneLine(settings?.adresse_paris);
-const addrAnglet = oneLine(settings?.adresse_anglet);
+const addrParis = collapseWhitespace(settings?.adresse_paris);
+const addrAnglet = collapseWhitespace(settings?.adresse_anglet);
 ---
 
 <footer class="site-footer">
