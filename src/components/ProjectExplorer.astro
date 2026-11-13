@@ -40,35 +40,39 @@ const programmesForThematique = (value: string) =>
 <div class="explorer" data-explorer>
   <div class="explorer__sticky">
     <div class="explorer__filters">
-      {programmeFilters.length > 0 && (
-        <div class="explorer__row" role="group" aria-label="Filtrer par programme">
-          {programmeFilters.map((programme) => (
-            <button
-              type="button"
-              class="explorer__chip explorer__chip--programme brand-box"
-              data-programme-filter={programme.slug}
-              aria-pressed="false"
-            >
-              {programme.nom}
-            </button>
-          ))}
-        </div>
-      )}
-      {thematiqueFilters.length > 0 && (
-        <div class="explorer__row" role="group" aria-label="Filtrer par thématique">
-          {thematiqueFilters.map((thematique) => (
-            <button
-              type="button"
-              class="explorer__chip explorer__chip--thematique brand-box"
-              data-thematique-filter={thematique.value}
-              data-thematique-programmes={programmesForThematique(thematique.value)}
-              aria-pressed="false"
-            >
-              {thematique.name}
-            </button>
-          ))}
-        </div>
-      )}
+      {
+        programmeFilters.length > 0 && (
+          <div class="explorer__row" role="group" aria-label="Filtrer par programme">
+            {programmeFilters.map((programme) => (
+              <button
+                type="button"
+                class="explorer__chip explorer__chip--programme brand-box"
+                data-programme-filter={programme.slug}
+                aria-pressed="false"
+              >
+                {programme.nom}
+              </button>
+            ))}
+          </div>
+        )
+      }
+      {
+        thematiqueFilters.length > 0 && (
+          <div class="explorer__row" role="group" aria-label="Filtrer par thématique">
+            {thematiqueFilters.map((thematique) => (
+              <button
+                type="button"
+                class="explorer__chip explorer__chip--thematique brand-box"
+                data-thematique-filter={thematique.value}
+                data-thematique-programmes={programmesForThematique(thematique.value)}
+                aria-pressed="false"
+              >
+                {thematique.name}
+              </button>
+            ))}
+          </div>
+        )
+      }
     </div>
 
     <div class="explorer__tools" role="group" aria-label="Affichage et recherche">
@@ -103,9 +107,7 @@ const programmesForThematique = (value: string) =>
   </div>
 
   <div class="explorer__views">
-    <p class="explorer__empty" data-empty hidden>
-      Aucun projet ne correspond à ces filtres.
-    </p>
+    <p class="explorer__empty" data-empty hidden>Aucun projet ne correspond à ces filtres.</p>
     <ProjectVignettes projects={projects} />
     <ProjectIndexTable projects={projects} />
   </div>

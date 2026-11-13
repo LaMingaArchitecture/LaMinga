@@ -22,11 +22,13 @@ const hasManifeste = Boolean(blok.image?.filename || blok.texte_minga || blok.te
 const firstSection = atelierHero(blok).section;
 ---
 
-{/* The Atelier is the site's one scrolling page. Mobile: a normal scrolling document. Desktop
+{
+  /* The Atelier is the site's one scrolling page. Mobile: a normal scrolling document. Desktop
     (≥48rem landscape, via global.css): a fixed viewport whose sections scroll-snap fullscreen —
     a full-bleed background (video §1, photos §2–4) under a translucent bleu-clair panel. A tiny
     vanilla island (atelier-scroll) adds panel reveals + a subtle background parallax; with no JS
-    the native scroll-snap track still works and every panel stays visible. Empty sections skip. */}
+    the native scroll-snap track still works and every panel stays visible. Empty sections skip. */
+}
 <article
   class="atelier"
   aria-label="Atelier LaMinga — présentation en sections plein écran"
@@ -35,72 +37,82 @@ const firstSection = atelierHero(blok).section;
 >
   {/* Section titles are <h2>; the page title sits above them for assistive tech only. */}
   <h1 class="visually-hidden">L'atelier LaMinga</h1>
-  {blok.video?.filename && (
-    <section class="atelier__sec atelier__sec--video" data-atelier-sec>
-      <AtelierBg video={blok.video} poster={blok.poster} />
-    </section>
-  )}
+  {
+    blok.video?.filename && (
+      <section class="atelier__sec atelier__sec--video" data-atelier-sec>
+        <AtelierBg video={blok.video} poster={blok.poster} />
+      </section>
+    )
+  }
 
-  {hasManifeste && (
-    <section class="atelier__sec atelier__sec--manifeste" data-atelier-sec>
-      {blok.image?.filename && (
-        <AtelierBg image={blok.image} eager={firstSection === 'manifeste'} />
-      )}
-      <div class="atelier__panel atelier__panel--manifeste" data-atelier-panel>
-        {blok.texte_minga && (
-          <div class="atelier__block">
-            <h2 class="atelier__title">{blok.titre_minga ?? 'Minga (tradition sud-américaine)'}</h2>
-            <RichText doc={blok.texte_minga} />
-          </div>
+  {
+    hasManifeste && (
+      <section class="atelier__sec atelier__sec--manifeste" data-atelier-sec>
+        {blok.image?.filename && (
+          <AtelierBg image={blok.image} eager={firstSection === 'manifeste'} />
         )}
-        {blok.texte_construire && (
-          <div class="atelier__block">
-            <h2 class="atelier__title">{blok.titre_construire ?? 'Construire ensemble'}</h2>
-            <RichText doc={blok.texte_construire} />
-          </div>
-        )}
-      </div>
-    </section>
-  )}
-
-  {clientCols.length > 0 && (
-    <section class="atelier__sec atelier__sec--clients" data-atelier-sec>
-      {blok.image_clients?.filename && (
-        <AtelierBg image={blok.image_clients} eager={firstSection === 'clients'} />
-      )}
-      <div class="atelier__panel atelier__panel--clients" data-atelier-panel>
-        <h2 class="atelier__title">{blok.titre_clients ?? 'Des clients engagés'}</h2>
-        <div class="atelier__clients-cols">
-          {clientCols.map(([label, value]) => (
-            <div class="atelier__clients-col">
-              <h3 class="atelier__col-title">{label}</h3>
-              <p class="atelier__clients-list pre-line">{value}</p>
+        <div class="atelier__panel atelier__panel--manifeste" data-atelier-panel>
+          {blok.texte_minga && (
+            <div class="atelier__block">
+              <h2 class="atelier__title">
+                {blok.titre_minga ?? 'Minga (tradition sud-américaine)'}
+              </h2>
+              <RichText doc={blok.texte_minga} />
             </div>
-          ))}
+          )}
+          {blok.texte_construire && (
+            <div class="atelier__block">
+              <h2 class="atelier__title">{blok.titre_construire ?? 'Construire ensemble'}</h2>
+              <RichText doc={blok.texte_construire} />
+            </div>
+          )}
         </div>
-      </div>
-    </section>
-  )}
+      </section>
+    )
+  }
 
-  {equipe.length > 0 && (
-    <section class="atelier__sec atelier__sec--equipe" data-atelier-sec>
-      {blok.image_equipe?.filename && (
-        <AtelierBg image={blok.image_equipe} eager={firstSection === 'equipe'} />
-      )}
-      <div class="atelier__panel atelier__panel--equipe" data-atelier-panel>
-        <h2 class="atelier__title">
-          {blok.titre_equipe ?? 'LaMinga, une équipe soudée, des partenaires engagés'}
-        </h2>
-        <ul class="team-grid">
-          {equipe.map((member) => (
-            <li>
-              <StoryblokComponent blok={member} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
+  {
+    clientCols.length > 0 && (
+      <section class="atelier__sec atelier__sec--clients" data-atelier-sec>
+        {blok.image_clients?.filename && (
+          <AtelierBg image={blok.image_clients} eager={firstSection === 'clients'} />
+        )}
+        <div class="atelier__panel atelier__panel--clients" data-atelier-panel>
+          <h2 class="atelier__title">{blok.titre_clients ?? 'Des clients engagés'}</h2>
+          <div class="atelier__clients-cols">
+            {clientCols.map(([label, value]) => (
+              <div class="atelier__clients-col">
+                <h3 class="atelier__col-title">{label}</h3>
+                <p class="atelier__clients-list pre-line">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    equipe.length > 0 && (
+      <section class="atelier__sec atelier__sec--equipe" data-atelier-sec>
+        {blok.image_equipe?.filename && (
+          <AtelierBg image={blok.image_equipe} eager={firstSection === 'equipe'} />
+        )}
+        <div class="atelier__panel atelier__panel--equipe" data-atelier-panel>
+          <h2 class="atelier__title">
+            {blok.titre_equipe ?? 'LaMinga, une équipe soudée, des partenaires engagés'}
+          </h2>
+          <ul class="team-grid">
+            {equipe.map((member) => (
+              <li>
+                <StoryblokComponent blok={member} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
 </article>
 
 <script>
