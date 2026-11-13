@@ -13,18 +13,9 @@ interface Props {
   poster?: StoryblokAsset;
   alt: string;
   loading?: 'lazy' | 'eager';
-  class?: string;
 }
 
-const {
-  imagePaysage,
-  imagePortrait,
-  video,
-  poster,
-  alt,
-  loading = 'lazy',
-  class: className,
-} = Astro.props;
+const { imagePaysage, imagePortrait, video, poster, alt, loading = 'lazy' } = Astro.props;
 
 // The eager visual is the page's LCP → mark it high priority; the rest lazy-load.
 const eager = loading === 'eager';
@@ -41,7 +32,7 @@ const { videoSrc, posterSrc, portrait, paysage } = resolveMediaSources({
 {
   videoSrc && (
     <video
-      class:list={['responsive-media', 'responsive-media--video', className]}
+      class="responsive-media responsive-media--video"
       src={videoSrc}
       poster={posterSrc}
       muted
@@ -59,7 +50,7 @@ const { videoSrc, posterSrc, portrait, paysage } = resolveMediaSources({
 }
 {
   !videoSrc && paysage && (
-    <picture class:list={['responsive-media', className]}>
+    <picture class="responsive-media">
       {portrait && (
         <source media="(max-width: 640px)" srcset={sbSrcset(portrait)} sizes={SIZES_FULLSCREEN} />
       )}

@@ -1,4 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { loadEnv } from 'vite';
 
 // Framing control MUST be an HTTP header: frame-ancestors is ignored inside the
 // <meta> CSP that Astro emits, and X-Frame-Options only works as a header.
@@ -8,7 +9,10 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 // Keyed off STORYBLOK_VERSION, NOT Netlify's CONTEXT: the preview site builds `main`
 // as its production context, so CONTEXT is "production" on both sites — only the
 // Storyblok version distinguishes them.
-const isPreview = process.env.STORYBLOK_VERSION === 'draft';
+// Same env resolution as astro.config.mjs (shell, then .env files), so the headers always match
+// the content version the build renders.
+const { STORYBLOK_VERSION } = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), '');
+const isPreview = STORYBLOK_VERSION === 'draft';
 
 const framingLines = isPreview
   ? ['Content-Security-Policy: frame-ancestors https://app.storyblok.com']

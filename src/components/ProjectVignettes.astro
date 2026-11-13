@@ -1,5 +1,6 @@
 ---
 import ProjectCard from './ProjectCard.astro';
+import { TOKEN_SEPARATOR } from '../lib/explorer-filter';
 import { projectSearchText } from '../lib/search';
 import type { ProjectSummary } from '../types/storyblok';
 
@@ -22,8 +23,8 @@ const { projects } = Astro.props;
         <li
           class="vignettes__item"
           data-filterable
-          data-programmes={project.programmes.map((p) => p.slug).join(' ')}
-          data-thematiques={project.thematiques.join(' ')}
+          data-programmes={project.programmes.map((p) => p.slug).join(TOKEN_SEPARATOR)}
+          data-thematiques={project.thematiques.join(TOKEN_SEPARATOR)}
           data-search={projectSearchText(project)}
         >
           <ProjectCard project={project} variant="vignette" />

@@ -2,8 +2,8 @@ import { describe, expect, test } from 'vitest';
 import { hasActiveFilters, matchesFilters } from './explorer-filter';
 
 const item = {
-  programmes: 'enseignement equipement',
-  thematiques: 'restructuration reemploi',
+  programmes: 'enseignement|equipement',
+  thematiques: 'restructuration|reemploi',
   search: 'maistre toilettes paris',
 };
 const none = { programme: null, thematique: null, query: '' };
@@ -33,6 +33,12 @@ describe('matchesFilters', () => {
       matchesFilters(item, { programme: 'equipement', thematique: 'ruralite', query: '' }),
     ).toBe(false);
     expect(matchesFilters(item, { ...none, query: 'anglet' })).toBe(false);
+  });
+
+  test('matches a thematique whose value holds a space', () => {
+    const spaced = { ...item, thematiques: 'reemploi|bois local' };
+    expect(matchesFilters(spaced, { ...none, thematique: 'bois local' })).toBe(true);
+    expect(matchesFilters(spaced, { ...none, thematique: 'bois' })).toBe(false);
   });
 });
 

@@ -55,14 +55,16 @@ const firstSection = atelierHero(blok).section;
           {blok.texte_minga && (
             <div class="atelier__block">
               <h2 class="atelier__title">
-                {blok.titre_minga ?? 'Minga (tradition sud-américaine)'}
+                {blok.titre_minga?.trim() || 'Minga (tradition sud-américaine)'}
               </h2>
               <RichText doc={blok.texte_minga} />
             </div>
           )}
           {blok.texte_construire && (
             <div class="atelier__block">
-              <h2 class="atelier__title">{blok.titre_construire ?? 'Construire ensemble'}</h2>
+              <h2 class="atelier__title">
+                {blok.titre_construire?.trim() || 'Construire ensemble'}
+              </h2>
               <RichText doc={blok.texte_construire} />
             </div>
           )}
@@ -78,7 +80,7 @@ const firstSection = atelierHero(blok).section;
           <AtelierBg image={blok.image_clients} eager={firstSection === 'clients'} />
         )}
         <div class="atelier__panel atelier__panel--clients" data-atelier-panel>
-          <h2 class="atelier__title">{blok.titre_clients ?? 'Des clients engagés'}</h2>
+          <h2 class="atelier__title">{blok.titre_clients?.trim() || 'Des clients engagés'}</h2>
           <div class="atelier__clients-cols">
             {clientCols.map(([label, value]) => (
               <div class="atelier__clients-col">
@@ -100,7 +102,7 @@ const firstSection = atelierHero(blok).section;
         )}
         <div class="atelier__panel atelier__panel--equipe" data-atelier-panel>
           <h2 class="atelier__title">
-            {blok.titre_equipe ?? 'LaMinga, une équipe soudée, des partenaires engagés'}
+            {blok.titre_equipe?.trim() || 'LaMinga, une équipe soudée, des partenaires engagés'}
           </h2>
           <ul class="team-grid">
             {equipe.map((member) => (

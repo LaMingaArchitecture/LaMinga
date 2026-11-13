@@ -1,6 +1,7 @@
 ---
 import ProjectVignettes from './ProjectVignettes.astro';
 import ProjectIndexTable from './ProjectIndexTable.astro';
+import { TOKEN_SEPARATOR } from '../lib/explorer-filter';
 import type { ProgrammeLink, ProjectSummary, ThematiqueEntry } from '../types/storyblok';
 
 interface Props {
@@ -34,7 +35,7 @@ for (const project of projects) {
   }
 }
 const programmesForThematique = (value: string) =>
-  [...(thematiqueProgrammes.get(value) ?? [])].join(' ');
+  [...(thematiqueProgrammes.get(value) ?? [])].join(TOKEN_SEPARATOR);
 ---
 
 <div class="explorer" data-explorer>

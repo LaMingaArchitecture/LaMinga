@@ -1,6 +1,9 @@
 // Pure + dependency-free: imported by the Projets explorer browser script.
 
-/** A filterable row/tile's data attributes (space-separated slug lists, normalized haystack). */
+/** Separator of the token lists in data attributes — not a space: datasource values may hold one. */
+export const TOKEN_SEPARATOR = '|';
+
+/** A filterable row/tile's data attributes (TOKEN_SEPARATOR-joined lists, normalized haystack). */
 export interface FilterableItem {
   programmes?: string;
   thematiques?: string;
@@ -14,8 +17,8 @@ export interface FilterState {
   query: string;
 }
 
-const hasToken = (list: string | undefined, token: string): boolean =>
-  (list ?? '').split(' ').includes(token);
+export const hasToken = (list: string | undefined, token: string): boolean =>
+  (list ?? '').split(TOKEN_SEPARATOR).includes(token);
 
 export function matchesFilters(item: FilterableItem, state: FilterState): boolean {
   return (

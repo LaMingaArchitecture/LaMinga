@@ -13,8 +13,7 @@
 //
 // Runs on Deno (Netlify Edge), not Node. It is excluded from `astro check`/ESLint
 // (tsconfig "exclude" + ESLint ignores) but IS type-checked against the Netlify Edge
-// types via `pnpm typecheck:edge` (netlify/tsconfig.json), which the standard
-// `pnpm typecheck` runs.
+// types (netlify/tsconfig.json) by `pnpm typecheck`.
 
 export default function previewAuth(request: Request): Response | undefined {
   // Inert on the production site and in local dev (neither sets a preview signal). Keep
